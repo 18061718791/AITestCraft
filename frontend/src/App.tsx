@@ -1,19 +1,24 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
-import { AppProvider } from './contexts/AppContext';
-import HomePage from './pages/HomePage';
-import { ErrorBoundary } from './components/ErrorBoundary';
 import zhCN from 'antd/locale/zh_CN';
-import 'antd/dist/reset.css';
+import { AppProvider } from './contexts/AppContext';
+import { AppRoutes } from './routes/AppRoutes';
+import { themeConfig } from './styles/theme';
+import './styles/variables.css';
+import './styles/global.css';
+import './App.css';
 
 const App: React.FC = () => {
   return (
-    <ConfigProvider locale={zhCN}>
-      <ErrorBoundary>
-        <AppProvider>
-          <HomePage />
-        </AppProvider>
-      </ErrorBoundary>
+    <ConfigProvider locale={zhCN} theme={themeConfig}>
+      <AppProvider>
+        <BrowserRouter>
+          <div className="app-container">
+            <AppRoutes />
+          </div>
+        </BrowserRouter>
+      </AppProvider>
     </ConfigProvider>
   );
 };

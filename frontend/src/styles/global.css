@@ -1,0 +1,305 @@
+/* 导入变量文件 */
+@import './variables.css';
+
+/* 全局重置样式 */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background-color: var(--bg-layout);
+  line-height: 1.5715;
+}
+
+/* 基础元素样式 */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+h1 { font-size: var(--font-size-3xl); }
+h2 { font-size: var(--font-size-2xl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
+h5 { font-size: var(--font-size-base); }
+h6 { font-size: var(--font-size-sm); }
+
+p {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* 布局样式 */
+.app-container {
+  min-height: 100vh;
+  background-color: var(--bg-layout);
+}
+
+.main-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.main-content {
+  padding: var(--spacing-lg);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  min-height: calc(100vh - var(--header-height));
+}
+
+.content-section {
+  background: var(--bg-container);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition-normal);
+}
+
+.content-section:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.section-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-secondary);
+  background: var(--bg-secondary);
+}
+
+.section-content {
+  padding: var(--spacing-lg);
+}
+
+/* 卡片样式统一 */
+.ant-card {
+  border-radius: var(--border-radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-normal) !important;
+}
+
+.ant-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--border-secondary) !important;
+  background: var(--bg-secondary) !important;
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important;
+}
+
+/* 按钮样式统一 */
+.ant-btn {
+  border-radius: var(--border-radius-md) !important;
+  font-weight: var(--font-weight-medium) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.ant-btn-primary {
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2) !important;
+}
+
+.ant-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3) !important;
+}
+
+.ant-btn-default:hover {
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+/* 表单样式统一 */
+.ant-input,
+.ant-select-selector,
+.ant-picker {
+  border-radius: var(--border-radius-md) !important;
+  border-color: var(--border-color) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.ant-input:focus,
+.ant-select-selector:focus,
+.ant-picker:focus-within {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
+}
+
+.ant-input:hover,
+.ant-select-selector:hover,
+.ant-picker:hover {
+  border-color: var(--primary-hover) !important;
+}
+
+/* 表格样式统一 */
+.ant-table {
+  border-radius: var(--border-radius-lg) !important;
+  overflow: hidden;
+}
+
+.ant-table-thead > tr > th {
+  background: var(--bg-secondary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: var(--hover-bg) !important;
+}
+
+/* 标签样式统一 */
+.ant-tag {
+  border-radius: var(--border-radius-sm) !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+/* 模态框样式统一 */
+.ant-modal-content {
+  border-radius: var(--border-radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.ant-modal-header {
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important;
+  background: var(--bg-secondary) !important;
+}
+
+/* 加载状态样式 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.spin-custom .ant-spin-dot-item {
+  background-color: var(--primary-color) !important;
+}
+
+/* 空状态样式 */
+.ant-empty {
+  color: var(--text-tertiary) !important;
+}
+
+.ant-empty-description {
+  color: var(--text-secondary) !important;
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+  .main-content {
+    padding: var(--spacing-md);
+  }
+  
+  .content-section {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .section-header,
+  .section-content {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: var(--spacing-sm);
+  }
+  
+  h1 { font-size: var(--font-size-2xl); }
+  h2 { font-size: var(--font-size-xl); }
+  h3 { font-size: var(--font-size-lg); }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--border-radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* 代码高亮样式 */
+.code-block {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  overflow-x: auto;
+}
+
+/* 工具提示样式 */
+.ant-tooltip-inner {
+  border-radius: var(--border-radius-sm) !important;
+  box-shadow: var(--shadow-md) !important;
+}

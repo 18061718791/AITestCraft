@@ -30,7 +30,7 @@ export function useGenerateCases() {
     try {
       setIsGenerating(true);
       dispatch({ type: 'SET_LOADING', payload: true });
-      dispatch({ type: 'SET_ERROR', payload: undefined });
+      dispatch({ type: 'SET_ERROR', payload: null });
 
       socketService.onCasesGenerated((data) => {
         const { taskId, cases } = data;
@@ -83,13 +83,22 @@ export function useGenerateCases() {
       });
 
       // 确保WebSocket已连接
-      if (!socketService.isConnected()) {
-        socketService.connect(state.sessionId);
+      try {
+        await socketService.ensureConnected(state.sessionId);
+      } catch (error) {
+        console.error('Failed to establish WebSocket connection:', error);
+        dispatch({ type: 'SET_ERROR', payload: '无法连接到服务器，请检查网络连接' });
+        dispatch({ type: 'SET_LOADING', payload: false });
+        setIsGenerating(false);
+        return;
       }
 
       const response = await testApi.generateTestCases({
         testPoints: pointsToGenerate,
         sessionId: state.sessionId,
+        system: state.selectedSystem?.name,
+        module: state.selectedModule?.name,
+        scenario: state.selectedScenario?.name,
       });
 
       if (response.success) {
@@ -146,6 +155,6 @@ export function useGenerateCases() {
 
   return {
     generateCases,
-    isGenerating,
+    loading: isGenerating,
   };
 }

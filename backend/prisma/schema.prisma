@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model System {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(100)
+  description String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  modules     Module[]
+  testCases   TestCase[]
+  
+  @@map("systems")
+}
+
+model Module {
+  id          Int       @id @default(autoincrement())
+  systemId    Int       @map("system_id")
+  name        String    @db.VarChar(100)
+  description String?   @db.Text
+  sortOrder   Int       @default(0) @map("sort_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  system      System    @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  scenarios   Scenario[]
+  testCases   TestCase[]
+  
+  @@map("modules")
+}
+
+model Scenario {
+  id          Int       @id @default(autoincrement())
+  moduleId    Int       @map("module_id")
+  name        String    @db.VarChar(100)
+  description String?   @db.Text
+  content     String?   @db.Text
+  sortOrder   Int       @default(0) @map("sort_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  
+  module      Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  testCases   TestCase[]
+  
+  @@map("scenarios")
+}
+
+// 新增测试用例状态枚举
+enum TestCaseStatus {
+  PENDING   // 待测试
+  PASSED    // 通过
+  FAILED    // 失败
+  SKIPPED   // 跳过
+}
+
+// TestCase模型更新 - 添加status字段
+model TestCase {
+  id              Int            @id @default(autoincrement())
+  title           String         @db.VarChar(255)
+  precondition    String?        @db.Text
+  steps           String         @db.Text        // JSON string
+  expectedResults String         @db.Text        // JSON string
+  priority        String         @db.VarChar(10) // 高/中/低
+  source          String         @db.VarChar(10) // ai/manual
+  status          TestCaseStatus @default(PENDING)  // 新增状态字段
+  tags            Json?          @default("[]")  // 标签字段
+  
+  // 可选关联
+  systemId        Int?
+  moduleId        Int?
+  scenarioId      Int?
+  
+  // 关联关系
+  system          System?   @relation(fields: [systemId], references: [id], onDelete: SetNull)
+  module          Module?   @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+  scenario        Scenario? @relation(fields: [scenarioId], references: [id], onDelete: SetNull)
+  
+  // 时间戳
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+  
+  @@index([status])  // 新增状态索引
+  @@index([source])
+  @@index([priority])
+  @@index([systemId])
+  @@index([moduleId])
+  @@index([scenarioId])
+  @@index([createdAt])
+  @@map("test_cases")
+}

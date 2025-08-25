@@ -14,7 +14,9 @@ export interface TestPoint {
 // 测试用例类型
 export interface TestCase {
   number: string;
+  system: string;
   module: string;
+  scenario: string;
   title: string;
   description: string;
   precondition: string;

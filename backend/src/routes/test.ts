@@ -12,13 +12,20 @@ const router = Router();
 router.post('/generate-points', [
   body('requirement').isString().notEmpty(),
   body('sessionId').isString().notEmpty(),
+  body('system').optional().isString(),
+  body('module').optional().isString(),
+  body('scenario').optional().isString(),
 ], validateRequest, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { requirement, sessionId } = req.body;
+    const { requirement, sessionId, system, module, scenario } = req.body;
     
-    logger.info(`Starting test points generation for session ${sessionId}`);
+    logger.info(`Starting test points generation for session ${sessionId}`, {
+      system,
+      module,
+      scenario
+    });
     
-    const taskId = await testService.generateTestPoints(requirement, sessionId);
+    const taskId = await testService.generateTestPoints(requirement, sessionId, system, module, scenario);
     
     res.status(202).json({
       success: true,
@@ -47,13 +54,20 @@ router.post('/generate-points', [
 router.post('/generate-cases', [
   body('testPoints').isArray().notEmpty(),
   body('sessionId').isString().notEmpty(),
+  body('system').optional().isString(),
+  body('module').optional().isString(),
+  body('scenario').optional().isString(),
 ], validateRequest, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { testPoints, sessionId } = req.body;
+    const { testPoints, sessionId, system, module, scenario } = req.body;
     
-    logger.info(`Starting test cases generation for session ${sessionId} with ${testPoints.length} points`);
+    logger.info(`Starting test cases generation for session ${sessionId} with ${testPoints.length} points`, {
+      system,
+      module,
+      scenario
+    });
     
-    const taskId = await testService.generateTestCases(testPoints, sessionId);
+    const taskId = await testService.generateTestCases(testPoints, sessionId, system, module, scenario);
     
     res.status(202).json({
       success: true,

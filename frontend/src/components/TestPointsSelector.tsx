@@ -1,60 +1,74 @@
-import React, { useState } from 'react';
-import { Card, Checkbox, Button, Typography, Space, List, Spin, Alert } from 'antd';
-import { ArrowRightOutlined } from '@ant-design/icons';
-import { useAppContext } from '../contexts/AppContext';
+import React from 'react';
+import { Card, Checkbox, Button, Space, Typography, List, Alert } from 'antd';
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useGenerateCases } from '../hooks/useGenerateCases';
+import { useAppContext } from '../contexts/AppContext';
+import BreadcrumbDisplay from './BreadcrumbDisplay';
 
-const { Title, Paragraph, Text } = Typography;
-const { Group } = Checkbox;
+const { Title } = Typography;
 
 interface TestPointsSelectorProps {
-  onNext: () => void;
-  onBack: () => void;
+  onNext?: () => void;
+  onBack?: () => void;
 }
 
 export const TestPointsSelector: React.FC<TestPointsSelectorProps> = ({ onNext, onBack }) => {
   const { state, dispatch } = useAppContext();
-  const { generateCases, isGenerating } = useGenerateCases();
-  const [checkedList, setCheckedList] = useState<string[]>(state.selectedTestPoints);
+  const { generateCases, loading } = useGenerateCases();
 
-  const handleGenerateCases = async () => {
-    // 直接使用checkedList作为参数，避免依赖异步的state更新
-    const selectedPoints = [...checkedList];
-    dispatch({ type: 'SET_SELECTED_TEST_POINTS', payload: selectedPoints });
+  const handleGenerate = async () => {
+    const selectedPoints = state.testPoints.filter(point => point.selected);
+    if (selectedPoints.length === 0) {
+      dispatch({ type: 'SET_ERROR', payload: '请至少选择一个测试点' });
+      return;
+    }
+
+    dispatch({ type: 'SET_ERROR', payload: null });
+    const selectedPointContents = selectedPoints.map(point => point.content);
     
-    // 使用新的参数化generateCases函数
-    await generateCases(selectedPoints);
-    onNext();
+    // 更新选择的测试点内容
+    dispatch({ type: 'SET_SELECTED_TEST_POINTS', payload: selectedPointContents });
+    
+    await generateCases(selectedPointContents);
+    
+    // generateCases会自动处理后续步骤，不需要手动设置
+    onNext?.();
   };
 
-  const handleCheckAll = (e: any) => {
-    setCheckedList(e.target.checked ? state.testPoints : []);
+  const handleTogglePoint = (index: number) => {
+    const updatedPoints = [...state.testPoints];
+    updatedPoints[index] = {
+      ...updatedPoints[index],
+      selected: !updatedPoints[index].selected
+    };
+    dispatch({ type: 'SET_TEST_POINTS', payload: updatedPoints });
   };
 
-  const handleCheckChange = (checkedValues: string[]) => {
-    setCheckedList(checkedValues);
+  const handleToggleAll = () => {
+    const allSelected = state.testPoints.every(point => point.selected);
+    const updatedPoints = state.testPoints.map(point => ({
+      ...point,
+      selected: !allSelected
+    }));
+    dispatch({ type: 'SET_TEST_POINTS', payload: updatedPoints });
   };
 
-  if (state.isLoading && state.testPoints.length === 0) {
-    return (
-      <Card>
-        <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
-          <Spin size="large" />
-          <Title level={3}>测试点生成中...</Title>
-          <Paragraph>正在分析您的需求并生成测试点，请稍候...</Paragraph>
-        </Space>
-      </Card>
-    );
-  }
+  const shouldShowBreadcrumb = state.selectedSystem && 
+                             state.selectedModule && 
+                             state.selectedScenario;
 
   return (
-    <Card>
+    <Card title="步骤2：选择测试点" style={{ width: '100%' }}>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        {shouldShowBreadcrumb && (
+          <BreadcrumbDisplay 
+            system={state.selectedSystem?.name}
+            module={state.selectedModule?.name}
+            scenario={state.selectedScenario?.name}
+          />
+        )}
         <div>
-          <Title level={2}>步骤2：选择测试点</Title>
-          <Paragraph type="secondary">
-            请选择需要生成测试用例的测试点。您可以全选或选择部分测试点。
-          </Paragraph>
+          <Title level={4}>请选择要生成测试用例的测试点</Title>
         </div>
 
         {state.error && (
@@ -64,52 +78,56 @@ export const TestPointsSelector: React.FC<TestPointsSelectorProps> = ({ onNext, 
             type="error"
             showIcon
             closable
-            onClose={() => dispatch({ type: 'SET_ERROR', payload: undefined })}
+            onClose={() => dispatch({ type: 'SET_ERROR', payload: null })}
           />
         )}
 
-        <div>
-          <Checkbox
-            indeterminate={checkedList.length > 0 && checkedList.length < state.testPoints.length}
-            checked={checkedList.length === state.testPoints.length && state.testPoints.length > 0}
-            onChange={handleCheckAll}
-            disabled={isGenerating}
-          >
-            全选 ({checkedList.length}/{state.testPoints.length})
-          </Checkbox>
-        </div>
-
-        <Group
-          value={checkedList}
-          onChange={handleCheckChange}
-          style={{ width: '100%' }}
+        <Checkbox
+          checked={state.testPoints.length > 0 && state.testPoints.every(point => point.selected)}
+          indeterminate={
+            state.testPoints.some(point => point.selected) &&
+            !state.testPoints.every(point => point.selected)
+          }
+          onChange={handleToggleAll}
         >
-          <List
-            dataSource={state.testPoints}
-            renderItem={(point, index) => (
-              <List.Item>
-                <Checkbox value={point} disabled={isGenerating}>
-                  <Text>
-                    {index + 1}. {point}
-                  </Text>
-                </Checkbox>
-              </List.Item>
-            )}
-          />
-        </Group>
+          全选/取消全选
+        </Checkbox>
+
+        <List
+          dataSource={state.testPoints}
+          renderItem={(point, index) => (
+            <List.Item>
+              <Checkbox
+                checked={point.selected}
+                onChange={() => handleTogglePoint(index)}
+              >
+                <span style={{ marginRight: 8, color: '#666', fontSize: '14px' }}>
+                  {index + 1}.
+                </span>
+                {point.content}
+              </Checkbox>
+            </List.Item>
+          )}
+        />
 
         <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-          <Button onClick={onBack} disabled={isGenerating}>
-            返回上一步
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => {
+              dispatch({ type: 'SET_CURRENT_STEP', payload: 1 });
+              onBack?.();
+            }}
+          >
+            返回
           </Button>
           <Button
             type="primary"
             icon={<ArrowRightOutlined />}
-            onClick={handleGenerateCases}
-            loading={isGenerating}
-            disabled={checkedList.length === 0}
+            loading={loading}
+            onClick={handleGenerate}
+            disabled={!state.testPoints.some(point => point.selected)}
           >
-            {isGenerating ? '生成中...' : '生成测试用例'}
+            生成测试用例
           </Button>
         </Space>
       </Space>

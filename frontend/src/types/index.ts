@@ -8,14 +8,17 @@ export interface TestPoint {
 // 测试用例类型
 export interface TestCase {
   number: string;
+  system: string;
   module: string;
+  scenario: string;
   title: string;
   description: string;
   precondition: string;
   steps: string[];
   expected_results: string | string[];
-  actual_result: string;
-  pass_fail: 'Pass' | 'Fail' | '待测试';
+  actual_result?: string;
+  pass_fail?: 'Pass' | 'Fail' | '待测试';
+  priority?: '高' | '中' | '低';
   selected?: boolean;
 }
 
@@ -87,6 +90,37 @@ export interface ErrorEvent extends WebSocketEvent {
     message: string;
     code: string;
   };
+}
+
+// 系统管理相关类型
+export interface System {
+  id: number;
+  name: string;
+  description: string;
+  status: 'active' | 'inactive';
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Module {
+  id: number;
+  name: string;
+  description: string;
+  systemId: number;
+  status: 'active' | 'inactive';
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Scenario {
+  id: number;
+  name: string;
+  description: string;
+  moduleId: number;
+  priority: 'high' | 'medium' | 'low';
+  status: 'active' | 'inactive';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // 任务状态类型

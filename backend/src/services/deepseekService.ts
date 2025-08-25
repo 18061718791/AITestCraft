@@ -4,6 +4,7 @@ import logger from '../utils/logger';
 import { TestPoint, TestCase } from '../types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { sanitizeHtml } from '../utils/sanitize';
 
 export class DeepSeekService {
   private client: AxiosInstance;
@@ -64,17 +65,45 @@ export class DeepSeekService {
     );
   }
 
-  async generateTestPoints(requirement: string): Promise<TestPoint[]> {
-    const prompt = this.testPointsPrompt.replace('{requirement}', requirement);
+  async generateTestPoints(requirement: string, system?: string, module?: string, scenario?: string): Promise<TestPoint[]> {
+    // 清理HTML内容
+    const cleanedRequirement = sanitizeHtml(requirement);
+    
+    let prompt = this.testPointsPrompt.replace('{requirement}', cleanedRequirement);
+    
+    // 替换系统、模块、场景参数
+    prompt = prompt.replace('{system}', system || '通用系统');
+    prompt = prompt.replace('{module}', module || '通用模块');
+    prompt = prompt.replace('{scenario}', scenario || '通用场景');
+    
+    // 打印完整的补充后提示词内容
+    console.log('='.repeat(80));
+    console.log('🔍 测试点生成 - 完整提示词内容');
+    console.log('='.repeat(80));
+    console.log('📋 参数信息:');
+    console.log(`   系统: ${system || '通用系统'}`);
+    console.log(`   模块: ${module || '通用模块'}`);
+    console.log(`   场景: ${scenario || '通用场景'}`);
+    console.log(`   需求长度: ${requirement.length}字符`);
+    console.log('-'.repeat(80));
+    console.log('📝 完整提示词:');
+    console.log(prompt);
+    console.log('='.repeat(80));
     
     logger.info('deepseek_service', 'generating_test_points', {
       requirementLength: requirement.length,
+      system,
+      module,
+      scenario,
       promptLength: prompt.length,
       promptPreview: prompt.substring(0, 500) + (prompt.length > 500 ? '...' : '')
     });
 
     logger.debug('deepseek_service', 'full_prompt', {
       requirement,
+      system,
+      module,
+      scenario,
       prompt
     });
 
@@ -95,17 +124,55 @@ export class DeepSeekService {
       
       return testPoints;
     } catch (error) {
+      const errorMessage = this.getErrorMessage(error);
       logger.error('deepseek_service', 'test_points_generation_failed', error, {
         requirementLength: requirement.length,
+        system,
+        module,
+        scenario,
         requirement: requirement.substring(0, 200) + (requirement.length > 200 ? '...' : '')
       });
-      throw new Error('Failed to generate test points from AI service');
+      throw new Error(errorMessage);
     }
   }
 
-  async generateTestCases(testPoints: string[]): Promise<TestCase[]> {
+  async generateTestCases(testPoints: string[], system?: string, module?: string, scenario?: string): Promise<TestCase[]> {
     const testPointsText = testPoints.join('\n');
-    const prompt = this.testCasesPrompt.replace('{test_points}', testPointsText);
+    let prompt = this.testCasesPrompt.replace('{test_points}', testPointsText);
+    
+    // 替换系统、模块、场景参数
+    prompt = prompt.replace('{system}', system || '通用系统');
+    prompt = prompt.replace('{module}', module || '通用模块');
+    prompt = prompt.replace('{scenario}', scenario || '通用场景');
+    
+    // 添加上下文信息（保持向后兼容）
+    if (system || module || scenario) {
+      const contextInfo = [];
+      if (system) contextInfo.push(`系统: ${system}`);
+      if (module) contextInfo.push(`功能模块: ${module}`);
+      if (scenario) contextInfo.push(`功能场景: ${scenario}`);
+      prompt = prompt.replace('{context_info}', contextInfo.join('\n'));
+    } else {
+      prompt = prompt.replace('{context_info}', '');
+    }
+    
+    // 打印完整的补充后提示词内容
+    console.log('='.repeat(80));
+    console.log('🔍 测试用例生成 - 完整提示词内容');
+    console.log('='.repeat(80));
+    console.log('📋 参数信息:');
+    console.log(`   系统: ${system || '通用系统'}`);
+    console.log(`   模块: ${module || '通用模块'}`);
+    console.log(`   场景: ${scenario || '通用场景'}`);
+    console.log(`   测试点数量: ${testPoints.length}个`);
+    console.log('📋 测试点列表:');
+    testPoints.forEach((point, index) => {
+      console.log(`   ${index + 1}. ${point}`);
+    });
+    console.log('-'.repeat(80));
+    console.log('📝 完整提示词:');
+    console.log(prompt);
+    console.log('='.repeat(80));
     
     logger.info('deepseek_service', 'generating_test_cases', {
       testPointsCount: testPoints.length,
@@ -124,10 +191,25 @@ export class DeepSeekService {
       
       return testCases;
     } catch (error) {
+      const errorMessage = this.getErrorMessage(error);
       logger.error('deepseek_service', 'test_cases_generation_failed', error, {
         testPointsCount: testPoints.length
       });
-      throw new Error('Failed to generate test cases from AI service');
+      throw new Error(errorMessage);
+    }
+  }
+
+  private getErrorMessage(error: any): string {
+    if (error.code === 'ECONNABORTED') {
+      return 'AI服务响应超时，请稍后重试。这可能是由于网络连接较慢或AI服务繁忙导致。';
+    } else if (error.response?.status === 429) {
+      return 'AI服务调用频率限制，请稍后再试。建议等待1-2分钟后重试。';
+    } else if (error.response?.status >= 500) {
+      return 'AI服务暂时不可用，请稍后重试。我们正在努力恢复服务。';
+    } else if (error.message?.includes('network')) {
+      return '网络连接问题，请检查网络连接后重试。';
+    } else {
+      return `AI服务处理失败: ${error.message || '未知错误'}`;
     }
   }
 

@@ -7,8 +7,11 @@ import { errorHandler } from './middleware/errorHandler';
 import { corsMiddleware } from './middleware/cors';
 import { loggingMiddleware } from './middleware/loggingMiddleware';
 import testRoutes from './routes/test';
-// 若文件扩展名缺失导致找不到模块，尝试添加 .ts 扩展名
 import healthRoutes from './routes/health';
+import promptRoutes from './routes/prompts';
+import systemRoutes from './routes/system';
+import testCaseRoutes from './routes/testCaseRoutes';
+import batchRoutes from './routes/batchRoutes';
 // 若文件扩展名缺失导致找不到模块，尝试添加 .ts 扩展名
 import { setupSocketHandlers } from './services/notificationService';
 
@@ -30,6 +33,10 @@ app.use(loggingMiddleware);
 // Routes
 app.use('/api/health', healthRoutes);
 app.use('/api/test', testRoutes);
+app.use('/api', promptRoutes);
+app.use('/api/system', systemRoutes);
+app.use('/api', testCaseRoutes);
+app.use('/api', batchRoutes);
 
 // Health check endpoint
 app.get('/health', (_req, res) => {

@@ -9,7 +9,7 @@ import { TestCase, TaskStatus } from '../types';
 class TestService {
   private tasks: Map<string, TaskStatus> = new Map();
 
-  async generateTestPoints(requirement: string, sessionId: string): Promise<string> {
+  async generateTestPoints(requirement: string, sessionId: string, system?: string, module?: string, scenario?: string): Promise<string> {
     const taskId = uuidv4();
     
     this.tasks.set(taskId, {
@@ -24,16 +24,19 @@ class TestService {
     logger.info('test_service', 'generate_test_points_started', {
       taskId,
       sessionId,
+      system,
+      module,
+      scenario,
       requirement: requirement.substring(0, 100) + (requirement.length > 100 ? '...' : '')
     });
 
     // Process asynchronously
-    this.processTestPoints(taskId, requirement, sessionId);
+    this.processTestPoints(taskId, requirement, sessionId, system, module, scenario);
 
     return taskId;
   }
 
-  async generateTestCases(testPoints: string[], sessionId: string): Promise<string> {
+  async generateTestCases(testPoints: string[], sessionId: string, system?: string, module?: string, scenario?: string): Promise<string> {
     const taskId = uuidv4();
     
     this.tasks.set(taskId, {
@@ -49,16 +52,19 @@ class TestService {
       taskId,
       sessionId,
       testPointsCount: testPoints.length,
-      testPoints: testPoints.slice(0, 5)
+      testPoints: testPoints.slice(0, 5),
+      system,
+      module,
+      scenario
     });
 
     // Process asynchronously
-    this.processTestCases(taskId, testPoints, sessionId);
+    this.processTestCases(taskId, testPoints, sessionId, system, module, scenario);
 
     return taskId;
   }
 
-  private async processTestPoints(taskId: string, requirement: string, sessionId: string): Promise<void> {
+  private async processTestPoints(taskId: string, requirement: string, sessionId: string, system?: string, module?: string, scenario?: string): Promise<void> {
     try {
       this.updateTaskStatus(taskId, 'processing');
       notificationService.notifyProgress(sessionId, 10, '开始生成测试点...');
@@ -66,6 +72,9 @@ class TestService {
       logger.info('test_service', 'processing_test_points', {
         taskId,
         sessionId,
+        system,
+        module,
+        scenario,
         step: 'calling_deepseek',
         requirement: requirement.substring(0, 200) + (requirement.length > 200 ? '...' : '')
       });
@@ -77,7 +86,7 @@ class TestService {
         requirementLength: requirement.length
       });
 
-      const testPoints = await deepseekService.generateTestPoints(requirement);
+      const testPoints = await deepseekService.generateTestPoints(requirement, system, module, scenario);
       
       logger.info('test_service', 'test_points_generated', {
         taskId,
@@ -118,7 +127,7 @@ class TestService {
     }
   }
 
-  private async processTestCases(taskId: string, testPoints: string[], sessionId: string): Promise<void> {
+  private async processTestCases(taskId: string, testPoints: string[], sessionId: string, system?: string, module?: string, scenario?: string): Promise<void> {
     try {
       this.updateTaskStatus(taskId, 'processing');
       notificationService.notifyProgress(sessionId, 10, '开始生成测试用例...');
@@ -127,10 +136,13 @@ class TestService {
         taskId,
         sessionId,
         testPointsCount: testPoints.length,
+        system,
+        module,
+        scenario,
         step: 'calling_deepseek'
       });
 
-      const testCases = await deepseekService.generateTestCases(testPoints);
+      const testCases = await deepseekService.generateTestCases(testPoints, system, module, scenario);
       
       logger.info('test_service', 'test_cases_generated', {
         taskId,

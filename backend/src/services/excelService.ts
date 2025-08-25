@@ -12,7 +12,9 @@ export class ExcelService {
       // Define columns
       worksheet.columns = [
         { header: '用例编号', key: 'number', width: 12 },
-        { header: '测试模块', key: 'module', width: 20 },
+        { header: '系统', key: 'system', width: 15 },
+        { header: '功能模块', key: 'module', width: 20 },
+        { header: '功能场景', key: 'scenario', width: 20 },
         { header: '用例标题', key: 'title', width: 40 },
         { header: '用例描述', key: 'description', width: 50 },
         { header: '前置条件', key: 'precondition', width: 40 },
@@ -44,7 +46,9 @@ export class ExcelService {
       testCases.forEach((testCase, index) => {
         const row = worksheet.addRow({
           number: testCase.number,
+          system: testCase.system || '未指定',
           module: testCase.module,
+          scenario: testCase.scenario || testCase.module,
           title: testCase.title,
           description: testCase.description,
           precondition: testCase.precondition,
@@ -107,7 +111,7 @@ export class ExcelService {
       // Auto-filter
       worksheet.autoFilter = {
         from: { row: 1, column: 1 },
-        to: { row: 1, column: 9 }
+        to: { row: 1, column: 11 }
       };
 
       // Freeze header row

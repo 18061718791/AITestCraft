@@ -15,11 +15,17 @@ setupLoggingInterceptors(api);
 export interface GeneratePointsRequest {
   requirement: string;
   sessionId: string;
+  system?: string;
+  module?: string;
+  scenario?: string;
 }
 
 export interface GenerateCasesRequest {
   testPoints: string[];
   sessionId: string;
+  system?: string;
+  module?: string;
+  scenario?: string;
 }
 
 export interface TaskResponse {
@@ -59,10 +65,10 @@ export const testApi = {
     return response.data;
   },
 
-  downloadExcel: async (testCases: TestCase[]): Promise<Blob> => {
+  downloadExcel: async (testCases: TestCase[], sessionId: string): Promise<Blob> => {
     const response = await api.post('/download-excel', {
       testCases,
-      sessionId: 'temp-session'
+      sessionId
     }, {
       responseType: 'blob',
     });

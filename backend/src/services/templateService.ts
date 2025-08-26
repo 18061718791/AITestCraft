@@ -60,12 +60,6 @@ export class TemplateService {
       example: '成功登录系统，跳转到用户首页'
     },
     {
-      name: '标签',
-      description: '测试用例的标签，多个标签用逗号分隔',
-      required: false,
-      example: '登录,功能测试,正向测试'
-    },
-    {
       name: '状态',
       description: '测试用例的执行状态',
       required: true,
@@ -78,6 +72,12 @@ export class TemplateService {
       required: true,
       example: '高',
       options: ['低', '中', '高']
+    },
+    {
+      name: '标签',
+      description: '测试用例的标签，多个标签用逗号分隔',
+      required: false,
+      example: '登录,功能测试,正向测试'
     }
   ];
 
@@ -202,7 +202,7 @@ export class TemplateService {
     };
     
     // 设置列宽
-    const columnWidths = [8, 30, 20, 20, 20, 30, 50, 50, 20, 12, 8];
+    const columnWidths = [8, 30, 20, 20, 20, 30, 50, 50, 12, 8, 20];
     columnWidths.forEach((width, index) => {
       sheet.getColumn(index + 1).width = width;
     });
@@ -279,9 +279,9 @@ export class TemplateService {
       }
     });
     
-    // 设置状态列下拉（J列，索引10）
+    // 设置状态列下拉（I列，索引9）
     const statusOptions = ['待测试', '通过', '失败'];
-    const statusCol = sheet.getColumn(10);
+    const statusCol = sheet.getColumn(9);
     statusCol.eachCell({ includeEmpty: true }, (cell, rowNumber) => {
       if (rowNumber > 1) { // 跳过表头行
         cell.dataValidation = {
@@ -297,9 +297,9 @@ export class TemplateService {
       }
     });
     
-    // 设置优先级列下拉（K列，索引11）
+    // 设置优先级列下拉（J列，索引10）
     const priorityOptions = ['低', '中', '高'];
-    const priorityCol = sheet.getColumn(11);
+    const priorityCol = sheet.getColumn(10);
     priorityCol.eachCell({ includeEmpty: true }, (cell, rowNumber) => {
       if (rowNumber > 1) { // 跳过表头行
         cell.dataValidation = {

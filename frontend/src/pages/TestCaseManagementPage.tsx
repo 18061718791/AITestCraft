@@ -46,7 +46,7 @@ import { testCaseService } from '../services/testCaseService';
 import { systemApi } from '../services/systemApi';
 import { TestCase, TestCaseStatus, TestCasePriority } from '../types/testCase';
 import { System, Module, Scenario } from '../types';
-import { STATUS_OPTIONS, STATUS_OPTIONS_EDITABLE, getStatusColor, getStatusText } from '../utils/statusConfig';
+import { STATUS_OPTIONS_EDITABLE, STATUS_OPTIONS_FILTER, getStatusColor, getStatusText } from '../utils/statusConfig';
 import { PRIORITY_OPTIONS, getPriorityColor, getPriorityText } from '../utils/priorityConfig';
 import type { ColumnsType } from 'antd/es/table';
 import { getDetailViewData } from '../services/detailService';
@@ -163,12 +163,12 @@ const StatusFilter: React.FC<StatusFilterProps> = ({ selectedStatus, onStatusCha
       placeholder="状态筛选"
       value={selectedStatus}
       onChange={onStatusChange}
-      style={{ width: 150 }}
+      style={{ width: 200 }}
       maxTagCount={1}
       maxTagTextLength={4}
       maxTagPlaceholder={`+${selectedStatus?.length - 1}`}
     >
-      {STATUS_OPTIONS.map(({ value, label }) => (
+      {STATUS_OPTIONS_FILTER.map(({ value, label }) => (
         <Option key={value} value={value}>
           {label}
         </Option>
@@ -523,7 +523,11 @@ export const TestCaseManagementPage: React.FC = () => {
               <p><strong>标题：</strong>{testCase.title}</p>
               <p><strong>系统：</strong>{detailData.systemName}</p>
               <p><strong>模块：</strong>{detailData.moduleName}</p>
-              <p><strong>场景：</strong>{detailData.scenarioName}</p>
+              <p><strong>场景：</strong>
+                {detailData.scenarioName && testCase.title 
+                  ? `${detailData.scenarioName} - ${testCase.title}`
+                  : detailData.scenarioName || testCase.title || '未设置'}
+              </p>
             </div>
             
             <div style={{ marginBottom: '16px' }}>
@@ -695,12 +699,12 @@ export const TestCaseManagementPage: React.FC = () => {
   return (
     <Layout style={{ height: '100vh', background: '#f5f5f5' }}>
       <Sider
-        width="15%"
+        width="22.5%"
         style={{
           background: '#fff',
           borderRight: '1px solid #f0f0f0',
           overflow: 'auto',
-          minWidth: 200,
+          minWidth: 300,
         }}
         collapsible={false}
       >
@@ -1223,31 +1227,6 @@ const EnhancedTestCaseList: React.FC<{
             </span>
           </Tooltip>
         );
-      },
-    },
-    {
-      title: '功能场景',
-      dataIndex: 'scenarioId',
-      key: 'scenario',
-      width: 120,
-      render: (scenarioId: number | null) => {
-        if (!scenarioId) {
-          return (
-            <Tooltip title="该用例未关联功能场景">
-              <Tag style={{ 
-                backgroundColor: '#f5f5f5', 
-                color: '#999',
-                borderStyle: 'dashed',
-                borderColor: '#d9d9d9',
-                borderRadius: '8px'
-              }}>
-                未设置
-              </Tag>
-            </Tooltip>
-          );
-        }
-        // 实际场景中这里应该从场景列表获取名称
-        return <span style={{ color: '#666', fontSize: '12px' }}>场景ID: {scenarioId}</span>;
       },
     },
     {

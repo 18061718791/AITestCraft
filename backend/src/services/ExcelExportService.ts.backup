@@ -1,4 +1,4 @@
-import ExcelJS from 'exceljs';
+import * as XLSX from 'xlsx';
 
 export interface TestCaseWithRelations {
   id: number;
@@ -56,30 +56,7 @@ export class ExcelExportService {
         throw new Error('测试用例数据不能为空');
       }
 
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('测试用例');
-
-      // 定义列结构
-      const columns = [
-        { key: '用例id', header: '用例id', width: 8 },
-        { key: '系统', header: '系统', width: 15 },
-        { key: '功能模块', header: '功能模块', width: 15 },
-        { key: '功能场景', header: '功能场景', width: 15 },
-        { key: '用例标题', header: '用例标题', width: 40 },
-        { key: '优先级', header: '优先级', width: 8 },
-        { key: '用例描述', header: '用例描述', width: 40 },
-        { key: '前置条件', header: '前置条件', width: 50 },
-        { key: '测试步骤', header: '测试步骤', width: 60 },
-        { key: '预期结果', header: '预期结果', width: 50 },
-        { key: '实际结果', header: '实际结果', width: 50 },
-        { key: '状态', header: '状态', width: 12 },
-        { key: '标签', header: '标签', width: 20 }
-      ];
-
-      worksheet.columns = columns;
-
-      // 添加数据行
-      const data = testCases.map(tc => ({
+      const data: ExcelRow[] = testCases.map(tc => ({
         '用例id': tc.id,
         '系统': tc.system?.name || '',
         '功能模块': tc.module?.name || '',
@@ -95,16 +72,38 @@ export class ExcelExportService {
         '标签': tc.tags && tc.tags.length > 0 ? tc.tags.join(', ') : ''
       }));
 
-      data.forEach(row => {
-        worksheet.addRow(row);
-      });
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      
+      // 设置工作表名称
+      XLSX.utils.book_append_sheet(workbook, worksheet, '测试用例');
 
-      // 应用样式
+      // 设置列宽
+      const cols = [
+        { wch: 8 },   // 用例id
+        { wch: 15 },  // 系统
+        { wch: 15 },  // 功能模块
+        { wch: 15 },  // 功能场景
+        { wch: 40 },  // 用例标题
+        { wch: 8 },   // 优先级
+        { wch: 40 },  // 用例描述
+        { wch: 50 },  // 前置条件
+        { wch: 60 },  // 测试步骤
+        { wch: 50 },  // 预期结果
+        { wch: 50 },  // 实际结果
+        { wch: 12 },  // 状态
+        { wch: 20 }   // 标签
+      ];
+      worksheet['!cols'] = cols;
+
+      // 设置样式
       this.applyStyles(worksheet);
 
-      // 生成Buffer
-      const buffer = await workbook.xlsx.writeBuffer();
-      return Buffer.from(buffer);
+      return XLSX.write(workbook, { 
+        type: 'buffer', 
+        bookType: 'xlsx',
+        compression: true 
+      });
 
     } catch (error) {
       console.error('生成Excel文件失败:', error);
@@ -143,67 +142,44 @@ export class ExcelExportService {
   /**
    * 应用样式设置
    */
-  private applyStyles(worksheet: ExcelJS.Worksheet): void {
-    // 应用表头样式
-    const headerRow = worksheet.getRow(1);
-    headerRow.height = 25;
-    headerRow.eachCell((cell) => {
-      cell.font = {
-        name: '宋体',
-        size: 12,
-        bold: true,
-        color: { argb: 'FFFFFFFF' }
-      };
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FF4472C4' } // 蓝色背景
-      };
-      cell.alignment = {
-        horizontal: 'center',
-        vertical: 'middle'
-      };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' }
-      };
-    });
+  private applyStyles(worksheet: XLSX.WorkSheet): void {
+    const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+    
+    // 设置表头样式
+    for (let col = range.s.c; col <= range.e.c; col++) {
+      const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
+      const cell = worksheet[cellAddress];
+      if (cell) {
+        cell.s = {
+          font: { bold: true },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          border: {
+            top: { style: 'thin' },
+            bottom: { style: 'thin' },
+            left: { style: 'thin' },
+            right: { style: 'thin' }
+          }
+        };
+      }
+    }
 
-    // 应用数据行样式
-    const rowCount = worksheet.rowCount;
-    for (let row = 2; row <= rowCount; row++) {
-      const dataRow = worksheet.getRow(row);
-      dataRow.height = 20;
-      
-      const isAlternateRow = row % 2 === 0;
-      
-      dataRow.eachCell((cell) => {
-        cell.font = {
-          name: '宋体',
-          size: 11
-        };
-        cell.alignment = {
-          vertical: 'middle',
-          wrapText: true
-        };
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' }
-        };
-        
-        // 灰白交替背景
-        if (isAlternateRow) {
-          cell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFF2F2F2' } // 浅灰色背景
+    // 设置数据行样式
+    for (let row = range.s.r + 1; row <= range.e.r; row++) {
+      for (let col = range.s.c; col <= range.e.c; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+        const cell = worksheet[cellAddress];
+        if (cell) {
+          cell.s = {
+            alignment: { vertical: 'center', wrapText: true },
+            border: {
+              top: { style: 'thin' },
+              bottom: { style: 'thin' },
+              left: { style: 'thin' },
+              right: { style: 'thin' }
+            }
           };
         }
-      });
+      }
     }
   }
 

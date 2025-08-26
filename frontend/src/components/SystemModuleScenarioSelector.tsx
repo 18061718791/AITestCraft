@@ -165,13 +165,13 @@ const SystemModuleScenarioSelector: React.FC<SystemModuleScenarioSelectorProps> 
           </Select>
         </Form.Item>
 
-        <Form.Item label="功能场景" required={!!state.selectedModule} style={{ flex: 1, minWidth: 200, marginBottom: 0 }}>
+        <Form.Item label="功能场景" style={{ flex: 1, minWidth: 200, marginBottom: 0 }}>
           <Select
             placeholder={
               loading.scenarios ? "加载中..." :
               !state.selectedModule ? "请先选择功能模块" :
               scenarios.length === 0 ? "该模块暂无功能场景" :
-              "请选择功能场景"
+              "请选择功能场景（可选）"
             }
             value={state.selectedScenario?.id}
             onChange={handleScenarioChange}

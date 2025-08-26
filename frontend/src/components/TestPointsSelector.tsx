@@ -54,8 +54,7 @@ export const TestPointsSelector: React.FC<TestPointsSelectorProps> = ({ onNext, 
   };
 
   const shouldShowBreadcrumb = state.selectedSystem && 
-                             state.selectedModule && 
-                             state.selectedScenario;
+                             state.selectedModule;
 
   return (
     <Card title="步骤2：选择测试点" style={{ width: '100%' }}>

@@ -74,33 +74,28 @@ describe('ExcelExportService', () => {
     });
   });
 
-  describe('formatDateTime', () => {
-    it('应该正确格式化日期时间', () => {
-      const date = new Date('2024-01-15T14:30:00.000Z');
-      const result = service['formatDateTime'](date);
-      expect(result).toMatch(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
-    });
-  });
+
 
   describe('generateTestCasesExcel', () => {
-    it('应该生成有效的Excel文件', async () => {
-      const mockTestCases = [
-        {
-          id: 1,
-          title: '测试用例1',
-          status: 'ACTIVE',
-          priority: 'HIGH',
-          preconditions: '前置条件1',
-          steps: '步骤1',
-          expectedResult: '预期结果1',
-          tags: ['标签1'],
-          createdAt: new Date('2024-01-15T10:00:00.000Z'),
-          updatedAt: new Date('2024-01-15T11:00:00.000Z'),
-          system: { id: 1, name: '系统1' },
-          module: { id: 1, name: '模块1' },
-          scenario: { id: 1, name: '场景1' }
-        }
-      ];
+      it('应该生成有效的Excel文件', async () => {
+        const mockTestCases = [
+          {
+            id: 1,
+            title: '测试用例1',
+            status: 'PENDING',
+            priority: 'HIGH',
+            preconditions: '前置条件1',
+            steps: '步骤1',
+            expectedResult: '预期结果1',
+            actualResult: '',
+            tags: ['标签1'],
+            createdAt: new Date('2024-01-15T10:00:00.000Z'),
+            updatedAt: new Date('2024-01-15T11:00:00.000Z'),
+            system: { id: 1, name: '系统1' },
+            module: { id: 1, name: '模块1' },
+            scenario: { id: 1, name: '场景1' }
+          }
+        ];
 
       const buffer = await service.generateTestCasesExcel(mockTestCases);
       
@@ -118,11 +113,12 @@ describe('ExcelExportService', () => {
         {
           id: 1,
           title: '测试用例1',
-          status: 'ACTIVE',
+          status: 'PENDING',
           priority: 'HIGH',
           preconditions: '',
           steps: '',
           expectedResult: '',
+          actualResult: '',
           tags: [],
           createdAt: new Date(),
           updatedAt: new Date(),

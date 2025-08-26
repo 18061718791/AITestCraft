@@ -30,30 +30,30 @@ export function useGeneratePoints() {
     const selectedModule = state.selectedModule;
     const selectedScenario = state.selectedScenario;
 
-    if (!selectedSystem || !selectedModule || !selectedScenario) {
-      dispatch({ type: 'SET_ERROR', payload: '请先选择系统、功能模块和功能场景' });
+    if (!selectedSystem || !selectedModule) {
+      dispatch({ type: 'SET_ERROR', payload: '请先选择系统和功能模块' });
       return;
     }
 
     // 验证模板参数
-    const validation = validateTemplateParams({
-      system: selectedSystem.name,
-      module: selectedModule.name,
-      scenario: selectedScenario.name,
-      requirement
-    });
+      const validation = validateTemplateParams({
+        system: selectedSystem.name,
+        module: selectedModule.name,
+        scenario: selectedScenario?.name || '通用功能',
+        requirement
+      });
 
-    if (!validation.isValid) {
-      dispatch({ type: 'SET_ERROR', payload: validation.errorMessage || '参数验证失败' });
-      return;
-    }
+      if (!validation.isValid) {
+        dispatch({ type: 'SET_ERROR', payload: validation.errorMessage || '参数验证失败' });
+        return;
+      }
 
     frontendLogger.debug(LogCategory.USER_ACTION, 'generate_points_start', { 
-      requirement: requirement.substring(0, 100) + '...',
-      system: selectedSystem.name,
-      module: selectedModule.name,
-      scenario: selectedScenario.name
-    });
+        requirement: requirement.substring(0, 100) + '...',
+        system: selectedSystem.name,
+        module: selectedModule.name,
+        scenario: selectedScenario?.name || '通用功能'
+      });
 
     try {
       setIsGenerating(true);
@@ -68,14 +68,14 @@ export function useGeneratePoints() {
       const processedPrompt = replaceParameters(template, {
         system: selectedSystem.name,
         module: selectedModule.name,
-        scenario: selectedScenario.name,
+        scenario: selectedScenario?.name || '通用功能',
         requirement
       });
 
       frontendLogger.debug(LogCategory.BUSINESS, 'template_processed', {
         system: selectedSystem.name,
         module: selectedModule.name,
-        scenario: selectedScenario.name,
+        scenario: selectedScenario?.name || '通用功能',
         requirement: requirement.substring(0, 100) + '...',
         promptLength: processedPrompt.length
       });
@@ -164,7 +164,7 @@ export function useGeneratePoints() {
         sessionId,
         system: selectedSystem.name,
         module: selectedModule.name,
-        scenario: selectedScenario.name
+        scenario: selectedScenario?.name || '通用功能'
       });
 
       if (response.success) {

@@ -122,6 +122,7 @@ export const TestCasesSelector: React.FC<TestCasesSelectorProps> = ({ onBack }) 
   const rowSelection = {
     selectedRowKeys,
     onChange: handleSelectChange,
+    columnWidth: 50,
     getCheckboxProps: (record: OriginalTestCase) => ({
       name: record.title,
     }),
@@ -133,7 +134,7 @@ export const TestCasesSelector: React.FC<TestCasesSelectorProps> = ({ onBack }) 
       title: '用例编号',
       dataIndex: 'number',
       key: 'number',
-      width: 100,
+      width: 120,
     },
     {
       title: '用例标题',

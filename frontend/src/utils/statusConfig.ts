@@ -36,6 +36,13 @@ export const STATUS_OPTIONS = [
   { value: TestCaseStatus.SKIPPED, label: '跳过', color: 'gray' },
 ] as const;
 
+// 状态选项列表 - 用于筛选器（不包含SKIPPED）
+export const STATUS_OPTIONS_FILTER = [
+  { value: TestCaseStatus.PENDING, label: '待测试', color: 'orange' },
+  { value: TestCaseStatus.PASSED, label: '通过', color: 'green' },
+  { value: TestCaseStatus.FAILED, label: '失败', color: 'red' },
+] as const;
+
 // 状态选项列表 - 用于新建/编辑用例（不包含SKIPPED）
 export const STATUS_OPTIONS_EDITABLE = [
   { value: TestCaseStatus.PENDING, label: '待测试', color: 'orange' },

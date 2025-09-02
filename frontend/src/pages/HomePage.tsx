@@ -21,7 +21,7 @@ const HomePage: React.FC = () => {
       <div className="fade-in">
         {/* 英雄区域 */}
         <div className="content-section">
-          <div className="section-header">
+          <div className="section-header" style={{ textAlign: 'center' }}>
             <Title level={1} style={{ marginBottom: 0, color: 'var(--primary-color)' }}>
               欢迎使用AI测试平台
             </Title>

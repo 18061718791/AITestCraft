@@ -18,9 +18,9 @@ export class DeletionCheckService {
    */
   async checkSystemDeletion(systemId: number): Promise<DeletionCheckResult> {
     try {
-      const moduleCount = await prisma.module.count({
+      const moduleCount = await prisma.modules.count({
         where: {
-          systemId: systemId
+          system_id: systemId
         }
       });
 
@@ -52,9 +52,9 @@ export class DeletionCheckService {
    */
   async checkModuleDeletion(moduleId: number): Promise<DeletionCheckResult> {
     try {
-      const scenarioCount = await prisma.scenario.count({
+      const scenarioCount = await prisma.scenarios.count({
         where: {
-          moduleId: moduleId
+          module_id: moduleId
         }
       });
 

@@ -529,6 +529,31 @@ export const TestCaseManagementPage: React.FC = () => {
                   : detailData.scenarioName || testCase.title || '未设置'}
               </p>
             </div>
+
+            <div style={{ 
+              background: '#f5f5f5',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              marginBottom: '16px'
+            }}>
+              <p style={{ margin: 0, fontSize: '14px' }}>
+                <strong>状态：</strong>
+                <Tag 
+                  color={getStatusColor(testCase.status)}
+                  style={{ margin: '0 4px', fontSize: '13px' }}
+                >
+                  {getStatusText(testCase.status)}
+                </Tag>
+                <span style={{ margin: '0 12px', color: '#d9d9d9' }}>|</span>
+                <strong>优先级：</strong>
+                <Tag 
+                  color={getPriorityColor(testCase.priority)}
+                  style={{ margin: '0 4px', fontSize: '13px' }}
+                >
+                  {getPriorityText(testCase.priority)}
+                </Tag>
+              </p>
+            </div>
             
             <div style={{ marginBottom: '16px' }}>
               <h4>前置条件</h4>
@@ -557,21 +582,6 @@ export const TestCaseManagementPage: React.FC = () => {
                 ))}
               </Space>
             </div>
-            
-            <div style={{ display: 'flex', gap: '16px' }}>
-              <div>
-                <h4>状态</h4>
-                <Tag color={getStatusColor(testCase.status)}>
-                  {getStatusText(testCase.status)}
-                </Tag>
-              </div>
-              <div>
-                <h4>优先级</h4>
-                <Tag color={getPriorityColor(testCase.priority)}>
-                  {getPriorityText(testCase.priority)}
-                </Tag>
-              </div>
-            </div>
           </div>
         ),
       });
@@ -596,6 +606,32 @@ export const TestCaseManagementPage: React.FC = () => {
             </div>
             
             <p><strong>标题：</strong>{testCase.title}</p>
+            
+            <div style={{ 
+              background: '#f5f5f5',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              marginBottom: '16px'
+            }}>
+              <p style={{ margin: 0, fontSize: '14px' }}>
+                <strong>状态：</strong>
+                <Tag 
+                  color={getStatusColor(testCase.status)}
+                  style={{ margin: '0 4px', fontSize: '13px' }}
+                >
+                  {getStatusText(testCase.status)}
+                </Tag>
+                <span style={{ margin: '0 12px', color: '#d9d9d9' }}>|</span>
+                <strong>优先级：</strong>
+                <Tag 
+                  color={getPriorityColor(testCase.priority)}
+                  style={{ margin: '0 4px', fontSize: '13px' }}
+                >
+                  {getPriorityText(testCase.priority)}
+                </Tag>
+              </p>
+            </div>
+            
             <p><strong>前置条件：</strong>{testCase.preconditions}</p>
             <p><strong>测试步骤：</strong></p>
             <div style={{ marginLeft: '20px' }}>
@@ -606,16 +642,6 @@ export const TestCaseManagementPage: React.FC = () => {
               </div>
             </div>
             <p><strong>预期结果：</strong>{testCase.expectedResult}</p>
-            <p><strong>状态：</strong>
-              <Tag color={getStatusColor(testCase.status)}>
-                {getStatusText(testCase.status)}
-              </Tag>
-            </p>
-            <p><strong>优先级：</strong>
-              <Tag color={getPriorityColor(testCase.priority)}>
-                {getPriorityText(testCase.priority)}
-              </Tag>
-            </p>
             <p><strong>标签：</strong>
               <Space wrap>
                 {testCase.tags?.map(tag => (
@@ -1093,14 +1119,31 @@ const EnhancedTestCaseList: React.FC<{
     setImportStatus('validating');
     try {
       const result = await batchService.importTestCases(file, 'skip');
-          setImportResult(result);
+      
+      // 使用轮询获取最终导入结果
+      setImportStatus('importing');
+      
+      await batchService.pollImportProgress(result.jobId, (progress) => {
+        setImportResult(progress);
+        
+        if (progress.status === 'completed') {
           setImportStatus('completed');
           
-          if (result.success > 0) {
-            message.success(`成功导入 ${result.success} 个测试用例`);
+          if (progress.success > 0) {
+            message.success(`成功导入 ${progress.success} 个测试用例`);
             // 重新加载数据
             setTimeout(() => window.location.reload(), 1000);
+          } else if (progress.failed > 0) {
+            message.warning(`导入完成，成功：${progress.success}，失败：${progress.failed}`);
+          } else {
+            message.info('没有数据被导入');
           }
+        } else if (progress.status === 'failed') {
+          setImportStatus('error');
+          message.error('导入失败');
+        }
+      });
+      
     } catch (error: any) {
       setValidationErrors(error.validationErrors || []);
       setImportStatus('error');
@@ -1162,7 +1205,7 @@ const EnhancedTestCaseList: React.FC<{
           fontWeight: 'bold',
           fontSize: '12px'
         }}>
-          #{text}
+          {text}
         </span>
       ),
     },

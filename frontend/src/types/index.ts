@@ -3,6 +3,8 @@ export interface TestPoint {
   id: string;
   content: string;
   selected?: boolean;
+  isCustom?: boolean;
+  isEditing?: boolean;
 }
 
 // 测试用例类型

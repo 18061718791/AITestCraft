@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -11,92 +8,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model System {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(100)
-  description String?   @db.Text
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  
-  modules     Module[]
-  testCases   TestCase[]
-  
-  @@map("systems")
+model modules {
+  id          Int          @id @default(autoincrement())
+  system_id   Int
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  sort_order  Int          @default(0)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  systems     systems      @relation(fields: [system_id], references: [id], onDelete: Cascade)
+  scenarios   scenarios[]
+  test_cases  test_cases[]
+
+  @@index([system_id], map: "modules_system_id_fkey")
 }
 
-model Module {
-  id          Int       @id @default(autoincrement())
-  systemId    Int       @map("system_id")
-  name        String    @db.VarChar(100)
-  description String?   @db.Text
-  sortOrder   Int       @default(0) @map("sort_order")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  
-  system      System    @relation(fields: [systemId], references: [id], onDelete: Cascade)
-  scenarios   Scenario[]
-  testCases   TestCase[]
-  
-  @@map("modules")
+model scenarios {
+  id          Int          @id @default(autoincrement())
+  module_id   Int
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  content     String?      @db.Text
+  sort_order  Int          @default(0)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  modules     modules      @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  test_cases  test_cases[]
+
+  @@index([module_id], map: "scenarios_module_id_fkey")
 }
 
-model Scenario {
-  id          Int       @id @default(autoincrement())
-  moduleId    Int       @map("module_id")
-  name        String    @db.VarChar(100)
-  description String?   @db.Text
-  content     String?   @db.Text
-  sortOrder   Int       @default(0) @map("sort_order")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  
-  module      Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  testCases   TestCase[]
-  
-  @@map("scenarios")
+model systems {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  modules     modules[]
+  test_cases  test_cases[]
 }
 
-// 新增测试用例状态枚举
-enum TestCaseStatus {
-  PENDING   // 待测试
-  PASSED    // 通过
-  FAILED    // 失败
-  SKIPPED   // 跳过
-}
-
-// TestCase模型更新 - 添加status字段
-model TestCase {
-  id              Int            @id @default(autoincrement())
-  title           String         @db.VarChar(255)
-  precondition    String?        @db.Text
-  steps           String         @db.Text        // JSON string
-  expectedResults String         @db.Text        // JSON string
-  priority        String         @db.VarChar(10) // 高/中/低
-  source          String         @db.VarChar(10) // ai/manual
-  status          TestCaseStatus @default(PENDING)  // 新增状态字段
-  tags            Json?          @default("[]")  // 标签字段
-  
-  // 可选关联
+model test_cases {
+  id              Int               @id @default(autoincrement())
+  title           String            @db.VarChar(255)
+  precondition    String?           @db.Text
+  steps           String            @db.Text
+  expectedResults String            @db.Text
+  priority        String            @db.VarChar(10)
+  source          String            @db.VarChar(10)
   systemId        Int?
   moduleId        Int?
   scenarioId      Int?
-  
-  // 关联关系
-  system          System?   @relation(fields: [systemId], references: [id], onDelete: SetNull)
-  module          Module?   @relation(fields: [moduleId], references: [id], onDelete: SetNull)
-  scenario        Scenario? @relation(fields: [scenarioId], references: [id], onDelete: SetNull)
-  
-  // 时间戳
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
-  deletedAt       DateTime? @map("deleted_at")
-  
-  @@index([status])  // 新增状态索引
-  @@index([source])
-  @@index([priority])
-  @@index([systemId])
+  created_at      DateTime          @default(now())
+  updated_at      DateTime
+  deleted_at      DateTime?
+  tags            Json?
+  status          test_cases_status @default(PENDING)
+  modules         modules?          @relation(fields: [moduleId], references: [id])
+  scenarios       scenarios?        @relation(fields: [scenarioId], references: [id])
+  systems         systems?          @relation(fields: [systemId], references: [id])
+
+  @@index([created_at])
   @@index([moduleId])
+  @@index([priority])
   @@index([scenarioId])
-  @@index([createdAt])
-  @@map("test_cases")
+  @@index([source])
+  @@index([status])
+  @@index([systemId])
+}
+
+enum test_cases_status {
+  PENDING
+  PASSED
+  FAILED
+  SKIPPED
 }

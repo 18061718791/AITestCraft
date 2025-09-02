@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, Checkbox, Button, Space, Typography, List, Alert } from 'antd';
-import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { Card, Checkbox, Button, Space, Typography, List, Alert, Input } from 'antd';
+import { ArrowLeftOutlined, ArrowRightOutlined, PlusOutlined } from '@ant-design/icons';
 import { useGenerateCases } from '../hooks/useGenerateCases';
 import { useAppContext } from '../contexts/AppContext';
 import BreadcrumbDisplay from './BreadcrumbDisplay';
+import { TestPoint } from '../types';
 
 const { Title } = Typography;
 
@@ -53,6 +54,40 @@ export const TestPointsSelector: React.FC<TestPointsSelectorProps> = ({ onNext, 
     dispatch({ type: 'SET_TEST_POINTS', payload: updatedPoints });
   };
 
+  const handleAddCustomPoint = () => {
+    const newPoint: TestPoint = {
+      id: `custom-${Date.now()}`,
+      content: '',
+      selected: true,
+      isCustom: true,
+      isEditing: true
+    };
+    dispatch({ type: 'ADD_CUSTOM_TEST_POINT', payload: newPoint });
+  };
+
+  const handleEditPoint = (index: number, content: string) => {
+    dispatch({ type: 'UPDATE_TEST_POINT', payload: { index, content } });
+  };
+
+  const handleStartEdit = (index: number) => {
+    const updatedPoints = [...state.testPoints];
+    updatedPoints[index] = {
+      ...updatedPoints[index],
+      isEditing: true
+    };
+    dispatch({ type: 'SET_TEST_POINTS', payload: updatedPoints });
+  };
+
+  // 移除未使用的handleCancelEdit函数
+  // const handleCancelEdit = (index: number) => {
+  //   const updatedPoints = [...state.testPoints];
+  //   updatedPoints[index] = {
+  //     ...updatedPoints[index],
+  //     isEditing: false
+  //   };
+  //   dispatch({ type: 'SET_TEST_POINTS', payload: updatedPoints });
+  // };
+
   const shouldShowBreadcrumb = state.selectedSystem && 
                              state.selectedModule;
 
@@ -96,19 +131,53 @@ export const TestPointsSelector: React.FC<TestPointsSelectorProps> = ({ onNext, 
           dataSource={state.testPoints}
           renderItem={(point, index) => (
             <List.Item>
-              <Checkbox
-                checked={point.selected}
-                onChange={() => handleTogglePoint(index)}
-              >
-                <span style={{ marginRight: 8, color: '#666', fontSize: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <Checkbox
+                  checked={point.selected}
+                  onChange={() => handleTogglePoint(index)}
+                  style={{ marginRight: 8 }}
+                />
+                <span style={{ marginRight: 8, color: '#666', fontSize: '14px', minWidth: 30 }}>
                   {index + 1}.
                 </span>
-                {point.content}
-              </Checkbox>
+                {point.isEditing ? (
+                  <Input
+                    defaultValue={point.content}
+                    autoFocus
+                    onPressEnter={(e) => handleEditPoint(index, e.currentTarget.value)}
+                    onBlur={(e) => handleEditPoint(index, e.currentTarget.value)}
+                    style={{ flex: 1 }}
+                    placeholder="请输入自定义测试点"
+                  />
+                ) : (
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                    <span style={{ flex: 1 }}>{point.content}</span>
+                    {point.isCustom && (
+                      <Button
+                        type="link"
+                        size="small"
+                        onClick={() => handleStartEdit(index)}
+                        style={{ marginLeft: 8 }}
+                      >
+                        编辑
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
             </List.Item>
           )}
         />
 
+        <Button
+          type="dashed"
+          icon={<PlusOutlined />}
+          onClick={handleAddCustomPoint}
+          style={{ width: '100%' }}
+        >
+          添加测试点
+        </Button>
+        
         <Space style={{ width: '100%', justifyContent: 'space-between' }}>
           <Button
             icon={<ArrowLeftOutlined />}

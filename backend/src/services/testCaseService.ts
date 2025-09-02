@@ -18,13 +18,13 @@ export class TestCaseService {
     if (filters?.moduleId) where.moduleId = filters.moduleId;
     if (filters?.scenarioId) where.scenarioId = filters.scenarioId;
 
-    const testCases = await prisma.testCase.findMany({
+    const testCases = await prisma.test_cases.findMany({
       include: {
-        system: true,
-        module: true,
-        scenario: true,
+        systems: true,
+        modules: true,
+        scenarios: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { created_at: 'desc' },
     }) as any[];
 
     return testCases.map(tc => ({
@@ -40,11 +40,11 @@ export class TestCaseService {
       systemId: tc.systemId,
       moduleId: tc.moduleId,
       scenarioId: tc.scenarioId,
-      system: tc.system,
-      module: tc.module,
-      scenario: tc.scenario,
-      createdAt: tc.createdAt,
-      updatedAt: tc.updatedAt,
+      system: tc.systems,
+      module: tc.modules,
+      scenario: tc.scenarios,
+      createdAt: tc.created_at,
+      updatedAt: tc.updated_at,
     }));
   }
 
@@ -52,12 +52,12 @@ export class TestCaseService {
    * 获取单个测试用例
    */
   async getTestCase(id: number): Promise<TestCase | null> {
-    const testCase = await prisma.testCase.findUnique({
+    const testCase = await prisma.test_cases.findUnique({
       where: { id },
       include: {
-        system: true,
-        module: true,
-        scenario: true,
+        systems: true,
+        modules: true,
+        scenarios: true,
       },
     }) as any;
 
@@ -73,14 +73,14 @@ export class TestCaseService {
       status: testCase.status || 'PENDING',
       priority: testCase.priority || 'MEDIUM',
       tags: testCase.tags || [],
-      systemId: testCase.systemId,
-      moduleId: testCase.moduleId,
-      scenarioId: testCase.scenarioId,
-      system: testCase.system,
-      module: testCase.module,
-      scenario: testCase.scenario,
-      createdAt: testCase.createdAt,
-      updatedAt: testCase.updatedAt,
+      systemId: testCase.system_id,
+      moduleId: testCase.module_id,
+      scenarioId: testCase.scenario_id,
+      system: testCase.systems,
+      module: testCase.modules,
+      scenario: testCase.scenarios,
+      createdAt: testCase.created_at,
+      updatedAt: testCase.updated_at,
     };
   }
 
@@ -97,18 +97,19 @@ export class TestCaseService {
       source: 'manual',
       status: data.status || 'PENDING',
       tags: data.tags || [],
+      updated_at: new Date(),
     };
     
     if (data.systemId !== undefined) createData.systemId = data.systemId;
     if (data.moduleId !== undefined) createData.moduleId = data.moduleId;
     if (data.scenarioId !== undefined) createData.scenarioId = data.scenarioId;
 
-    const testCase = await prisma.testCase.create({
+    const testCase = await prisma.test_cases.create({
       data: createData,
       include: {
-        system: true,
-        module: true,
-        scenario: true,
+        systems: true,
+        modules: true,
+        scenarios: true,
       },
     }) as any;
 
@@ -149,13 +150,13 @@ export class TestCaseService {
     if (data.moduleId !== undefined) updateData.moduleId = data.moduleId;
     if (data.scenarioId !== undefined) updateData.scenarioId = data.scenarioId;
 
-    const testCase = await prisma.testCase.update({
+    const testCase = await prisma.test_cases.update({
       where: { id },
       data: updateData,
       include: {
-        system: true,
-        module: true,
-        scenario: true,
+        systems: true,
+        modules: true,
+        scenarios: true,
       },
     }) as any;
 
@@ -184,7 +185,7 @@ export class TestCaseService {
    * 删除测试用例
    */
   async deleteTestCase(id: number): Promise<void> {
-    await prisma.testCase.delete({
+    await prisma.test_cases.delete({
       where: { id },
     });
   }
@@ -193,16 +194,16 @@ export class TestCaseService {
    * 获取指定ID的测试用例用于导出
    */
   async getTestCasesForExport(testCaseIds: number[]): Promise<TestCase[]> {
-    const testCases = await prisma.testCase.findMany({
+    const testCases = await prisma.test_cases.findMany({
       where: {
         id: {
           in: testCaseIds
         }
       },
       include: {
-        system: true,
-        module: true,
-        scenario: true,
+        systems: true,
+        modules: true,
+        scenarios: true,
       },
       orderBy: { id: 'asc' },
     }) as any[];
@@ -220,19 +221,37 @@ export class TestCaseService {
       systemId: tc.systemId,
       moduleId: tc.moduleId,
       scenarioId: tc.scenarioId,
-      system: tc.system,
-      module: tc.module,
-      scenario: tc.scenario,
-      createdAt: tc.createdAt,
-      updatedAt: tc.updatedAt,
+      system: tc.systems,
+      module: tc.modules,
+      scenario: tc.scenarios,
+      createdAt: tc.created_at,
+      updatedAt: tc.updated_at,
     }));
+  }
+
+  /**
+   * 格式化测试步骤，添加序号并清理空格
+   */
+  private formatTestSteps(steps: string): string {
+    if (!steps || typeof steps !== 'string') {
+      return steps;
+    }
+    
+    return steps
+      .split('\n')
+      .map(step => step.trim())
+      .filter(step => step.length > 0)
+      .map((step, index) => `${index + 1}. ${step}`)
+      .join('\n');
   }
 
   /**
    * 从测试助手保存测试用例
    */
   async saveFromTestAssistant(
-    scenarioId: number,
+    scenarioId?: number,
+    moduleId?: number,
+    systemId?: number,
     testCases: Array<{
       title: string;
       preconditions: string;
@@ -240,26 +259,69 @@ export class TestCaseService {
       expectedResult: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       tags?: string[];
-    }>
+    }> = []
   ): Promise<TestCase[]> {
-    const scenario = await prisma.scenario.findUnique({
-      where: { id: scenarioId },
-      include: {
-        module: true,
-      },
-    });
+    let actualSystemId: number;
+    let actualModuleId: number | null;
+    let actualScenarioId: number | null;
 
-    if (!scenario) {
-      throw new Error('场景不存在');
+    if (scenarioId) {
+      // 如果提供了场景ID，使用场景对应的系统、模块和场景
+      const scenario = await prisma.scenarios.findUnique({
+        where: { id: scenarioId },
+        include: {
+          modules: true,
+        },
+      });
+
+      if (!scenario) {
+        throw new Error('场景不存在');
+      }
+
+      actualSystemId = scenario.modules.system_id;
+      actualModuleId = scenario.modules.id;
+      actualScenarioId = scenarioId;
+    } else if (moduleId) {
+      // 如果提供了模块ID，使用模块对应的系统，不设置场景
+      const module = await prisma.modules.findUnique({
+        where: { id: moduleId },
+        include: {
+          systems: true,
+        },
+      });
+
+      if (!module) {
+        throw new Error('模块不存在');
+      }
+
+      actualSystemId = module.system_id;
+      actualModuleId = module.id;
+      actualScenarioId = null; // 不设置场景ID
+    } else if (systemId) {
+      // 如果只提供了系统ID，只设置系统ID
+      const system = await prisma.systems.findUnique({
+        where: { id: systemId },
+      });
+
+      if (!system) {
+        throw new Error('系统不存在');
+      }
+
+      actualSystemId = system.id;
+      actualModuleId = null; // 不设置模块ID
+      actualScenarioId = null; // 不设置场景ID
+    } else {
+      throw new Error('必须提供场景ID、模块ID或系统ID中的至少一个');
     }
 
     const createdTestCases = await Promise.all(
       testCases.map(tc =>
         this.createTestCase({
           ...tc,
-          systemId: scenario.module.systemId,
-          moduleId: scenario.moduleId,
-          scenarioId: scenarioId,
+          steps: this.formatTestSteps(tc.steps),
+          systemId: actualSystemId,
+          moduleId: actualModuleId,
+          scenarioId: actualScenarioId,
           status: 'PENDING',
           priority: tc.priority || 'MEDIUM',
           tags: tc.tags || [],
@@ -303,17 +365,17 @@ export class TestCaseService {
     }
 
     // 获取总数
-    const total = await prisma.testCase.count({ where });
+    const total = await prisma.test_cases.count({ where });
 
     // 获取分页数据
-    const testCases = await prisma.testCase.findMany({
+    const testCases = await prisma.test_cases.findMany({
       where,
       include: {
-        system: true,
-        module: true,
-        scenario: true,
+        systems: true,
+        modules: true,
+        scenarios: true,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { created_at: 'desc' },
       skip,
       take: limit,
     }) as any[];

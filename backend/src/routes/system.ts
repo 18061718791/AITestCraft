@@ -13,8 +13,8 @@ interface PrismaError extends Error {
 // 获取所有系统
 router.get('/systems', async (_req, res) => {
   try {
-    const systems = await prisma.system.findMany({
-      orderBy: { createdAt: 'asc' },
+    const systems = await prisma.systems.findMany({
+      orderBy: { created_at: 'asc' },
     });
     
     res.json({
@@ -36,42 +36,42 @@ router.get('/systems', async (_req, res) => {
 // 获取完整树形结构
 router.get('/systems/tree', async (_req, res) => {
   try {
-    const systems = await prisma.system.findMany({
+    const systems = await prisma.systems.findMany({
       include: {
         modules: {
           include: {
             scenarios: {
-              orderBy: { sortOrder: 'asc' },
+              orderBy: { sort_order: 'asc' },
             },
           },
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sort_order: 'asc' },
         },
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { created_at: 'asc' },
     });
 
     // 转换为树形结构
-    const treeData = systems.map(system => ({
+    const treeData = systems.map((system: any) => ({
       key: `system-${system.id}`,
       title: system.name,
       description: system.description,
       type: 'system',
       id: system.id,
-      children: system.modules.map(module => ({
+      children: system.modules.map((module: any) => ({
         key: `module-${module.id}`,
         title: module.name,
         description: module.description,
         type: 'module',
         id: module.id,
-        systemId: system.id,
-        children: module.scenarios.map(scenario => ({
+        systemId: system.system_id,
+        children: module.scenarios.map((scenario: any) => ({
           key: `scenario-${scenario.id}`,
           title: scenario.name,
           description: scenario.description,
           content: scenario.content,
           type: 'scenario',
           id: scenario.id,
-          moduleId: module.id,
+          moduleId: scenario.module_id,
         })),
       })),
     }));
@@ -107,14 +107,14 @@ router.get('/systems/:id', async (req, res) => {
       return;
     }
 
-    const system = await prisma.system.findUnique({
+    const system = await prisma.systems.findUnique({
       where: { id: systemId },
       include: {
         modules: {
           include: {
             scenarios: true,
           },
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sort_order: 'asc' },
         },
       },
     });
@@ -167,10 +167,11 @@ router.post('/systems', async (req, res) => {
       return;
     }
 
-    const system = await prisma.system.create({
+    const system = await prisma.systems.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
+        updated_at: new Date(),
       },
     });
 
@@ -226,7 +227,7 @@ router.put('/systems/:id', async (req, res) => {
       return;
     }
 
-    const system = await prisma.system.update({
+    const system = await prisma.systems.update({
       where: { id: systemId },
       data: {
         name: name?.trim(),
@@ -278,8 +279,8 @@ router.delete('/systems/:id', async (req, res) => {
     }
 
     // 检查系统是否可以删除
-    const moduleCount = await prisma.module.count({
-      where: { systemId },
+    const moduleCount = await prisma.modules.count({
+      where: { system_id: systemId },
     });
 
     if (moduleCount > 0) {
@@ -295,7 +296,7 @@ router.delete('/systems/:id', async (req, res) => {
       return;
     }
 
-    const system = await prisma.system.delete({
+    const system = await prisma.systems.delete({
       where: { id: systemId },
     });
 
@@ -341,14 +342,14 @@ router.get('/systems/:systemId/modules', async (req, res) => {
       return;
     }
 
-    const modules = await prisma.module.findMany({
-      where: { systemId: systemIdNum },
+    const modules = await prisma.modules.findMany({
+      where: { system_id: systemIdNum },
       include: {
         scenarios: {
-          orderBy: { sortOrder: 'asc' },
+          orderBy: { sort_order: 'asc' },
         },
       },
-      orderBy: { sortOrder: 'asc' },
+      orderBy: { sort_order: 'asc' },
     });
 
     res.json({
@@ -403,12 +404,13 @@ router.post('/systems/:systemId/modules', async (req, res) => {
       return;
     }
 
-    const module = await prisma.module.create({
+    const module = await prisma.modules.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
-        sortOrder: sortOrder || 0,
-        systemId: systemIdNum,
+        sort_order: sortOrder || 0,
+        system_id: systemIdNum,
+        updated_at: new Date(),
       },
     });
 
@@ -473,12 +475,12 @@ router.put('/modules/:id', async (req, res) => {
       return;
     }
 
-    const module = await prisma.module.update({
+    const module = await prisma.modules.update({
       where: { id: moduleId },
       data: {
         name: name?.trim(),
         description: description?.trim() || null,
-        sortOrder: sortOrder ?? undefined,
+        sort_order: sortOrder ?? undefined,
       },
     });
 
@@ -525,8 +527,8 @@ router.delete('/modules/:id', async (req, res) => {
     }
 
     // 检查模块是否可以删除
-    const scenarioCount = await prisma.scenario.count({
-      where: { moduleId },
+    const scenarioCount = await prisma.scenarios.count({
+      where: { module_id: moduleId },
     });
 
     if (scenarioCount > 0) {
@@ -542,7 +544,7 @@ router.delete('/modules/:id', async (req, res) => {
       return;
     }
 
-    const module = await prisma.module.delete({
+    const module = await prisma.modules.delete({
       where: { id: moduleId },
     });
 
@@ -590,9 +592,9 @@ router.get('/modules/:moduleId/scenarios', async (req, res) => {
       return;
     }
 
-    const scenarios = await prisma.scenario.findMany({
-      where: { moduleId: moduleIdNum },
-      orderBy: { sortOrder: 'asc' },
+    const scenarios = await prisma.scenarios.findMany({
+      where: { module_id: moduleIdNum },
+      orderBy: { sort_order: 'asc' },
     });
 
     res.json({
@@ -645,13 +647,14 @@ router.post('/modules/:moduleId/scenarios', async (req, res) => {
       return;
     }
 
-    const scenario = await prisma.scenario.create({
+    const scenario = await prisma.scenarios.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
         content: content?.trim() || null,
-        sortOrder: sortOrder || 0,
-        moduleId: moduleIdNum,
+        sort_order: sortOrder || 0,
+        module_id: moduleIdNum,
+        updated_at: new Date(),
       },
     });
 
@@ -716,13 +719,13 @@ router.put('/scenarios/:id', async (req, res) => {
       return;
     }
 
-    const scenario = await prisma.scenario.update({
+    const scenario = await prisma.scenarios.update({
       where: { id: scenarioId },
       data: {
         name: name?.trim(),
         description: description?.trim() || null,
         content: content?.trim() || null,
-        sortOrder: sortOrder ?? undefined,
+        sort_order: sortOrder ?? undefined,
       },
     });
 
@@ -768,7 +771,7 @@ router.delete('/scenarios/:id', async (req, res) => {
       return;
     }
 
-    const scenario = await prisma.scenario.delete({
+    const scenario = await prisma.scenarios.delete({
       where: { id: scenarioId },
     });
 

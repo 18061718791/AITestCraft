@@ -14,7 +14,7 @@ const steps = [
   },
   {
     title: '测试点选择',
-    description: '选择关键测试场景',
+    description: '选择关键场景',
   },
   {
     title: '用例生成',
@@ -48,7 +48,7 @@ export const TestCaseAssistantPage: React.FC = () => {
       <div className="fade-in">
         {/* 页面标题 */}
         <div className="content-section">
-          <div className="section-header">
+          <div className="section-header" style={{ textAlign: 'center' }}>
             <Title level={1} style={{ marginBottom: 0, color: 'var(--primary-color)' }}>
               AI测试用例生成助手
             </Title>

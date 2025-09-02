@@ -31,6 +31,8 @@ type AppAction =
   | { type: 'SET_CURRENT_STEP'; payload: number }
   | { type: 'SET_REQUIREMENT'; payload: string }
   | { type: 'SET_TEST_POINTS'; payload: TestPoint[] }
+  | { type: 'ADD_CUSTOM_TEST_POINT'; payload: TestPoint }
+  | { type: 'UPDATE_TEST_POINT'; payload: { index: number; content: string } }
   | { type: 'SET_SELECTED_TEST_POINTS'; payload: string[] }
   | { type: 'SET_TEST_CASES'; payload: TestCase[] }
   | { type: 'SET_SELECTED_TEST_CASES'; payload: TestCase[] }
@@ -64,6 +66,16 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, requirement: action.payload };
     case 'SET_TEST_POINTS':
       return { ...state, testPoints: action.payload };
+    case 'ADD_CUSTOM_TEST_POINT':
+      return { ...state, testPoints: [...state.testPoints, action.payload] };
+    case 'UPDATE_TEST_POINT':
+      const updatedPoints = [...state.testPoints];
+      updatedPoints[action.payload.index] = {
+        ...updatedPoints[action.payload.index],
+        content: action.payload.content,
+        isEditing: false
+      };
+      return { ...state, testPoints: updatedPoints };
     case 'SET_SELECTED_TEST_POINTS':
       return { ...state, selectedTestPoints: action.payload };
     case 'SET_TEST_CASES':

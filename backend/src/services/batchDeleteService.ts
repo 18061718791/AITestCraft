@@ -32,7 +32,7 @@ export class BatchDeleteService {
       }
 
       // 检查用例是否存在
-      const existingCases = await prisma.testCase.findMany({
+      const existingCases = await prisma.test_cases.findMany({
         where: { id: { in: validIds } },
         select: { id: true, title: true },
       });
@@ -70,7 +70,7 @@ export class BatchDeleteService {
       if (deletableIds.length > 0) {
         const deleteResult = await prisma.$transaction(async (tx: any) => {
           // 执行删除 - 简化事务处理，移除operationLog依赖
-          const result = await tx.testCase.deleteMany({
+          const result = await tx.test_cases.deleteMany({
             where: { id: { in: deletableIds } },
           });
 
@@ -126,7 +126,7 @@ export class BatchDeleteService {
       notDeletable: [] as Array<{ id: number; reason: string }>,
     };
 
-    const existingCases = await prisma.testCase.findMany({
+    const existingCases = await prisma.test_cases.findMany({
       where: { id: { in: testCaseIds } },
       select: { id: true, title: true },
     });

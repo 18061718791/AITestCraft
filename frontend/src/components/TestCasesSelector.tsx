@@ -81,10 +81,8 @@ export const TestCasesSelector: React.FC<TestCasesSelectorProps> = ({ onBack }) 
       return;
     }
 
-    if (!state.selectedScenario?.id) {
-      message.error('请先选择测试场景');
-      return;
-    }
+    // 功能场景为可选项，不强制要求选择
+    // 如果没有选择场景，使用默认场景或空字符串
 
     try {
       const testCasesToSave = selectedCases.map(tc => ({
@@ -97,7 +95,9 @@ export const TestCasesSelector: React.FC<TestCasesSelectorProps> = ({ onBack }) 
       }));
 
       const savedCases = await testCaseService.saveFromTestAssistant(
-        state.selectedScenario.id,
+        state.selectedScenario?.id,
+        state.selectedModule?.id,
+        state.selectedSystem?.id,
         testCasesToSave
       );
       

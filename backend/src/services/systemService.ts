@@ -27,7 +27,7 @@ export class SystemService {
   async getSystemHierarchy(): Promise<SystemTreeData> {
     try {
       // 获取所有系统及其关联的模块和场景
-      const systems = await prisma.system.findMany({
+      const systems = await prisma.systems.findMany({
         include: {
           modules: {
             include: {
@@ -35,7 +35,7 @@ export class SystemService {
                 select: {
                   id: true,
                   name: true,
-                  moduleId: true
+                  module_id: true
                 }
               }
             }
@@ -50,11 +50,11 @@ export class SystemService {
           modules: system.modules.map((module: any) => ({
             id: module.id,
             name: module.name,
-            systemId: module.systemId,
+            systemId: module.system_id,
             scenarios: module.scenarios.map((scenario: any) => ({
               id: scenario.id,
               name: scenario.name,
-              moduleId: scenario.moduleId
+              moduleId: scenario.module_id
             }))
           }))
         }))
@@ -71,7 +71,7 @@ export class SystemService {
    */
   async getSystemNames(): Promise<string[]> {
     try {
-      const systems = await prisma.system.findMany({
+      const systems = await prisma.systems.findMany({
         select: {
           name: true
         },
@@ -93,9 +93,9 @@ export class SystemService {
    */
   async getModuleNamesBySystem(systemName: string): Promise<string[]> {
     try {
-      const modules = await prisma.module.findMany({
+      const modules = await prisma.modules.findMany({
         where: {
-          system: {
+          systems: {
             name: systemName
           }
         },
@@ -118,11 +118,11 @@ export class SystemService {
    */
   async getScenarioNamesByModule(systemName: string, moduleName: string): Promise<string[]> {
     try {
-      const scenarios = await prisma.scenario.findMany({
+      const scenarios = await prisma.scenarios.findMany({
         where: {
-          module: {
+          modules: {
             name: moduleName,
-            system: {
+            systems: {
               name: systemName
             }
           }

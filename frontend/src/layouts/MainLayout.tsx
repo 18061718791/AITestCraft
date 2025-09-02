@@ -52,7 +52,17 @@ export const MainLayout: React.FC = () => {
     },
   ];
 
-  const selectedKey = menuItems.find(item => location.pathname.startsWith(item.key))?.key || '/';
+  const selectedKey = menuItems.find(item => {
+    if (item.key === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(item.key);
+  })?.key || '/';
+
+  const getBreadcrumbTitle = () => {
+    const currentItem = menuItems.find(item => item.key === selectedKey);
+    return currentItem?.label || '首页';
+  };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -60,8 +70,7 @@ export const MainLayout: React.FC = () => {
         trigger={null}
         collapsible
         collapsed={collapsed}
-        breakpoint="lg"
-        collapsedWidth="0"
+        collapsedWidth={80}
         style={{
           background: '#fff',
           boxShadow: '2px 0 8px rgba(0, 0, 0, 0.1)',
@@ -74,9 +83,11 @@ export const MainLayout: React.FC = () => {
           alignItems: 'center', 
           justifyContent: 'center',
           borderBottom: '1px solid #f0f0f0',
-          marginBottom: 16
+          marginBottom: 16,
+          overflow: 'hidden',
+          transition: 'all 0.3s ease-in-out'
         }}>
-          <Title level={4} style={{ margin: 0, color: '#1890ff' }}>
+          <Title level={4} style={{ margin: 0, color: '#1890ff', whiteSpace: 'nowrap' }}>
             {collapsed ? 'AI' : 'AI测试平台'}
           </Title>
         </div>
@@ -85,6 +96,7 @@ export const MainLayout: React.FC = () => {
           selectedKeys={[selectedKey]}
           items={menuItems}
           style={{ border: 'none' }}
+          inlineCollapsed={collapsed}
         />
       </Sider>
       
@@ -106,7 +118,7 @@ export const MainLayout: React.FC = () => {
               onClick: () => setCollapsed(!collapsed),
             })}
             <Title level={3} style={{ margin: 0 }}>
-              {selectedKey === '/' ? '首页' : '用例助手'}
+              {getBreadcrumbTitle()}
             </Title>
           </Space>
         </Header>

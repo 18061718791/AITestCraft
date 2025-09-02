@@ -1,4 +1,4 @@
-import { System, Module, Scenario } from '../generated/prisma';
+import { systems, modules, scenarios } from '../generated/prisma';
 
 export interface TestCase {
   id: number;
@@ -13,9 +13,9 @@ export interface TestCase {
   systemId?: number | null;
   moduleId?: number | null;
   scenarioId?: number | null;
-  system?: System | null;
-  module?: Module | null;
-  scenario?: Scenario | null;
+  system?: systems | null;
+  module?: modules | null;
+  scenario?: scenarios | null;
   createdAt: Date;
   updatedAt: Date;
 }

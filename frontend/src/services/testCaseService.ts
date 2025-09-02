@@ -54,7 +54,9 @@ const baseService = {
    * 从测试助手保存测试用例
    */
   async saveFromTestAssistant(
-    scenarioId: number,
+    scenarioId?: number,
+    moduleId?: number,
+    systemId?: number,
     testCases: Array<{
       title: string;
       preconditions: string;
@@ -62,10 +64,12 @@ const baseService = {
       expectedResult: string;
       priority?: 'LOW' | 'MEDIUM' | 'HIGH';
       tags?: string[];
-    }>
+    }> = []
   ): Promise<TestCase[]> {
     const response = await axios.post(`${API_BASE_URL}/api/test-cases/save-from-assistant`, {
       scenarioId,
+      moduleId,
+      systemId,
       testCases,
     });
     return response.data.data;

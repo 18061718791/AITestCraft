@@ -180,8 +180,13 @@ export class TestCaseController {
         return;
       }
 
-      const { scenarioId, testCases } = req.body;
-      const createdTestCases = await testCaseService.saveFromTestAssistant(scenarioId, testCases);
+      const { scenarioId, moduleId, systemId, testCases } = req.body;
+      const createdTestCases = await testCaseService.saveFromTestAssistant(
+        scenarioId,
+        moduleId,
+        systemId,
+        testCases
+      );
       
       res.status(201).json({
         success: true,
@@ -354,7 +359,9 @@ export const updateTestCaseValidation = [
 ];
 
 export const saveFromAssistantValidation = [
-  body('scenarioId').isInt({ min: 1 }).withMessage('场景ID必须是正整数'),
+  body('scenarioId').optional().isInt({ min: 1 }).withMessage('场景ID必须是正整数'),
+  body('moduleId').optional().isInt({ min: 1 }).withMessage('模块ID必须是正整数'),
+  body('systemId').optional().isInt({ min: 1 }).withMessage('系统ID必须是正整数'),
   body('testCases').isArray().withMessage('测试用例必须是数组'),
   body('testCases.*.title').notEmpty().withMessage('测试用例标题不能为空'),
   body('testCases.*.preconditions').notEmpty().withMessage('前置条件不能为空'),

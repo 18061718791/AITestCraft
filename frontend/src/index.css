@@ -34,3 +34,51 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* 菜单栏折叠优化样式 */
+.ant-layout-sider {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-inline-collapsed {
+  transition: all 0.3s ease-in-out;
+}
+
+.ant-menu-inline-collapsed .ant-menu-item {
+  padding-left: 0 !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 80px !important;
+  margin: 0 auto !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-item-icon {
+  margin-right: 0 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-title-content {
+  display: none !important;
+}
+
+/* 折叠状态下的标题优化 */
+.ant-layout-sider-collapsed .ant-typography {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .ant-layout-sider {
+    position: fixed !important;
+    height: 100vh;
+    z-index: 1000;
+  }
+  
+  .ant-layout-sider-collapsed {
+    transform: translateX(-100%);
+  }
+}

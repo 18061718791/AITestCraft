@@ -16,8 +16,8 @@ export const config = {
   },
   cors: {
     origin: process.env['NODE_ENV'] === 'production' 
-      ? process.env['FRONTEND_URL'] || 'http://localhost:3000'
-      : ['http://localhost:5173', 'http://localhost:5175', 'http://localhost:3000'],
+      ? (process.env['FRONTEND_URL'] ? [process.env['FRONTEND_URL']] : ['http://120.55.187.125:5175', 'http://localhost:3000', 'http://localhost:5178', 'http://120.55.187.125:5178'])
+      : ['http://localhost:5173', 'http://localhost:5175', 'http://localhost:3000', 'https://*.ngrok.io', 'https://*.ngrok-free.app', 'http://120.55.187.125:5175', 'http://localhost:5178', 'http://120.55.187.125:5178'],
     credentials: true,
   },
   rateLimit: {
@@ -26,10 +26,12 @@ export const config = {
   },
   websocket: {
     cors: {
-      origin: process.env['NODE_ENV'] === 'production'
-        ? process.env['FRONTEND_URL'] || 'http://localhost:3000'
-        : ['http://localhost:5173', 'http://localhost:5175', 'http://localhost:3000'],
+      origin: process.env['NODE_ENV'] === 'production' 
+        ? (process.env['FRONTEND_URL'] ? [process.env['FRONTEND_URL']] : ['http://120.55.187.125:5175', 'http://localhost:3000', 'http://localhost:5178', 'http://120.55.187.125:5178'])
+        : ['http://localhost:5173', 'http://localhost:5175', 'http://localhost:3000', 'https://*.ngrok.io', 'https://*.ngrok-free.app', 'http://120.55.187.125:5175', 'http://localhost:5178', 'http://120.55.187.125:5178'],
       methods: ['GET', 'POST'],
+      credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
     },
   },
 };

@@ -76,19 +76,7 @@ export class DeepSeekService {
     prompt = prompt.replace('{module}', module || '通用模块');
     prompt = prompt.replace('{scenario}', scenario || '通用场景');
     
-    // 打印完整的补充后提示词内容
-    console.log('='.repeat(80));
-    console.log('🔍 测试点生成 - 完整提示词内容');
-    console.log('='.repeat(80));
-    console.log('📋 参数信息:');
-    console.log(`   系统: ${system || '通用系统'}`);
-    console.log(`   模块: ${module || '通用模块'}`);
-    console.log(`   场景: ${scenario || '通用场景'}`);
-    console.log(`   需求长度: ${requirement.length}字符`);
-    console.log('-'.repeat(80));
-    console.log('📝 完整提示词:');
-    console.log(prompt);
-    console.log('='.repeat(80));
+
     
     logger.info('deepseek_service', 'generating_test_points', {
       requirementLength: requirement.length,
@@ -156,23 +144,7 @@ export class DeepSeekService {
       prompt = prompt.replace('{context_info}', '');
     }
     
-    // 打印完整的补充后提示词内容
-    console.log('='.repeat(80));
-    console.log('🔍 测试用例生成 - 完整提示词内容');
-    console.log('='.repeat(80));
-    console.log('📋 参数信息:');
-    console.log(`   系统: ${system || '通用系统'}`);
-    console.log(`   模块: ${module || '通用模块'}`);
-    console.log(`   场景: ${scenario || '通用场景'}`);
-    console.log(`   测试点数量: ${testPoints.length}个`);
-    console.log('📋 测试点列表:');
-    testPoints.forEach((point, index) => {
-      console.log(`   ${index + 1}. ${point}`);
-    });
-    console.log('-'.repeat(80));
-    console.log('📝 完整提示词:');
-    console.log(prompt);
-    console.log('='.repeat(80));
+
     
     logger.info('deepseek_service', 'generating_test_cases', {
       testPointsCount: testPoints.length,

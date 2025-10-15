@@ -23,12 +23,26 @@ export interface ValidationResult {
  */
 export async function readTemplate(templatePath: string): Promise<string> {
   try {
-    // 使用 fetch 读取模板文件
-    const response = await fetch(templatePath);
+    // 从模板路径中提取文件名（如：从 "/prompts/generate_test_points.md" 提取 "generate_test_points.md"）
+    const filename = templatePath.split('/').pop();
+    if (!filename) {
+      throw new Error('无效的模板文件路径');
+    }
+    
+    // 使用 API 接口读取模板文件
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:9000';
+    const response = await fetch(`${apiUrl}/api/prompts/${filename}`);
+    
     if (!response.ok) {
       throw new Error(`无法读取模板文件: ${response.statusText}`);
     }
-    return await response.text();
+    
+    const result = await response.json();
+    if (result.success && result.data && result.data.content) {
+      return result.data.content;
+    } else {
+      throw new Error('API返回数据格式错误');
+    }
   } catch (error) {
     console.error('读取模板文件失败:', error);
     // 返回默认模板作为降级方案
@@ -167,8 +181,13 @@ export async function readTemplateWithCache(templatePath: string): Promise<strin
     return cached;
   }
   
+  // 从路径中提取文件名（处理类似 "/prompts/generate_test_points.md" 的路径）
+  const filename = templatePath.includes('/') 
+    ? templatePath.split('/').pop() || templatePath
+    : templatePath;
+  
   // 读取并缓存
-  const content = await readTemplate(templatePath);
+  const content = await readTemplate(filename);
   TemplateCache.set(templatePath, content);
   
   return content;

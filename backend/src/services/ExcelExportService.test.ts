@@ -89,8 +89,8 @@ describe('ExcelExportService', () => {
             expectedResult: '预期结果1',
             actualResult: '',
             tags: ['标签1'],
-            createdAt: new Date('2024-01-15T10:00:00.000Z'),
-            updatedAt: new Date('2024-01-15T11:00:00.000Z'),
+            createdAt: '2024-01-15 10:00:00',
+            updatedAt: '2024-01-15 11:00:00',
             system: { id: 1, name: '系统1' },
             module: { id: 1, name: '模块1' },
             scenario: { id: 1, name: '场景1' }
@@ -120,8 +120,8 @@ describe('ExcelExportService', () => {
           expectedResult: '',
           actualResult: '',
           tags: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: '2024-01-15 10:00:00',
+          updatedAt: '2024-01-15 10:00:00',
           system: null,
           module: null,
           scenario: null

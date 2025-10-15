@@ -19,8 +19,6 @@ const DirectApiTest: React.FC = () => {
       const url = import.meta.env.VITE_API_URL || 'http://localhost:9000';
       setApiUrl(url);
       
-      console.log('使用API URL:', url);
-      
       const response = await axios.get(`${url}/api/system/systems`, {
         timeout: 5000,
         headers: {
@@ -28,22 +26,13 @@ const DirectApiTest: React.FC = () => {
         }
       });
       
-      console.log('API响应:', response);
-      console.log('响应数据:', response.data);
-      
       if (response.data.success) {
         setSystems(response.data.data || []);
       } else {
         setError('API返回错误: ' + (response.data.error?.message || '未知错误'));
       }
     } catch (error: any) {
-      console.error('API调用失败:', error);
       setError(`API调用失败: ${error.message || '网络错误'}`);
-      
-      if (error.response) {
-        console.error('响应状态:', error.response.status);
-        console.error('响应数据:', error.response.data);
-      }
     } finally {
       setLoading(false);
     }

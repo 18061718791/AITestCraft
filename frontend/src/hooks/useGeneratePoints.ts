@@ -115,7 +115,40 @@ export function useGeneratePoints() {
         }
       }, 30000);
 
-      // 监听测试点生成完成事件
+      // 监听所有事件（调试用）- 在API调用前设置
+      socketService.onAny((eventName, ...args) => {
+        frontendLogger.info(LogCategory.BUSINESS, 'socket_event_received', {
+          eventName: eventName,
+          args: args,
+          currentTaskId: taskIdRef.current,
+          timestamp: new Date().toISOString()
+        });
+        
+        // 如果是测试点相关事件，直接处理
+        if (eventName === 'points-generated' || eventName === 'points_generated' || eventName.includes('point')) {
+          const data = args[0];
+          
+          // 增强事件处理逻辑，兼容多种数据格式
+          if (data && (data.points || data.testPoints || data.result)) {
+            // 处理不同格式的测试点数据
+            const points = data.points || data.testPoints || data.result || [];
+            
+            const testPoints = points.map((point: any, index: number) => ({
+              id: point.id || `point-${index}`,
+              content: point.content || point.title || point.description || point.name || '未命名测试点',
+              selected: false
+            }));
+
+            dispatch({ type: 'SET_TEST_POINTS', payload: testPoints });
+            dispatch({ type: 'SET_LOADING', payload: false });
+            dispatch({ type: 'SET_CURRENT_STEP', payload: 2 });
+            setIsGenerating(false);
+            clearTimeout(timeoutId);
+          }
+        }
+      });
+
+      // 监听测试点生成完成事件 - 在API调用前设置
       socketService.onPointsGenerated((data) => {
         clearTimeout(timeoutId);
         const { taskId, points } = data;
@@ -128,26 +161,19 @@ export function useGeneratePoints() {
           pointsCount: points?.length || 0
         });
 
-        if (taskId === currentTaskId) {
-          frontendLogger.info(LogCategory.BUSINESS, 'points_generated_matched', {
-            taskId: taskId,
-            pointsCount: points.length
-          });
+        const testPoints = points.map((point: any, index: number) => ({
+          id: point.id || `point-${index}`,
+          content: point.content || point.title || point.description || '未命名测试点',
+          selected: false
+        }));
 
-          const testPoints = points.map((point: any, index: number) => ({
-            id: point.id || `point-${index}`,
-            content: point.content || point.title || point.description || '未命名测试点',
-            selected: false
-          }));
-
-          dispatch({ type: 'SET_TEST_POINTS', payload: testPoints });
-          dispatch({ type: 'SET_LOADING', payload: false });
-          dispatch({ type: 'SET_CURRENT_STEP', payload: 2 });
-          setIsGenerating(false);
-        }
+        dispatch({ type: 'SET_TEST_POINTS', payload: testPoints });
+        dispatch({ type: 'SET_LOADING', payload: false });
+        dispatch({ type: 'SET_CURRENT_STEP', payload: 2 });
+        setIsGenerating(false);
       });
 
-      // 监听错误事件
+      // 监听错误事件 - 在API调用前设置
       socketService.onError((data) => {
         const currentTaskId = taskIdRef.current;
         frontendLogger.error(LogCategory.ERROR, 'points_generation_error', new Error(data.message || '未知错误'), {

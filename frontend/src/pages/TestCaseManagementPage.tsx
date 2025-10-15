@@ -323,9 +323,7 @@ export const TestCaseManagementPage: React.FC = () => {
     setLoading(true);
     try {
       let data: TestCase[];
-      let totalCount = 0;
-  
-      console.log('[TestCaseManagement] 开始获取测试用例，过滤条件:', filter);
+      // totalCount is declared but not used - removing to fix TypeScript error
   
       if (filter?.type && filter?.id) {
         // 使用新的层级过滤API
@@ -343,27 +341,19 @@ export const TestCaseManagementPage: React.FC = () => {
             params.scenarioId = filter.id;
             break;
         }
-  
-        console.log('[TestCaseManagement] 调用层级过滤API，参数:', params);
         
         const response = await testCaseService.getTestCasesByHierarchy(params);
         data = response.testCases;
-        totalCount = response.total;
-        
-        console.log(`[TestCaseManagement] 获取到 ${data.length} 条用例，总计 ${totalCount} 条`);
       } else {
         // 显示所有测试用例
-        console.log('[TestCaseManagement] 无过滤条件，获取所有测试用例');
         const response = await testCaseService.getTestCasesByHierarchy({});
         data = response.testCases;
-        totalCount = response.total;
-        console.log(`[TestCaseManagement] 获取到所有 ${data.length} 条用例`);
       }
       
       setTestCases(data);
       setFilteredTestCases(data);
     } catch (error) {
-      console.error('[TestCaseManagement] 获取测试用例失败:', error);
+      console.error('获取测试用例失败:', error);
       message.error('获取测试用例失败');
     } finally {
       setLoading(false);
@@ -379,15 +369,7 @@ export const TestCaseManagementPage: React.FC = () => {
   
   // 更新后的handleTreeSelect方法
   const handleTreeSelect = (node: SelectedNode) => {
-  console.log('[TestCaseManagement] 树形节点选择处理:', {
-  选择类型: node.type,
-  选择ID: node.id,
-  对应TreeKey: getTreeKey(node),
-  处理策略: '更新高亮状态'
-  });
-  
   if (node.type === null) {
-  console.log('[TestCaseManagement] 忽略取消选择操作');
   return;
   }
   
@@ -1322,11 +1304,59 @@ const EnhancedTestCaseList: React.FC<{
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 120,
-      render: (text: string) => (
-        <span style={{ fontSize: '12px', color: '#666' }}>
-          {new Date(text).toLocaleDateString()}
-        </span>
-      ),
+      render: (text: string) => {
+        if (!text || typeof text !== 'string') {
+          return (
+            <span style={{ fontSize: '12px', color: '#666' }}>
+              未知时间
+            </span>
+          );
+        }
+        
+        try {
+          // 后端返回的格式已经是 yyyy-mm-dd hh:mm:ss，直接显示
+          // 如果格式正确，直接返回
+          if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(text)) {
+            return (
+              <span style={{ fontSize: '12px', color: '#666' }}>
+                {text}
+              </span>
+            );
+          }
+          
+          // 如果后端返回的是ISO格式，则转换为 yyyy-mm-dd hh:mm:ss
+          const date = new Date(text);
+          if (isNaN(date.getTime())) {
+            console.warn('日期解析失败:', text);
+            return (
+              <span style={{ fontSize: '12px', color: '#666' }}>
+                未知时间
+              </span>
+            );
+          }
+          
+          // 格式化为 yyyy-mm-dd hh:mm:ss
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          const seconds = String(date.getSeconds()).padStart(2, '0');
+          
+          return (
+            <span style={{ fontSize: '12px', color: '#666' }}>
+              {`${year}-${month}-${day} ${hours}:${minutes}:${seconds}`}
+            </span>
+          );
+        } catch (error) {
+          console.warn('日期解析错误:', error, '文本:', text);
+          return (
+            <span style={{ fontSize: '12px', color: '#666' }}>
+              未知时间
+            </span>
+          );
+        }
+      },
     },
     {
       title: '操作',

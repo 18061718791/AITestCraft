@@ -16,8 +16,8 @@ export interface TestCase {
   system?: systems | null;
   module?: modules | null;
   scenario?: scenarios | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;  // 格式化为 yyyy-mm-dd hh:mm:ss 字符串
+  updatedAt: string;   // 格式化为 yyyy-mm-dd hh:mm:ss 字符串
 }
 
 export interface CreateTestCaseRequest {

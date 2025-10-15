@@ -19,9 +19,30 @@ import { setupSocketHandlers } from './services/notificationService';
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: config.websocket.cors,
+  cors: {
+    origin: config.websocket.cors.origin,
+    methods: ['GET', 'POST'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-session-id']
+  },
   pingTimeout: 60000,
   pingInterval: 25000,
+  connectTimeout: 60000, // 增加连接超时时间
+  upgradeTimeout: 45000, // 增加升级超时时间
+  allowEIO3: true, // 兼容旧版本
+  // 增加握手兼容性
+  allowRequest: (_req, callback) => {
+    // 允许所有请求，但可以在这里添加认证逻辑
+    callback(null, true);
+  },
+  // 增加WebSocket握手稳定性
+  perMessageDeflate: {
+    threshold: 1024, // 只有消息大于1KB时才压缩
+  },
+  // 增加连接限制
+  maxHttpBufferSize: 1e6, // 1MB
+  // 增加传输配置
+  transports: ['websocket', 'polling']
 });
 
 // Middleware
@@ -84,10 +105,11 @@ process.on('SIGINT', () => {
 
 // Start server
 const PORT = config.server.port;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   logger.info(`Server running on port ${PORT}`);
   logger.info(`Environment: ${config.server.nodeEnv}`);
   logger.info(`CORS origin: ${config.cors.origin}`);
+  logger.info(`Server bound to: 0.0.0.0 (all interfaces)`);
 });
 
 export { app, server, io };

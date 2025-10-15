@@ -14,15 +14,8 @@ const ApiFormatTest: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      console.log('直接调用API获取原始响应...');
-      
       // 使用axios直接调用，绕过所有中间层
       const response = await axios.get('http://localhost:9000/api/system/systems');
-      
-      console.log('原始响应对象:', response);
-      console.log('响应数据:', response.data);
-      console.log('响应状态:', response.status);
-      console.log('响应头:', response.headers);
       
       setRawResponse({
         status: response.status,
@@ -32,7 +25,6 @@ const ApiFormatTest: React.FC = () => {
       });
       
     } catch (error: any) {
-      console.error('API调用失败:', error);
       setError(`API调用失败: ${error.message || '未知错误'}`);
     } finally {
       setLoading(false);
@@ -44,13 +36,9 @@ const ApiFormatTest: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      console.log('使用systemApi调用...');
-      
       // 动态导入systemApi
       const { systemApi } = await import('../services/systemApi');
       const data = await systemApi.getSystems();
-      
-      console.log('systemApi返回的数据:', data);
       
       setRawResponse({
         source: 'systemApi',
@@ -58,7 +46,6 @@ const ApiFormatTest: React.FC = () => {
       });
       
     } catch (error: any) {
-      console.error('systemApi调用失败:', error);
       setError(`systemApi调用失败: ${error.message || '未知错误'}`);
     } finally {
       setLoading(false);

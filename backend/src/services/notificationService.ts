@@ -17,15 +17,11 @@ class NotificationService {
   }
 
   private setupSocketHandlers(): void {
-    if (!this.io) return;
+    if (!this.io) {
+      return;
+    }
 
     this.io.on('connection', (socket: Socket) => {
-      logger.info('websocket', 'client_connected', {
-        socketId: socket.id,
-        ip: socket.handshake.address,
-        userAgent: socket.handshake.headers['user-agent']
-      });
-
       socket.on('join-session', (sessionId: string) => {
         if (!sessionId) {
           logger.warn('websocket', 'join_session_failed', {
@@ -36,19 +32,23 @@ class NotificationService {
           return;
         }
 
+        // 确保socket正确加入房间
         socket.join(sessionId);
+        
         this.connectedUsers.set(socket.id, {
           socketId: socket.id,
           sessionId,
           connectedAt: new Date(),
         });
 
+        const roomSize = this.io?.sockets.adapter.rooms.get(sessionId)?.size || 0;
         logger.info('websocket', 'session_joined', {
           socketId: socket.id,
           sessionId,
-          roomSize: this.io?.sockets.adapter.rooms.get(sessionId)?.size || 0
+          roomSize
         });
-        socket.emit('joined-session', { sessionId });
+        
+        socket.emit('joined-session', { sessionId, roomSize });
       });
 
       socket.on('leave-session', (sessionId: string) => {
@@ -84,26 +84,39 @@ class NotificationService {
       return;
     }
 
-    logger.debug('websocket', 'sending_points_notification', {
-      sessionId,
-      event: 'points-generated',
-      taskId: data.taskId,
-      pointsCount: data.points?.length || 0,
-      firstPoint: data.points?.[0],
-      allPoints: data.points
-    });
-
     const rooms = this.io.sockets.adapter.rooms;
-    logger.debug('websocket', 'room_status', {
-      sessionId,
-      roomExists: rooms.has(sessionId),
-      roomSize: rooms.get(sessionId)?.size || 0
+    const roomExists = rooms.has(sessionId);
+    const roomSize = rooms.get(sessionId)?.size || 0;
+    
+    let roomSent = false;
+    let directSent = false;
+    
+    // 1. 首先尝试房间广播
+    if (roomExists && roomSize > 0) {
+      this.io.to(sessionId).emit('points-generated', data);
+      roomSent = true;
+    }
+    
+    // 2. 同时向所有匹配sessionId的socket直接发送
+    const allSockets = this.io.sockets.sockets;
+    allSockets.forEach((socket) => {
+      const socketSessionId = socket.handshake.query['sessionId'];
+      if (socketSessionId === sessionId && socket.connected) {
+        socket.emit('points-generated', data);
+        directSent = true;
+      }
     });
-
-    this.io.to(sessionId).emit('points-generated', data);
+    
+    // 3. 如果以上都失败，尝试使用sessionId作为事件名发送
+    if (!roomSent && !directSent) {
+      this.io.emit(`points-generated-${sessionId}`, data);
+    }
+    
     logger.info('websocket', 'notification_sent', {
       sessionId,
       event: 'points-generated',
+      roomSent,
+      directSent,
       data: {
         taskId: data.taskId,
         pointsCount: data.points?.length || 0
@@ -121,7 +134,23 @@ class NotificationService {
       return;
     }
 
-    this.io.to(sessionId).emit('cases-generated', data);
+    const rooms = this.io.sockets.adapter.rooms;
+    const roomExists = rooms.has(sessionId);
+    const roomSize = rooms.get(sessionId)?.size || 0;
+
+    // 如果房间不存在或为空，尝试广播到所有连接的客户端
+    if (!roomExists || roomSize === 0) {
+      const allSockets = this.io.sockets.sockets;
+      allSockets.forEach((socket) => {
+        const socketSessionId = socket.handshake.query['sessionId'];
+        if (socketSessionId === sessionId) {
+          socket.emit('cases-generated', data);
+        }
+      });
+    } else {
+      this.io.to(sessionId).emit('cases-generated', data);
+    }
+    
     logger.info('websocket', 'notification_sent', {
       sessionId,
       event: 'cases-generated',

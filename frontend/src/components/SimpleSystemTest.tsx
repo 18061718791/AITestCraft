@@ -15,9 +15,7 @@ const SimpleSystemTest: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      console.log('开始加载系统数据...');
       const data = await systemApi.getSystems();
-      console.log('系统数据加载成功:', data);
       
       setSystems(data);
       

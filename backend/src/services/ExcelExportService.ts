@@ -10,8 +10,8 @@ export interface TestCaseWithRelations {
   expectedResult?: string;
   actualResult?: string;
   tags?: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;  // 格式化为 yyyy-mm-dd hh:mm:ss 字符串
+  updatedAt: string;   // 格式化为 yyyy-mm-dd hh:mm:ss 字符串
   system?: {
     id: number;
     name: string;

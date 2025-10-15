@@ -19,8 +19,8 @@ describe('ExcelExportService', () => {
         expectedResult: '用户成功登录，跳转到首页',
         actualResult: '登录成功，跳转到首页',
         tags: ['登录', '功能测试'],
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date('2024-01-02'),
+        createdAt: '2024-01-01 00:00:00',
+        updatedAt: '2024-01-02 00:00:00',
         system: { id: 1, name: '用户管理系统' },
         module: { id: 1, name: '用户认证' },
         scenario: { id: 1, name: '用户登录' }
@@ -35,8 +35,8 @@ describe('ExcelExportService', () => {
         expectedResult: '用户注册成功，收到激活邮件',
         actualResult: '',
         tags: ['注册', '功能测试'],
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date('2024-01-02'),
+        createdAt: '2024-01-01 00:00:00',
+        updatedAt: '2024-01-02 00:00:00',
         system: { id: 1, name: '用户管理系统' },
         module: { id: 2, name: '用户管理' },
         scenario: { id: 2, name: '用户注册' }
@@ -99,8 +99,8 @@ describe('ExcelExportService', () => {
         expectedResult: '预期结果',
         actualResult: '',
         tags: ['标签1', '标签2'],
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: '2024-01-01 00:00:00',
+        updatedAt: '2024-01-01 00:00:00',
         system: { id: 1, name: '测试系统' },
         module: { id: 1, name: '测试模块' },
         scenario: { id: 1, name: '测试场景' }

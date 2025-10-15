@@ -12,10 +12,23 @@ export default defineConfig({
   },
   server: {
     port: 5175,
+    host: '0.0.0.0',
+    strictPort: true,
+    proxy: process.env.NODE_ENV === 'development' ? {
+      '/api': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
+      },
+    } : undefined,
+  },
+  preview: {
+    port: 5175,
+    host: '0.0.0.0',
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:9000',
+        target: 'http://120.55.187.125:9000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
       },

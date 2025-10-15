@@ -12,16 +12,8 @@ const SimpleSystemSelector: React.FC = () => {
   const loadSystems = async () => {
     try {
       setLoading(true);
-      console.log('正在加载系统...');
-      
       const data = await systemApi.getSystems();
-      console.log('系统数据加载成功:', data);
-      
       setSystems(data);
-      
-      if (data.length > 0) {
-        console.log('第一个系统:', data[0]);
-      }
     } catch (error) {
       console.error('加载系统失败:', error);
     } finally {

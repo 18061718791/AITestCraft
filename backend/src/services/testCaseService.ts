@@ -1,5 +1,6 @@
 import { PrismaClient } from '../generated/prisma';
 import { TestCase } from '../types/testCase';
+import DateFormatter from '../utils/dateFormatter';
 
 const prisma = new PrismaClient();
 
@@ -43,8 +44,8 @@ export class TestCaseService {
       system: tc.systems,
       module: tc.modules,
       scenario: tc.scenarios,
-      createdAt: tc.created_at,
-      updatedAt: tc.updated_at,
+      createdAt: DateFormatter.formatDateTimeFromString(tc.created_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
+      updatedAt: DateFormatter.formatDateTimeFromString(tc.updated_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
     }));
   }
 
@@ -79,8 +80,8 @@ export class TestCaseService {
       system: testCase.systems,
       module: testCase.modules,
       scenario: testCase.scenarios,
-      createdAt: testCase.created_at,
-      updatedAt: testCase.updated_at,
+      createdAt: DateFormatter.formatDateTimeFromString(testCase.created_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
+      updatedAt: DateFormatter.formatDateTimeFromString(testCase.updated_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
     };
   }
 
@@ -129,8 +130,8 @@ export class TestCaseService {
       system: testCase.system,
       module: testCase.module,
       scenario: testCase.scenario,
-      createdAt: testCase.createdAt,
-      updatedAt: testCase.updatedAt,
+      createdAt: DateFormatter.formatDateTimeFromString(testCase.created_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
+      updatedAt: DateFormatter.formatDateTimeFromString(testCase.updated_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
     };
   }
 
@@ -176,8 +177,8 @@ export class TestCaseService {
       system: testCase.system,
       module: testCase.module,
       scenario: testCase.scenario,
-      createdAt: testCase.createdAt,
-      updatedAt: testCase.updatedAt,
+      createdAt: DateFormatter.formatDateTimeFromString(testCase.created_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
+      updatedAt: DateFormatter.formatDateTimeFromString(testCase.updated_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
     };
   }
 
@@ -224,8 +225,8 @@ export class TestCaseService {
       system: tc.systems,
       module: tc.modules,
       scenario: tc.scenarios,
-      createdAt: tc.created_at,
-      updatedAt: tc.updated_at,
+      createdAt: DateFormatter.formatDateTimeFromString(tc.created_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
+      updatedAt: DateFormatter.formatDateTimeFromString(tc.updated_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
     }));
   }
 
@@ -396,8 +397,8 @@ export class TestCaseService {
       system: tc.system,
       module: tc.module,
       scenario: tc.scenario,
-      createdAt: tc.createdAt,
-      updatedAt: tc.updatedAt,
+      createdAt: DateFormatter.formatDateTimeFromString(tc.created_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
+      updatedAt: DateFormatter.formatDateTimeFromString(tc.updated_at),  // 格式化为 yyyy-mm-dd hh:mm:ss
     }));
 
     return {

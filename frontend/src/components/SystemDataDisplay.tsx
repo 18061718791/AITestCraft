@@ -25,9 +25,7 @@ const SystemDataDisplay: React.FC = () => {
       setLoading(prev => ({ ...prev, systems: true }));
       setError(null);
       
-      console.log('正在加载系统数据...');
       const data = await systemApi.getSystems();
-      console.log('系统数据:', data);
       
       setSystems(data);
       
@@ -46,9 +44,7 @@ const SystemDataDisplay: React.FC = () => {
     try {
       setLoading(prev => ({ ...prev, modules: true }));
       
-      console.log(`正在加载系统 ${systemId} 的模块...`);
       const data = await systemApi.getModules(systemId);
-      console.log('模块数据:', data);
       
       setModules(data);
     } catch (error: any) {
@@ -63,9 +59,7 @@ const SystemDataDisplay: React.FC = () => {
     try {
       setLoading(prev => ({ ...prev, scenarios: true }));
       
-      console.log(`正在加载模块 ${moduleId} 的场景...`);
       const data = await systemApi.getScenarios(moduleId);
-      console.log('场景数据:', data);
       
       setScenarios(data);
     } catch (error: any) {

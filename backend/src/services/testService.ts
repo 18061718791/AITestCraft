@@ -103,6 +103,7 @@ class TestService {
       });
 
       this.updateTaskStatus(taskId, 'completed', { testPoints });
+      
       notificationService.notifyPointsGenerated(sessionId, {
         taskId,
         points: testPoints,

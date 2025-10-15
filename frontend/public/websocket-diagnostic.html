@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket连接诊断</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .log {
+            background: #f8f8f8;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 WebSocket连接诊断工具</h1>
+        <p>此工具将帮助诊断WebSocket连接问题</p>
+        
+        <div>
+            <button onclick="runAllTests()">运行所有测试</button>
+            <button onclick="testBasicConnectivity()">测试基础连接</button>
+            <button onclick="testWebSocket()">测试WebSocket</button>
+            <button onclick="testSocketIO()">测试Socket.IO</button>
+            <button onclick="clearLogs()">清除日志</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log ${type}`;
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            resultsDiv.appendChild(logEntry);
+            
+            // 滚动到最新日志
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+        
+        function addResult(title, content, type = 'info') {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'test-result';
+            resultDiv.innerHTML = `
+                <h4 class="${type}">${title}</h4>
+                <div>${content}</div>
+            `;
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        function clearLogs() {
+            resultsDiv.innerHTML = '';
+        }
+        
+        async function testBasicConnectivity() {
+            log('开始测试基础网络连接...', 'info');
+            
+            try {
+                // 测试HTTP连接
+                const response = await fetch('http://120.55.187.125:9000/socket.io/?EIO=4&transport=polling');
+                
+                addResult(
+                    'HTTP连接测试',
+                    `状态码: ${response.status}<br>
+                     响应头: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}`,
+                    response.ok ? 'success' : 'error'
+                );
+                
+                if (response.ok) {
+                    const data = await response.text();
+                    log('HTTP连接成功，响应数据: ' + data.substring(0, 100) + '...', 'success');
+                }
+                
+            } catch (error) {
+                addResult('HTTP连接测试', `错误: ${error.message}`, 'error');
+                log('HTTP连接失败: ' + error.message, 'error');
+            }
+        }
+        
+        function testWebSocket() {
+            log('开始测试原生WebSocket连接...', 'info');
+            
+            try {
+                const ws = new WebSocket('ws://120.55.187.125:9000');
+                
+                ws.onopen = () => {
+                    addResult('原生WebSocket测试', '连接成功建立', 'success');
+                    log('原生WebSocket连接成功', 'success');
+                    ws.close();
+                };
+                
+                ws.onerror = (error) => {
+                    addResult('原生WebSocket测试', `连接错误: ${error.type}`, 'error');
+                    log('原生WebSocket连接错误: ' + error.type, 'error');
+                };
+                
+                ws.onclose = (event) => {
+                    addResult('原生WebSocket测试', 
+                        `连接关闭 - 代码: ${event.code}, 原因: ${event.reason}`, 
+                        'warning'
+                    );
+                    log(`WebSocket连接关闭 - 代码: ${event.code}`, 'warning');
+                };
+                
+            } catch (error) {
+                addResult('原生WebSocket测试', `创建错误: ${error.message}`, 'error');
+                log('创建WebSocket时异常: ' + error.message, 'error');
+            }
+        }
+        
+        function testSocketIO() {
+            log('开始测试Socket.IO连接...', 'info');
+            
+            try {
+                const socket = io('http://120.55.187.125:9000', {
+                    transports: ['websocket', 'polling'],
+                    timeout: 10000,
+                    reconnection: false,
+                    withCredentials: true,
+                    forceNew: true
+                });
+                
+                socket.on('connect', () => {
+                    addResult('Socket.IO测试', 
+                        `连接成功 - ID: ${socket.id}`, 
+                        'success'
+                    );
+                    log('Socket.IO连接成功，ID: ' + socket.id, 'success');
+                    socket.disconnect();
+                });
+                
+                socket.on('connect_error', (error) => {
+                    addResult('Socket.IO测试', 
+                        `连接错误: ${error.message}<br>
+                         错误类型: ${error.type || 'unknown'}<br>
+                         传输方式: ${error.transport || 'unknown'}`, 
+                        'error'
+                    );
+                    log('Socket.IO连接错误: ' + error.message, 'error');
+                });
+                
+                socket.on('error', (error) => {
+                    addResult('Socket.IO测试', `错误: ${error.message || error}`, 'error');
+                    log('Socket.IO错误: ' + (error.message || error), 'error');
+                });
+                
+                socket.on('disconnect', (reason) => {
+                    addResult('Socket.IO测试', `断开连接原因: ${reason}`, 'warning');
+                    log('Socket.IO断开连接: ' + reason, 'warning');
+                });
+                
+                // 10秒后强制断开
+                setTimeout(() => {
+                    if (socket.connected) {
+                        socket.disconnect();
+                    }
+                }, 10000);
+                
+            } catch (error) {
+                addResult('Socket.IO测试', `创建错误: ${error.message}`, 'error');
+                log('创建Socket.IO时异常: ' + error.message, 'error');
+            }
+        }
+        
+        async function runAllTests() {
+            clearLogs();
+            log('开始运行所有诊断测试...', 'info');
+            
+            // 显示浏览器信息
+            addResult('浏览器信息', 
+                `用户代理: ${navigator.userAgent}<br>
+                 语言: ${navigator.language}<br>
+                 在线状态: ${navigator.onLine ? '在线' : '离线'}<br>
+                 协议: ${window.location.protocol}<br>
+                 主机: ${window.location.host}`, 
+                'info'
+            );
+            
+            // 按顺序运行测试
+            await testBasicConnectivity();
+            setTimeout(() => testWebSocket(), 1000);
+            setTimeout(() => testSocketIO(), 2000);
+            
+            setTimeout(() => {
+                log('所有测试完成', 'info');
+            }, 12000);
+        }
+        
+        // 页面加载时自动运行基础测试
+        window.addEventListener('load', () => {
+            log('WebSocket诊断工具已加载', 'info');
+            log('点击"运行所有测试"开始诊断', 'info');
+        });
+    </script>
+</body>
+</html>

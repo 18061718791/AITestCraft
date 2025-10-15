@@ -406,6 +406,9 @@ const SystemManagement: React.FC = () => {
   };
 
   const convertToTreeData = (nodes: TreeNode[]): TreeDataNode[] => {
+    if (!nodes || !Array.isArray(nodes)) {
+      return [];
+    }
     return nodes.map(node => ({
       ...node,
       title: renderTitle(node),

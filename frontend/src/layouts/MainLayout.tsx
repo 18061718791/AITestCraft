@@ -47,7 +47,7 @@ export const MainLayout: React.FC = () => {
     {
       key: '/system',
       icon: <SettingOutlined />,
-      label: '系统管理',
+      label: '项目管理',
       onClick: () => navigate('/system'),
     },
   ];

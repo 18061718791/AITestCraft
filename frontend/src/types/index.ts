@@ -94,7 +94,7 @@ export interface ErrorEvent extends WebSocketEvent {
   };
 }
 
-// 系统管理相关类型
+// 项目管理相关类型
 export interface System {
   id: number;
   name: string;

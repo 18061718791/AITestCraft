@@ -21,7 +21,7 @@ export interface SystemTreeData {
 
 export class SystemService {
   /**
-   * 获取系统管理的完整树形层级数据
+   * 获取项目管理的完整树形层级数据
    * @returns Promise<SystemTreeData> 系统-模块-场景的完整层级数据
    */
   async getSystemHierarchy(): Promise<SystemTreeData> {
@@ -60,14 +60,14 @@ export class SystemService {
         }))
       };
     } catch (error) {
-      console.error('获取系统层级数据失败:', error);
-      throw new Error('无法获取系统管理数据，请检查系统配置');
+      console.error('获取项目层级数据失败:', error);
+      throw new Error('无法获取项目管理数据，请检查系统配置');
     }
   }
 
   /**
-   * 获取系统名称列表（用于Excel下拉）
-   * @returns Promise<string[]> 系统名称数组
+   * 获取项目名称列表（用于Excel下拉）
+   * @returns Promise<string[]> 项目名称数组
    */
   async getSystemNames(): Promise<string[]> {
     try {

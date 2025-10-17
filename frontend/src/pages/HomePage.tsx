@@ -148,10 +148,10 @@ const HomePage: React.FC = () => {
                 >
                   <SettingOutlined style={{ fontSize: 48, color: '#faad14', marginBottom: 24 }} />
                   <Title level={3} style={{ marginBottom: 16 }}>
-                    系统管理
+                    项目管理
                   </Title>
                   <Paragraph type="secondary" style={{ marginBottom: 24 }}>
-                    管理系统结构、测试场景和配置，构建完整的测试知识体系
+                    管理项目结构、测试场景和配置，构建完整的测试知识体系
                   </Paragraph>
                   <Button type="primary" ghost>
                     进入管理

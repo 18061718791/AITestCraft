@@ -448,14 +448,14 @@ const SystemManagement: React.FC = () => {
     <div style={{ height: '100%', display: 'flex', gap: 16 }}>
       <div style={{ flex: 1, minWidth: 300 }}>
         <Card
-          title="系统管理"
+          title="项目管理"
           extra={
             <Button
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => handleAdd('system')}
             >
-              新增系统
+              新增项目
             </Button>
           }
           style={{ height: '100%' }}

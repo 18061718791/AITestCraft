@@ -1,0 +1,25 @@
+- generic [ref=e11]:
+  - generic [ref=e16]: SYSTEM STANDBY
+  - generic [ref=e17]:
+    - generic [ref=e19]:
+      - heading "AITestCraft" [level=1] [ref=e20]
+      - paragraph [ref=e21]: AUTOMATION TEST PLATFORM
+    - generic [ref=e22]:
+      - tablist [ref=e23]:
+        - generic [ref=e25]:
+          - tab "登录" [selected] [ref=e27] [cursor=pointer]
+          - tab "注册" [ref=e29] [cursor=pointer]
+      - tabpanel "登录" [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e39]:
+            - img "user" [ref=e41]:
+              - img [ref=e42]
+            - textbox "用户名或邮箱" [ref=e44]
+          - generic [ref=e50]:
+            - img "lock" [ref=e52]:
+              - img [ref=e53]
+            - textbox "密码" [ref=e55]
+            - img "eye-invisible" [ref=e57] [cursor=pointer]:
+              - img [ref=e58]
+          - button "登 录" [ref=e66] [cursor=pointer]:
+            - generic [ref=e67]: 登 录

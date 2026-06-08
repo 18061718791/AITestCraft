@@ -1,0 +1,442 @@
+- generic [ref=e12]:
+  - generic [ref=e14]:
+    - generic [ref=e18] [cursor=pointer]: 功能菜单
+    - generic:
+      - generic:
+        - heading "用例管理" [level=5]
+        - button "pushpin":
+          - generic:
+            - img "pushpin":
+              - img
+      - generic:
+        - menu:
+          - menuitem "rocket 用例助手":
+            - img "rocket":
+              - img
+            - generic: 用例助手
+          - menuitem "unordered-list 用例列表":
+            - img "unordered-list":
+              - img
+            - generic: 用例列表
+          - menuitem "file-text 提示词管理":
+            - img "file-text":
+              - img
+            - generic: 提示词管理
+          - menuitem "appstore 平台管理":
+            - img "appstore":
+              - img
+            - generic: 平台管理
+  - main [ref=e19]:
+    - generic [ref=e22]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - generic [ref=e26]: ◤
+          - generic [ref=e28]: ◥
+        - generic [ref=e29]:
+          - generic [ref=e30]: AITestCraft 自动化测试平台
+          - generic [ref=e31]: AUTOMATED TESTING PLATFORM
+      - generic [ref=e32]:
+        - generic [ref=e33] [cursor=pointer]:
+          - img "bell" [ref=e34]:
+            - img [ref=e35]
+          - generic [ref=e37]: 我的待办
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]: system
+            - generic [ref=e41]: 用例管理
+          - generic [ref=e43]:
+            - generic [ref=e44]: module
+            - generic [ref=e45]: 用例管理
+        - generic [ref=e46] [cursor=pointer]:
+          - img "user" [ref=e49]:
+            - img [ref=e50]
+          - generic [ref=e52]: testuser
+    - generic [ref=e57]:
+      - complementary [ref=e58]:
+        - generic [ref=e59]:
+          - heading "系统列表" [level=4] [ref=e61]
+          - generic [ref=e63]:
+            - img "暂无数据" [ref=e65]
+            - generic [ref=e71]: 暂无系统数据
+      - main [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e78] [cursor=pointer]:
+            - generic [ref=e79]: 总用例
+            - generic [ref=e80]:
+              - img "database" [ref=e83]:
+                - img [ref=e84]
+              - generic [ref=e86]: "20"
+          - generic [ref=e90] [cursor=pointer]:
+            - generic [ref=e91]: 待测试
+            - generic [ref=e92]:
+              - img "clock-circle" [ref=e95]:
+                - img [ref=e96]
+              - generic [ref=e99]: "20"
+          - generic [ref=e103] [cursor=pointer]:
+            - generic [ref=e104]: 通过
+            - generic [ref=e105]:
+              - img "check-circle" [ref=e108]:
+                - img [ref=e109]
+              - generic [ref=e112]: "0"
+          - generic [ref=e116] [cursor=pointer]:
+            - generic [ref=e117]: 失败
+            - generic [ref=e118]:
+              - img "exclamation-circle" [ref=e121]:
+                - img [ref=e122]
+              - generic [ref=e125]: "0"
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - button "upload 用例导入" [ref=e129] [cursor=pointer]:
+              - img "upload" [ref=e131]:
+                - img [ref=e132]
+              - generic [ref=e134]: 用例导入
+            - button "download 模板下载" [ref=e136] [cursor=pointer]:
+              - img "download" [ref=e138]:
+                - img [ref=e139]
+              - generic [ref=e141]: 模板下载
+          - generic [ref=e144]:
+            - generic [ref=e146]:
+              - img "search" [ref=e148]:
+                - img [ref=e149]
+              - textbox "搜索标题、条件、步骤或结果..." [ref=e151]
+            - generic [ref=e154]:
+              - img "tag" [ref=e156]:
+                - img [ref=e157]
+              - textbox "搜索标签..." [ref=e159]
+            - generic [ref=e162] [cursor=pointer]:
+              - generic [ref=e164]:
+                - combobox [ref=e168]
+                - generic: 状态筛选
+              - generic:
+                - img:
+                  - img
+            - button "plus 新建测试用例" [ref=e171] [cursor=pointer]:
+              - img "plus" [ref=e173]:
+                - img [ref=e174]
+              - generic [ref=e177]: 新建测试用例
+          - generic [ref=e182]:
+            - table [ref=e186]:
+              - rowgroup [ref=e196]:
+                - row "Select all 序号 标题 状态 优先级 标签 创建时间 操作" [ref=e197]:
+                  - columnheader "Select all" [ref=e198]:
+                    - checkbox "Select all" [ref=e202] [cursor=pointer]
+                  - columnheader "序号" [ref=e204]
+                  - columnheader "标题" [ref=e205]
+                  - columnheader "状态" [ref=e206]
+                  - columnheader "优先级" [ref=e207]
+                  - columnheader "标签" [ref=e208]
+                  - columnheader "创建时间" [ref=e209]
+                  - columnheader "操作" [ref=e210]
+              - rowgroup [ref=e211]:
+                - checkbox [ref=e215] [cursor=pointer]
+                - row "1 在平板端（768px宽度）访问登录页，验证右侧卡片居中，左侧插图自适应缩放 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e217] [cursor=pointer]:
+                  - cell [ref=e218]:
+                    - checkbox [ref=e221]
+                  - cell "1" [ref=e223]
+                  - cell "在平板端（768px宽度）访问登录页，验证右侧卡片居中，左侧插图自适应缩放" [ref=e224]
+                  - cell "待测试" [ref=e225]:
+                    - generic [ref=e226]: 待测试
+                  - cell "check-circle" [ref=e227]:
+                    - img "check-circle" [ref=e229]:
+                      - img [ref=e230]
+                  - cell "-" [ref=e233]
+                  - cell "2026-05-14 16:28:03" [ref=e234]
+                  - cell "eye edit delete" [ref=e235]:
+                    - generic [ref=e236]:
+                      - button "eye" [ref=e238]:
+                        - img "eye" [ref=e240]:
+                          - img [ref=e241]
+                      - button "edit" [ref=e244]:
+                        - img "edit" [ref=e246]:
+                          - img [ref=e247]
+                      - button "delete" [ref=e250]:
+                        - img "delete" [ref=e252]:
+                          - img [ref=e253]
+                - row "2 在桌面端（1920px宽度）访问登录页，验证右侧卡片居中，左侧插图正常显示 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e255] [cursor=pointer]:
+                  - cell [ref=e256]:
+                    - checkbox [ref=e259]
+                  - cell "2" [ref=e261]
+                  - cell "在桌面端（1920px宽度）访问登录页，验证右侧卡片居中，左侧插图正常显示" [ref=e262]
+                  - cell "待测试" [ref=e263]:
+                    - generic [ref=e264]: 待测试
+                  - cell "check-circle" [ref=e265]:
+                    - img "check-circle" [ref=e267]:
+                      - img [ref=e268]
+                  - cell "-" [ref=e271]
+                  - cell "2026-05-14 16:28:03" [ref=e272]
+                  - cell "eye edit delete" [ref=e273]:
+                    - generic [ref=e274]:
+                      - button "eye" [ref=e276]:
+                        - img "eye" [ref=e278]:
+                          - img [ref=e279]
+                      - button "edit" [ref=e282]:
+                        - img "edit" [ref=e284]:
+                          - img [ref=e285]
+                      - button "delete" [ref=e288]:
+                        - img "delete" [ref=e290]:
+                          - img [ref=e291]
+                - row "3 在移动端（375px宽度）访问登录页，验证右侧卡片居中，左侧插图自适应隐藏 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e293] [cursor=pointer]:
+                  - cell [ref=e294]:
+                    - checkbox [ref=e297]
+                  - cell "3" [ref=e299]
+                  - cell "在移动端（375px宽度）访问登录页，验证右侧卡片居中，左侧插图自适应隐藏" [ref=e300]
+                  - cell "待测试" [ref=e301]:
+                    - generic [ref=e302]: 待测试
+                  - cell "check-circle" [ref=e303]:
+                    - img "check-circle" [ref=e305]:
+                      - img [ref=e306]
+                  - cell "-" [ref=e309]
+                  - cell "2026-05-14 16:28:03" [ref=e310]
+                  - cell "eye edit delete" [ref=e311]:
+                    - generic [ref=e312]:
+                      - button "eye" [ref=e314]:
+                        - img "eye" [ref=e316]:
+                          - img [ref=e317]
+                      - button "edit" [ref=e320]:
+                        - img "edit" [ref=e322]:
+                          - img [ref=e323]
+                      - button "delete" [ref=e326]:
+                        - img "delete" [ref=e328]:
+                          - img [ref=e329]
+                - row "4 使用已过期账户登录，系统给出对应状态提示 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e331] [cursor=pointer]:
+                  - cell [ref=e332]:
+                    - checkbox [ref=e335]
+                  - cell "4" [ref=e337]
+                  - cell "使用已过期账户登录，系统给出对应状态提示" [ref=e338]
+                  - cell "待测试" [ref=e339]:
+                    - generic [ref=e340]: 待测试
+                  - cell "check-circle" [ref=e341]:
+                    - img "check-circle" [ref=e343]:
+                      - img [ref=e344]
+                  - cell "-" [ref=e347]
+                  - cell "2026-05-14 16:28:03" [ref=e348]
+                  - cell "eye edit delete" [ref=e349]:
+                    - generic [ref=e350]:
+                      - button "eye" [ref=e352]:
+                        - img "eye" [ref=e354]:
+                          - img [ref=e355]
+                      - button "edit" [ref=e358]:
+                        - img "edit" [ref=e360]:
+                          - img [ref=e361]
+                      - button "delete" [ref=e364]:
+                        - img "delete" [ref=e366]:
+                          - img [ref=e367]
+                - row "5 使用已禁用账户登录，系统给出对应状态提示 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e369] [cursor=pointer]:
+                  - cell [ref=e370]:
+                    - checkbox [ref=e373]
+                  - cell "5" [ref=e375]
+                  - cell "使用已禁用账户登录，系统给出对应状态提示" [ref=e376]
+                  - cell "待测试" [ref=e377]:
+                    - generic [ref=e378]: 待测试
+                  - cell "check-circle" [ref=e379]:
+                    - img "check-circle" [ref=e381]:
+                      - img [ref=e382]
+                  - cell "-" [ref=e385]
+                  - cell "2026-05-14 16:28:03" [ref=e386]
+                  - cell "eye edit delete" [ref=e387]:
+                    - generic [ref=e388]:
+                      - button "eye" [ref=e390]:
+                        - img "eye" [ref=e392]:
+                          - img [ref=e393]
+                      - button "edit" [ref=e396]:
+                        - img "edit" [ref=e398]:
+                          - img [ref=e399]
+                      - button "delete" [ref=e402]:
+                        - img "delete" [ref=e404]:
+                          - img [ref=e405]
+                - row "6 断网状态下点击登录，系统提示网络连接失败 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e407] [cursor=pointer]:
+                  - cell [ref=e408]:
+                    - checkbox [ref=e411]
+                  - cell "6" [ref=e413]
+                  - cell "断网状态下点击登录，系统提示网络连接失败" [ref=e414]
+                  - cell "待测试" [ref=e415]:
+                    - generic [ref=e416]: 待测试
+                  - cell "check-circle" [ref=e417]:
+                    - img "check-circle" [ref=e419]:
+                      - img [ref=e420]
+                  - cell "-" [ref=e423]
+                  - cell "2026-05-14 16:28:03" [ref=e424]
+                  - cell "eye edit delete" [ref=e425]:
+                    - generic [ref=e426]:
+                      - button "eye" [ref=e428]:
+                        - img "eye" [ref=e430]:
+                          - img [ref=e431]
+                      - button "edit" [ref=e434]:
+                        - img "edit" [ref=e436]:
+                          - img [ref=e437]
+                      - button "delete" [ref=e440]:
+                        - img "delete" [ref=e442]:
+                          - img [ref=e443]
+                - row "7 快速多次点击登录按钮，验证仅发送一次有效请求 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e445] [cursor=pointer]:
+                  - cell [ref=e446]:
+                    - checkbox [ref=e449]
+                  - cell "7" [ref=e451]
+                  - cell "快速多次点击登录按钮，验证仅发送一次有效请求" [ref=e452]
+                  - cell "待测试" [ref=e453]:
+                    - generic [ref=e454]: 待测试
+                  - cell "check-circle" [ref=e455]:
+                    - img "check-circle" [ref=e457]:
+                      - img [ref=e458]
+                  - cell "-" [ref=e461]
+                  - cell "2026-05-14 16:28:03" [ref=e462]
+                  - cell "eye edit delete" [ref=e463]:
+                    - generic [ref=e464]:
+                      - button "eye" [ref=e466]:
+                        - img "eye" [ref=e468]:
+                          - img [ref=e469]
+                      - button "edit" [ref=e472]:
+                        - img "edit" [ref=e474]:
+                          - img [ref=e475]
+                      - button "delete" [ref=e478]:
+                        - img "delete" [ref=e480]:
+                          - img [ref=e481]
+                - row "8 密码明文显示状态下点击登录，系统正确捕获密码并成功登录 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e483] [cursor=pointer]:
+                  - cell [ref=e484]:
+                    - checkbox [ref=e487]
+                  - cell "8" [ref=e489]
+                  - cell "密码明文显示状态下点击登录，系统正确捕获密码并成功登录" [ref=e490]
+                  - cell "待测试" [ref=e491]:
+                    - generic [ref=e492]: 待测试
+                  - cell "check-circle" [ref=e493]:
+                    - img "check-circle" [ref=e495]:
+                      - img [ref=e496]
+                  - cell "-" [ref=e499]
+                  - cell "2026-05-14 16:28:03" [ref=e500]
+                  - cell "eye edit delete" [ref=e501]:
+                    - generic [ref=e502]:
+                      - button "eye" [ref=e504]:
+                        - img "eye" [ref=e506]:
+                          - img [ref=e507]
+                      - button "edit" [ref=e510]:
+                        - img "edit" [ref=e512]:
+                          - img [ref=e513]
+                      - button "delete" [ref=e516]:
+                        - img "delete" [ref=e518]:
+                          - img [ref=e519]
+                - row "9 服务端返回500错误时，系统显示友好错误提示而非白屏 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e521] [cursor=pointer]:
+                  - cell [ref=e522]:
+                    - checkbox [ref=e525]
+                  - cell "9" [ref=e527]
+                  - cell "服务端返回500错误时，系统显示友好错误提示而非白屏" [ref=e528]
+                  - cell "待测试" [ref=e529]:
+                    - generic [ref=e530]: 待测试
+                  - cell "check-circle" [ref=e531]:
+                    - img "check-circle" [ref=e533]:
+                      - img [ref=e534]
+                  - cell "-" [ref=e537]
+                  - cell "2026-05-14 16:28:03" [ref=e538]
+                  - cell "eye edit delete" [ref=e539]:
+                    - generic [ref=e540]:
+                      - button "eye" [ref=e542]:
+                        - img "eye" [ref=e544]:
+                          - img [ref=e545]
+                      - button "edit" [ref=e548]:
+                        - img "edit" [ref=e550]:
+                          - img [ref=e551]
+                      - button "delete" [ref=e554]:
+                        - img "delete" [ref=e556]:
+                          - img [ref=e557]
+                - row "10 再次点击眼睛图标，密码从明文切换回掩码显示 待测试 check-circle - 2026-05-14 16:28:03 eye edit delete" [ref=e559] [cursor=pointer]:
+                  - cell [ref=e560]:
+                    - checkbox [ref=e563]
+                  - cell "10" [ref=e565]
+                  - cell "再次点击眼睛图标，密码从明文切换回掩码显示" [ref=e566]
+                  - cell "待测试" [ref=e567]:
+                    - generic [ref=e568]: 待测试
+                  - cell "check-circle" [ref=e569]:
+                    - img "check-circle" [ref=e571]:
+                      - img [ref=e572]
+                  - cell "-" [ref=e575]
+                  - cell "2026-05-14 16:28:03" [ref=e576]
+                  - cell "eye edit delete" [ref=e577]:
+                    - generic [ref=e578]:
+                      - button "eye" [ref=e580]:
+                        - img "eye" [ref=e582]:
+                          - img [ref=e583]
+                      - button "edit" [ref=e586]:
+                        - img "edit" [ref=e588]:
+                          - img [ref=e589]
+                      - button "delete" [ref=e592]:
+                        - img "delete" [ref=e594]:
+                          - img [ref=e595]
+            - list [ref=e597]:
+              - listitem [ref=e598]: 第 1-10 条/共 20 条
+              - listitem "上一页" [ref=e599]:
+                - button "left" [disabled] [ref=e600]:
+                  - img "left" [ref=e601]:
+                    - img [ref=e602]
+              - listitem "1" [ref=e604] [cursor=pointer]:
+                - generic [ref=e605]: "1"
+              - listitem "2" [ref=e606] [cursor=pointer]:
+                - generic [ref=e607]: "2"
+              - listitem "下一页" [ref=e608] [cursor=pointer]:
+                - button "right" [ref=e609]:
+                  - img "right" [ref=e610]:
+                    - img [ref=e611]
+              - listitem [ref=e613]:
+                - generic "页码" [ref=e614] [cursor=pointer]:
+                  - generic [ref=e616]:
+                    - combobox "页码" [ref=e618]
+                    - generic "10 条/页" [ref=e619]
+                  - generic:
+                    - img:
+                      - img
+                - generic [ref=e620]:
+                  - text: 跳至
+                  - textbox "页" [ref=e621]
+                  - text: 页
+  - generic [ref=e623]:
+    - generic [ref=e627] [cursor=pointer]: 快速导航
+    - generic:
+      - generic:
+        - generic:
+          - heading "快速导航" [level=5]
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img "appstore":
+                      - img
+          - button "pushpin":
+            - generic:
+              - img "pushpin":
+                - img
+      - generic:
+        - generic:
+          - generic:
+            - img "home":
+              - img
+          - generic: 首页
+        - generic:
+          - generic:
+            - img "unordered-list":
+              - img
+          - generic: 用例管理
+        - generic:
+          - generic:
+            - img "bug":
+              - img
+          - generic: 缺陷管理
+        - generic:
+          - generic:
+            - img "appstore":
+              - img
+          - generic: 应用管理
+        - generic:
+          - generic:
+            - img "setting":
+              - img
+          - generic: 系统管理
+      - generic:
+        - generic:
+          - generic:
+            - img "moon":
+              - img
+            - img "sun":
+              - img
+            - generic:
+              - img "sun":
+                - img
+  - generic [ref=e631] [cursor=pointer]: 任务窗口(1)

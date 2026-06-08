@@ -1,0 +1,549 @@
+/**
+ * 部署任务通知弹窗样式
+ * 科技感设计风格，支持暗色/亮色主题
+ */
+
+/* ==================== 基础样式 ==================== */
+
+.deployment-notification-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.deployment-notification-toast.closing {
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* ==================== 浅色主题样式 ==================== */
+
+.deployment-notification-toast.light .deployment-notification-card {
+  width: 300px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.deployment-notification-toast.light .deployment-notification-card .ant-card-body {
+  padding: 0;
+}
+
+.deployment-notification-toast.light .notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-bottom: 1px solid #bae6fd;
+}
+
+.deployment-notification-toast.light .header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.deployment-notification-toast.light .icon-wrapper {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  border-radius: 8px;
+}
+
+.deployment-notification-toast.light .rocket-icon {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.deployment-notification-toast.light .header-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deployment-notification-toast.light .title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.deployment-notification-toast.light .task-count-badge {
+  margin-left: 4px;
+}
+
+.deployment-notification-toast.light .close-btn {
+  padding: 4px;
+  width: auto;
+  height: auto;
+  color: #64748b;
+}
+
+.deployment-notification-toast.light .notification-body {
+  padding: 16px 18px;
+}
+
+.deployment-notification-toast.light .info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.deployment-notification-toast.light .row-icon {
+  font-size: 13px;
+  color: #64748b;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.light .label {
+  color: #64748b;
+  font-size: 12px;
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.light .value {
+  color: #1e293b;
+  font-weight: 500;
+  flex: 1;
+  word-break: break-all;
+  margin-left: 8px;
+}
+
+.deployment-notification-toast.light .info-row .ant-tag {
+  margin-left: 8px;
+}
+
+.deployment-notification-toast.light .apps-section {
+  margin: 14px 0;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.deployment-notification-toast.light .section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.deployment-notification-toast.light .section-icon {
+  font-size: 12px;
+  color: #0ea5e9;
+}
+
+.deployment-notification-toast.light .apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deployment-notification-toast.light .app-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+}
+
+.deployment-notification-toast.light .app-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.deployment-notification-toast.light .app-icon {
+  font-size: 12px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.light .app-name {
+  color: #0f172a;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.deployment-notification-toast.light .commit-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  max-width: 45%;
+}
+
+.deployment-notification-toast.light .commit-icon {
+  font-size: 11px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.light .commit-text {
+  color: #64748b;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deployment-notification-toast.light .more-apps {
+  text-align: center;
+  font-size: 11px;
+  color: #94a3b8;
+  padding: 4px 0;
+}
+
+.deployment-notification-toast.light .countdown-hint {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.deployment-notification-toast.light .countdown-bar {
+  height: 2px;
+  background: #e2e8f0;
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.deployment-notification-toast.light .countdown-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #1890ff, #69c0ff);
+  animation: countdown linear forwards;
+}
+
+@keyframes countdown {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+.deployment-notification-toast.light .countdown-text {
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+  display: block;
+}
+
+.deployment-notification-toast.light .notification-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 18px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.deployment-notification-toast.light .view-btn {
+  font-size: 12px;
+  padding: 4px 14px;
+  height: 28px;
+}
+
+/* ==================== 暗色主题样式 ==================== */
+
+.deployment-notification-toast.dark .deployment-notification-card {
+  width: 300px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+.deployment-notification-toast.dark .deployment-notification-card .ant-card-body {
+  padding: 0;
+}
+
+.deployment-notification-toast.dark .notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: rgba(0, 212, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.deployment-notification-toast.dark .header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.deployment-notification-toast.dark .icon-wrapper {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 212, 255, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.deployment-notification-toast.dark .rocket-icon {
+  font-size: 16px;
+  color: var(--primary-color);
+  filter: drop-shadow(0 0 4px var(--primary-color));
+}
+
+.deployment-notification-toast.dark .header-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deployment-notification-toast.dark .title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #f1f5f9;
+}
+
+.deployment-notification-toast.dark .task-count-badge {
+  margin-left: 4px;
+}
+
+.deployment-notification-toast.dark .close-btn {
+  padding: 4px;
+  width: auto;
+  height: auto;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.deployment-notification-toast.dark .close-btn:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.deployment-notification-toast.dark .notification-body {
+  padding: 16px 18px;
+}
+
+.deployment-notification-toast.dark .info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.deployment-notification-toast.dark .row-icon {
+  font-size: 13px;
+  color: rgba(0, 212, 255, 0.7);
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.dark .label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.dark .value {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+  flex: 1;
+  word-break: break-all;
+  margin-left: 8px;
+}
+
+.deployment-notification-toast.dark .info-row .ant-tag {
+  margin-left: 8px;
+}
+
+.deployment-notification-toast.dark .apps-section {
+  margin: 14px 0;
+  padding: 12px 14px;
+  background: rgba(0, 212, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+.deployment-notification-toast.dark .section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: rgba(0, 212, 255, 0.8);
+  font-weight: 600;
+}
+
+.deployment-notification-toast.dark .section-icon {
+  font-size: 12px;
+  color: var(--primary-color);
+}
+
+.deployment-notification-toast.dark .apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deployment-notification-toast.dark .app-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: rgba(0, 212, 255, 0.08);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  font-size: 13px;
+}
+
+.deployment-notification-toast.dark .app-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.deployment-notification-toast.dark .app-icon {
+  font-size: 12px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.dark .app-name {
+  color: #f1f5f9;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.deployment-notification-toast.dark .commit-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  max-width: 45%;
+}
+
+.deployment-notification-toast.dark .commit-icon {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.deployment-notification-toast.dark .commit-text {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deployment-notification-toast.dark .more-apps {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 4px 0;
+}
+
+.deployment-notification-toast.dark .countdown-hint {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+.deployment-notification-toast.dark .countdown-bar {
+  height: 2px;
+  background: rgba(0, 212, 255, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.deployment-notification-toast.dark .countdown-progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), rgba(0, 212, 255, 0.5));
+  animation: countdown linear forwards;
+}
+
+.deployment-notification-toast.dark .countdown-text {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  display: block;
+}
+
+.deployment-notification-toast.dark .notification-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 18px;
+  background: rgba(0, 212, 255, 0.03);
+  border-top: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+.deployment-notification-toast.dark .view-btn {
+  font-size: 12px;
+  padding: 4px 14px;
+  height: 28px;
+  background: rgba(0, 212, 255, 0.2);
+  border-color: rgba(0, 212, 255, 0.4);
+  color: var(--primary-color);
+}
+
+.deployment-notification-toast.dark .view-btn:hover {
+  background: rgba(0, 212, 255, 0.3);
+  border-color: rgba(0, 212, 255, 0.6);
+}
+
+/* ==================== 响应式适配 ==================== */
+
+@media (max-width: 480px) {
+  .deployment-notification-toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .deployment-notification-toast.light .deployment-notification-card,
+  .deployment-notification-toast.dark .deployment-notification-card {
+    width: 100%;
+  }
+}

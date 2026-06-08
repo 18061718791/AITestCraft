@@ -1,0 +1,133 @@
+- generic [ref=e99]:
+  - generic [ref=e101]:
+    - generic [ref=e105] [cursor=pointer]: 功能菜单
+    - generic:
+      - generic:
+        - heading "应用管理" [level=5]
+        - button "pushpin":
+          - generic:
+            - img "pushpin":
+              - img
+      - generic:
+        - menu:
+          - menuitem "appstore 待部署应用":
+            - img "appstore":
+              - img
+            - generic: 待部署应用
+          - menuitem "appstore 部署应用历史":
+            - img "appstore":
+              - img
+            - generic: 部署应用历史
+          - menuitem "appstore 应用配置":
+            - img "appstore":
+              - img
+            - generic: 应用配置
+  - main [ref=e106]:
+    - generic [ref=e109]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e113]: ◤
+          - generic [ref=e115]: ◥
+        - generic [ref=e116]:
+          - generic [ref=e117]: AITestCraft 自动化测试平台
+          - generic [ref=e118]: AUTOMATED TESTING PLATFORM
+      - generic [ref=e119]:
+        - generic [ref=e120] [cursor=pointer]:
+          - img "bell" [ref=e121]:
+            - img [ref=e122]
+          - generic [ref=e124]: 我的待办
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - generic [ref=e127]: system
+            - generic [ref=e128]: 应用管理
+          - generic [ref=e130]:
+            - generic [ref=e131]: module
+            - generic [ref=e132]: 待部署应用
+        - generic [ref=e133] [cursor=pointer]:
+          - img "user" [ref=e136]:
+            - img [ref=e137]
+          - generic [ref=e139]: testuser
+    - generic [ref=e144]:
+      - generic [ref=e145]:
+        - heading "待部署应用" [level=4] [ref=e146]
+        - generic [ref=e147]:
+          - generic [ref=e148] [cursor=pointer]:
+            - generic [ref=e150]:
+              - combobox [ref=e152]
+              - generic: 选择项目
+            - generic:
+              - img:
+                - img
+          - img "reload" [ref=e153] [cursor=pointer]:
+            - img [ref=e154]
+      - generic [ref=e156]:
+        - generic [ref=e160]:
+          - generic [ref=e161]: 待部署
+          - generic [ref=e162]:
+            - img "clock-circle" [ref=e164]:
+              - img [ref=e165]
+            - generic [ref=e168]: "0"
+        - generic [ref=e172]:
+          - generic [ref=e173]: 部署完成
+          - generic [ref=e174]:
+            - img "check-circle" [ref=e176]:
+              - img [ref=e177]
+            - generic [ref=e180]: "0"
+      - generic [ref=e185]:
+        - img "暂无数据" [ref=e187]
+        - generic [ref=e199]: 暂无待部署应用
+  - generic [ref=e201]:
+    - generic [ref=e205] [cursor=pointer]: 快速导航
+    - generic:
+      - generic:
+        - generic:
+          - heading "快速导航" [level=5]
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img "appstore":
+                      - img
+          - button "pushpin":
+            - generic:
+              - img "pushpin":
+                - img
+      - generic:
+        - generic:
+          - generic:
+            - img "home":
+              - img
+          - generic: 首页
+        - generic:
+          - generic:
+            - img "unordered-list":
+              - img
+          - generic: 用例管理
+        - generic:
+          - generic:
+            - img "bug":
+              - img
+          - generic: 缺陷管理
+        - generic:
+          - generic:
+            - img "appstore":
+              - img
+          - generic: 应用管理
+        - generic:
+          - generic:
+            - img "setting":
+              - img
+          - generic: 系统管理
+      - generic:
+        - generic:
+          - generic:
+            - img "moon":
+              - img
+            - img "sun":
+              - img
+            - generic:
+              - img "sun":
+                - img
+  - generic [ref=e209] [cursor=pointer]: 任务窗口(1)

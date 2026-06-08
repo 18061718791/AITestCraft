@@ -1,0 +1,208 @@
+version: '3.8'
+
+# ============================================
+# AITestCraft Docker生产环境部署配置
+# 版本: 2.0 (支持多LLM Provider)
+# ============================================
+# 使用说明：
+# 1. 确保已安装 Docker 和 Docker Compose
+# 2. 复制 .env.docker.example 为 .env.docker 并填写配置
+# 3. 准备数据库初始化文件到 docker/mysql-init/
+# 4. 运行: docker-compose -f docker-compose.prod.yml --env-file .env.docker up -d
+# ============================================
+
+services:
+  # ============================================
+  # MySQL 主数据库服务 (Prisma ORM)
+  # ============================================
+  mysql:
+    image: mysql:8.0
+    container_name: aitestcraft-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-aitestcraft}
+      MYSQL_USER: ${MYSQL_USER:-aitestcraft}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # 挂载初始化SQL文件（首次启动时自动执行）
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - aitestcraft-network
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+  # ============================================
+  # Redis 缓存服务 (任务持久化、限流)
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: aitestcraft-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - aitestcraft-network
+
+  # ============================================
+  # 后端 API 服务
+  # ============================================
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: aitestcraft-backend
+    restart: unless-stopped
+    environment:
+      # 基础配置
+      NODE_ENV: production
+      PORT: 9000
+      JWT_SECRET: ${JWT_SECRET}
+      
+      # 主数据库配置 (MySQL - Prisma)
+      DATABASE_URL: mysql://${MYSQL_USER:-aitestcraft}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE:-aitestcraft}
+      
+      # 外部MySQL配置 (用于缺陷管理数据查询)
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT:-3306}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      
+      # PostgreSQL配置 (用于缺陷管理)
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+      
+      # Redis配置 (任务持久化、限流)
+      REDIS_URL: redis://redis:6379
+      
+      # ============================================
+      # LLM Provider 配置 (多Provider支持)
+      # ============================================
+      
+      # 默认Provider: deepseek | volcano-coding
+      LLM_PROVIDER: ${LLM_PROVIDER:-deepseek}
+      
+      # DeepSeek API配置
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      DEEPSEEK_API_URL: ${DEEPSEEK_API_URL:-https://api.deepseek.com/v1}
+      
+      # 火山引擎Coding Plan配置
+      VOLCANO_API_KEY: ${VOLCANO_API_KEY}
+      VOLCANO_BASE_URL: ${VOLCANO_BASE_URL:-https://ark.cn-beijing.volces.com/api/coding/v3}
+      VOLCANO_MODEL: ${VOLCANO_MODEL:-ark-code-latest}
+      
+      # LLM通用配置
+      LLM_API_KEY: ${LLM_API_KEY:-${DEEPSEEK_API_KEY}}
+      LLM_BASE_URL: ${LLM_BASE_URL:-${DEEPSEEK_API_URL:-https://api.deepseek.com/v1}}
+      LLM_MODEL: ${LLM_MODEL:-deepseek-chat}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.3}
+      LLM_TIMEOUT: ${LLM_TIMEOUT:-120000}
+      LLM_MAX_RETRIES: ${LLM_MAX_RETRIES:-3}
+      LLM_RETRY_DELAY: ${LLM_RETRY_DELAY:-2000}
+      LLM_BATCH_SIZE: ${LLM_BATCH_SIZE:-5}
+      
+      # CORS配置
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      
+      # 日志配置
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      
+      # 文件上传限制
+      MAX_FILE_SIZE: ${MAX_FILE_SIZE:-10MB}
+      
+      # 缺陷管理配置
+      TODO_ASSIGNED_TO_ID: ${TODO_ASSIGNED_TO_ID:-130}
+      TODO_RESOLVED_STATUS_ID: ${TODO_RESOLVED_STATUS_ID:-5}
+      
+      # Server酱配置 (可选)
+      SERVERCHAN_SEND_KEY: ${SERVERCHAN_SEND_KEY:-}
+      
+    ports:
+      - "9000:9000"
+    volumes:
+      - uploads_data:/app/uploads
+      - logs_data:/app/logs
+      - ./prompts:/prompts:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:9000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - aitestcraft-network
+
+  # ============================================
+  # 前端 Web 服务 (Nginx)
+  # ============================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aitestcraft-frontend
+    restart: unless-stopped
+    environment:
+      # 这些环境变量会在容器启动时注入到前端配置中
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:9000}
+      VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:9000}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - aitestcraft-network
+
+# ============================================
+# 数据卷定义
+# ============================================
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  uploads_data:
+    driver: local
+  logs_data:
+    driver: local
+
+# ============================================
+# 网络定义
+# ============================================
+networks:
+  aitestcraft-network:
+    driver: bridge

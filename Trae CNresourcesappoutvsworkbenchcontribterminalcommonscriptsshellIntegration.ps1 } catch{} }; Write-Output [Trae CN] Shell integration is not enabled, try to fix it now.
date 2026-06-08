@@ -1,0 +1,108 @@
+[33mcommit d5db2328cf0e9af998b4651476c369a4a99aa5e4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev[m[33m, [m[1;31morigin/dev[m[33m)[m
+Author: shi_binbin <shi_binbin@example.com>
+Date:   Thu May 14 11:00:18 2026 +0800
+
+    优化生成测试用例功能
+
+ .env.docker                                        |  24 [32m+[m[31m-[m
+ .env.example                                       |   8 [32m+[m
+ .env.prod.example                                  |  39 [32m+[m[31m-[m
+ AGENTS.md                                          |  98 [32m+++[m
+ README.md                                          | 221 [32m++++[m[31m--[m
+ backend/package-lock.json                          | 690 [32m++++++++++++++++[m[31m-[m
+ backend/package.json                               |   9 [32m+[m
+ backend/prisma/schema.prisma                       |  48 [32m++[m
+ backend/src/config/index.ts                        |  14 [32m+[m[31m-[m
+ backend/src/index.ts                               |  27 [32m+[m[31m-[m
+ backend/src/middleware/rateLimiter.ts              |  89 [32m+++[m
+ backend/src/routes/__tests__/integration.test.ts   | 164 [32m++++[m
+ backend/src/routes/document.ts                     | 297 [32m++++++++[m
+ backend/src/routes/llmConfigRoutes.ts              | 214 [32m++++++[m
+ backend/src/routes/qualityRoutes.ts                | 129 [32m++++[m
+ backend/src/routes/test.ts                         | 116 [32m++[m[31m-[m
+ backend/src/services/__mocks__/configService.ts    |  27 [32m+[m
+ backend/src/services/__mocks__/llmConfigService.ts |  45 [32m++[m
+ .../services/__tests__/llmConfigService.test.ts    | 114 [32m+++[m
+ backend/src/services/__tests__/performance.test.ts |  78 [32m++[m
+ backend/src/services/configService.ts              |  51 [32m+[m[31m-[m
+ backend/src/services/deepseekService.ts            |   5 [32m+[m[31m-[m
+ backend/src/services/designMethodRecognizer.ts     | 154 [32m++++[m
+ backend/src/services/documentparserservice.ts      | 409 [32m++++++++++[m
+ backend/src/services/excelService.ts               |   2 [32m+[m[31m-[m
+ backend/src/services/imageService.ts               |  66 [32m++[m
+ .../services/llm/__tests__/baseProvider.test.ts    | 164 [32m++++[m
+ .../llm/__tests__/deepseekProvider.test.ts         | 115 [32m+++[m
+ .../services/llm/__tests__/providerFactory.test.ts |  95 [32m+++[m
+ .../services/llm/__tests__/volcanoProvider.test.ts | 104 [32m+++[m
+ backend/src/services/llm/baseProvider.ts           | 184 [32m+++++[m
+ backend/src/services/llm/deepseekProvider.ts       | 674 [32m++++++++++++++++[m
+ backend/src/services/llm/providerFactory.ts        | 114 [32m+++[m
+ backend/src/services/llm/types.ts                  |  52 [32m++[m
+ backend/src/services/llm/volcanoProvider.ts        | 684 [32m+++++++++++++++++[m
+ backend/src/services/llmConfigService.ts           |  99 [32m+++[m
+ backend/src/services/notificationService.ts        |  25 [32m+[m
+ backend/src/services/promptService.ts              | 159 [32m++++[m
+ backend/src/services/qualityService.ts             | 286 [32m+++++++[m
+ backend/src/services/taskPersistenceService.ts     | 195 [32m+++++[m
+ backend/src/services/testCaseService.ts            |  19 [32m+[m[31m-[m
+ backend/src/services/testService.ts                | 414 [32m+++++++[m[31m---[m
+ backend/src/services/visionService.ts              | 332 [32m++++++++[m
+ backend/src/types/index.ts                         |  19 [32m+[m[31m-[m
+ .../499d7cbd-5d31-4925-8157-07e9c259a711.docx      | Bin [31m0[m -> [32m120702[m bytes
+ .../4cafc2c9-dcd2-4912-9aeb-4612ffb87f3a.docx      | Bin [31m0[m -> [32m140210[m bytes
+ .../553a780f-a7a9-4ffa-8715-5e187899af7c.docx      | Bin [31m0[m -> [32m120702[m bytes
+ .../5fbb6a13-3b86-4060-abf3-929245fdff3d.docx      | Bin [31m0[m -> [32m120702[m bytes
+ .../8249c394-76bf-4481-af6e-30c2aac1fb00.docx      | Bin [31m0[m -> [32m140210[m bytes
+ .../a327579c-043d-4a68-968b-942fc66ecedb.md        | 210 [32m+++++[m
+ .../b2d3a5df-acad-46b3-bcd9-6abf132f5e51.md        | 210 [32m+++++[m
+ .../cb22a192-c554-42a3-989c-692d68752c5b.docx      | Bin [31m0[m -> [32m120702[m bytes
+ .../df66a698-c473-47d1-96a6-658d7f85fdd4.docx      | Bin [31m0[m -> [32m120702[m bytes
+ .../fdc33e46-ee5b-47dc-b6e2-e5fde5e343a0.docx      | Bin [31m0[m -> [32m120702[m bytes
+ deploy.sh                                          | 200 [32m++++[m[31m-[m
+ docker-compose.prod.yml                            |  49 [32m+[m[31m-[m
+ docker-compose.yml                                 |  47 [32m++[m
+ ...7\252\345\212\250\347\224\237\346\210\220.docx" | Bin [31m0[m -> [32m1446933[m bytes
+ ...207\252\345\212\250\347\224\237\346\210\220.md" | 437 [32m+++++++++++[m
+ docs/ai-testcase-refactor/ACCEPTANCE_phase1.md     |  72 [32m++[m
+ docs/ai-testcase-refactor/ACCEPTANCE_phase2.md     |  75 [32m++[m
+ docs/ai-testcase-refactor/ACCEPTANCE_phase3.md     |  70 [32m++[m
+ docs/ai-testcase-refactor/DEPLOYMENT.md            | 274 [32m+++++++[m
+ docs/ai-testcase-refactor/DESIGN.md                | 847 [32m+++++++++++++++++++++[m
+ docs/ai-testcase-refactor/TASK_BREAKDOWN.md        | 326 [32m++++++++[m
+ docs/ai-testcase-refactor/findings.md              | 175 [32m+++++[m
+ docs/ai-testcase-refactor/progress.md              | 217 [32m++++++[m
+ docs/ai-testcase-refactor/task_plan.md             | 392 [32m++++++++++[m
+ frontend/.env.development                          |   4 [32m+[m[31m-[m
+ frontend/package-lock.json                         | 817 [32m+++++++++++++++++++[m[31m-[m
+ frontend/package.json                              |   2 [32m+[m
+ frontend/src/components/BreadcrumbDisplay.tsx      |  24 [32m+[m[31m-[m
+ frontend/src/components/ImageUploader.tsx          | 250 [32m++++++[m
+ frontend/src/components/MindMapModal.tsx           | 475 [32m++++++++++++[m
+ frontend/src/components/ProcessingPanel.tsx        | 217 [32m++++++[m
+ frontend/src/components/RequirementInput.tsx       | 324 [32m++++++[m[31m--[m
+ .../components/SystemModuleScenarioSelector.tsx    |  69 [32m+[m[31m-[m
+ frontend/src/components/TestCasesSelector.tsx      | 280 [32m+++++[m[31m--[m
+ frontend/src/components/TestPointsSelector.tsx     | 527 [32m++++++++++[m[31m---[m
+ frontend/src/components/chaptertree.tsx            | 272 [32m+++++++[m
+ frontend/src/components/documentuploader.tsx       | 157 [32m++++[m
+ frontend/src/contexts/AppContext.tsx               | 113 [32m++[m[31m-[m
+ frontend/src/hooks/useExportTestPoints.ts          | 153 [32m++++[m
+ frontend/src/hooks/useGenerateCases.ts             |  29 [32m+[m[31m-[m
+ frontend/src/hooks/useGeneratePoints.ts            | 288 [32m+++++[m[31m--[m
+ frontend/src/hooks/useProcessingLogs.ts            |  66 [32m++[m
+ frontend/src/pages/TestCaseAssistantPage.tsx       | 294 [32m++++++[m[31m-[m
+ frontend/src/pages/TestCaseManagementPage.tsx      |  12 [32m+[m[31m-[m
+ frontend/src/pages/admin/LLMConfigPage.tsx         | 311 [32m+++++[m[31m---[m
+ frontend/src/services/api.ts                       |  17 [32m+[m[31m-[m
+ frontend/src/services/documentapi.ts               |  40 [32m+[m
+ frontend/src/services/socket.ts                    |  14 [32m+[m
+ frontend/src/styles/global.css                     | 298 [32m++++++++[m
+ frontend/src/types/document.ts                     |  38 [32m+[m
+ frontend/src/types/index.ts                        |  19 [32m+[m[31m-[m
+ frontend/src/types/processing.ts                   |  16 [32m+[m
+ img/1.png                                          | Bin [31m0[m -> [32m218229[m bytes
+ prompts/generate_test_cases.md                     |  70 [32m+[m[31m-[m
+ prompts/generate_test_points.md                    |  74 [32m+[m[31m-[m
+ scripts/md_to_word.py                              | 384 [32m++++++++++[m
+ shared/types.ts                                    |  17 [32m+[m[31m-[m
+ 101 files changed, 15265 insertions(+), 879 deletions(-)

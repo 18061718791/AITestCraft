@@ -1,0 +1,416 @@
+/**
+ * 我的待办统计徽章样式
+ */
+
+/* 徽章样式 */
+.todo-stats-badge {
+  user-select: none;
+}
+
+/* Popover 样式 - 浅色主题 */
+.todo-stats-popover.light .ant-popover-inner {
+  min-width: 260px;
+  max-width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Popover 样式 - 深色主题（优化为科技蓝黑色调） */
+.todo-stats-popover.dark .ant-popover-inner {
+  min-width: 260px;
+  max-width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
+  border: 1px solid rgba(0, 212, 255, 0.3) !important;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.15), 0 0 30px rgba(0, 212, 255, 0.1);
+}
+
+.todo-stats-popover .ant-popover-inner-content {
+  padding: 0;
+}
+
+/* Popover 箭头样式 - 去除黑色背景，与全局样式保持一致 */
+.todo-stats-popover .ant-popover-arrow {
+  background: transparent !important;
+  border: none !important;
+}
+
+.todo-stats-popover.light .ant-popover-arrow-content {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+.todo-stats-popover.dark .ant-popover-arrow-content {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+/* 加载状态 - 浅色 */
+.todo-stats-loading.light {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px;
+  color: #8c8c8c;
+  font-size: 12px;
+  background: #ffffff;
+}
+
+/* 加载状态 - 深色（优化背景色） */
+.todo-stats-loading.dark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px;
+  color: #8c8c8c;
+  font-size: 12px;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
+}
+
+/* 错误状态 - 浅色 */
+.todo-stats-error.light {
+  padding: 16px;
+  background: #ffffff;
+}
+
+/* 错误状态 - 深色（优化背景色） */
+.todo-stats-error.dark {
+  padding: 16px;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
+}
+
+/* 空状态 - 浅色 */
+.todo-stats-empty.light {
+  padding: 16px;
+  background: #ffffff;
+}
+
+/* 空状态 - 深色（优化背景色） */
+.todo-stats-empty.dark {
+  padding: 16px;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
+}
+
+/* 统计内容 - 浅色 */
+.todo-stats-content.light {
+  padding: 10px;
+  background: #ffffff;
+}
+
+/* 统计内容 - 深色（优化背景色） */
+.todo-stats-content.dark {
+  padding: 10px;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
+}
+
+/* ==================== 头部样式（优化） ==================== */
+
+/* 头部 - 浅色 */
+.stats-header.light {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+/* 头部 - 深色（优化样式） */
+.stats-header.dark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* 标题 - 浅色 */
+.stats-title.light {
+  font-weight: 600;
+  font-size: 14px;
+  color: #262626;
+}
+
+/* 标题 - 深色（优化字体大小） */
+.stats-title.dark {
+  font-weight: 600;
+  font-size: 14px;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* 总数 - 浅色（优化字体大小和对齐） */
+.stats-total.light {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff4d4f;
+  min-width: 40px;
+  text-align: right;
+  padding: 2px 8px;
+  background: rgba(255, 77, 79, 0.1);
+  border-radius: 10px;
+}
+
+/* 总数 - 深色（优化字体大小、对齐和徽章样式） */
+.stats-total.dark {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff4d4f;
+  min-width: 40px;
+  text-align: right;
+  padding: 2px 8px;
+  background: rgba(255, 77, 79, 0.15);
+  border: 1px solid rgba(255, 77, 79, 0.3);
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(255, 77, 79, 0.2);
+}
+
+/* 统计列表 */
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ==================== 项目卡片样式 ==================== */
+
+/* 项目卡片 - 浅色 */
+.project-card.light {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* 项目卡片 - 深色（优化为科技风格） */
+.project-card.dark {
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.05);
+}
+
+/* 项目卡片头部 - 浅色（优化高度） */
+.project-card-header.light {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: #d9f7be;
+  border-bottom: 1px dashed #b7eb8f;
+}
+
+/* 项目卡片头部 - 深色（优化高度） */
+.project-card-header.dark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(0, 212, 255, 0.12);
+  border-bottom: 1px dashed rgba(0, 212, 255, 0.4);
+}
+
+/* 可点击样式 */
+.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clickable:hover {
+  opacity: 0.9;
+}
+
+/* 项目卡片标题悬浮效果 - 浅色 */
+.project-card-header.light.clickable:hover .project-card-title {
+  color: #1890ff;
+}
+
+/* 项目卡片标题悬浮效果 - 深色（优化为青色，无下划线） */
+.project-card-header.dark.clickable:hover .project-card-title {
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* 项目卡片标题 - 浅色 */
+.project-card-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #262626;
+}
+
+/* 项目卡片标题 - 深色（优化颜色） */
+.project-card-title.dark {
+  font-weight: 600;
+  font-size: 13px;
+  color: #e8e8e8;
+}
+
+/* 项目卡片数量 - 浅色（靠右对齐） */
+.project-card-count.light {
+  color: #ff4d4f;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(255, 77, 79, 0.1);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* 项目卡片数量 - 深色（靠右对齐，徽章样式） */
+.project-card-count.dark {
+  color: #ff4d4f;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(255, 77, 79, 0.15);
+  border: 1px solid rgba(255, 77, 79, 0.3);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+  box-shadow: 0 0 4px rgba(255, 77, 79, 0.2);
+}
+
+/* 项目卡片内容体 - 浅色 */
+.project-card-body.light {
+  padding: 8px 12px;
+}
+
+/* 项目卡片内容体 - 深色 */
+.project-card-body.dark {
+  padding: 8px 12px;
+}
+
+/* ==================== 子系统行样式 ==================== */
+
+/* 子系统行 - 浅色 */
+.system-row.light {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e8e8e8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.system-row.light:last-child {
+  border-bottom: none;
+}
+
+.system-row.light:hover {
+  background: rgba(24, 144, 255, 0.05);
+  margin: 0 -12px;
+  padding: 6px 12px;
+}
+
+.system-row.light:hover .system-row-name {
+  color: #1890ff;
+}
+
+/* 子系统行 - 深色（优化样式、间距和右对齐） */
+.system-row.dark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(0, 212, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.system-row.dark:last-child {
+  border-bottom: none;
+}
+
+.system-row.dark:hover {
+  background: rgba(0, 212, 255, 0.08);
+  margin: 0 -12px;
+  padding: 6px 12px;
+}
+
+.system-row.dark:hover .system-row-name {
+  color: #00d4ff;
+  text-shadow: 0 0 6px rgba(0, 212, 255, 0.4);
+}
+
+/* 子系统名称 - 浅色 */
+.system-row-name.light {
+  color: #595959;
+  font-weight: 500;
+  font-size: 12px;
+  flex: 1;
+}
+
+/* 子系统名称 - 深色（优化字体大小和颜色） */
+.system-row-name.dark {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  font-size: 12px;
+  flex: 1;
+}
+
+/* 子系统数量 - 浅色（靠右对齐，去除"个"字后的样式） */
+.system-row-count.light {
+  color: #00d4ff;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(0, 212, 255, 0.1);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* 子系统数量 - 深色（靠右对齐，去除"个"字后的样式） */
+.system-row-count.dark {
+  color: #00d4ff;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+  box-shadow: 0 0 4px rgba(0, 212, 255, 0.2);
+}
+
+/* 滚动条样式 */
+.todo-stats-popover .ant-popover-inner::-webkit-scrollbar {
+  width: 6px;
+}
+
+.todo-stats-popover .ant-popover-inner::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 3px;
+}
+
+.todo-stats-popover .ant-popover-inner::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+.todo-stats-popover.dark .ant-popover-inner::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 212, 255, 0.3);
+  border-radius: 3px;
+}
+
+.todo-stats-popover.dark .ant-popover-inner::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.2);
+}

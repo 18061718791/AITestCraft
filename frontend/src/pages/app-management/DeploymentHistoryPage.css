@@ -1,0 +1,447 @@
+/**
+ * 部署历史弹窗样式
+ * 科技感设计风格，与待部署应用卡片悬浮样式保持一致
+ */
+
+/* ==================== 弹窗列表容器 ==================== */
+
+.deployment-history-list {
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(0, 212, 255, 0.1);
+  overflow: hidden;
+  padding: 16px;
+  min-height: 200px;
+}
+
+/* 顶部发光条 */
+.deployment-history-list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-color, #00d4ff), transparent);
+  animation: headerGlow 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* ==================== 历史任务项样式 ==================== */
+
+.history-task-item {
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  border-radius: 8px;
+  padding: 16px 20px !important;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  animation: slideIn 0.4s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 左边框高亮 */
+.history-task-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--primary-color, #00d4ff), rgba(0, 212, 255, 0.3));
+  opacity: 0.6;
+}
+
+.history-task-item:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.history-task-item:last-child {
+  margin-bottom: 0;
+}
+
+.history-task-content {
+  width: 100%;
+}
+
+/* ==================== 任务头部 ==================== */
+
+.history-task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.history-task-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.status-icon-wrapper.status-completed {
+  background: rgba(82, 196, 26, 0.15);
+  border: 1px solid rgba(82, 196, 26, 0.3);
+  box-shadow: 0 0 10px rgba(82, 196, 26, 0.2);
+}
+
+.status-icon-wrapper.status-failed {
+  background: rgba(255, 77, 79, 0.15);
+  border: 1px solid rgba(255, 77, 79, 0.3);
+  box-shadow: 0 0 10px rgba(255, 77, 79, 0.2);
+}
+
+.status-icon-wrapper.status-ignored {
+  background: rgba(140, 140, 140, 0.15);
+  border: 1px solid rgba(140, 140, 140, 0.3);
+}
+
+.status-text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status-text.status-completed {
+  color: #52c41a;
+  text-shadow: 0 0 8px rgba(82, 196, 26, 0.4);
+}
+
+.status-text.status-failed {
+  color: #ff4d4f;
+  text-shadow: 0 0 8px rgba(255, 77, 79, 0.4);
+}
+
+.status-text.status-ignored {
+  color: #8c8c8c;
+}
+
+.history-task-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.history-task-time svg {
+  font-size: 12px;
+  color: rgba(0, 212, 255, 0.7);
+}
+
+/* ==================== 任务标签 ==================== */
+
+.history-task-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.history-task-tags .branch-tag {
+  background: transparent !important;
+  border-color: rgba(0, 212, 255, 0.5) !important;
+  color: var(--primary-color, #00d4ff) !important;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.history-task-tags .branch-tag svg {
+  font-size: 10px;
+}
+
+.history-task-tags .commit-tag {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 11px;
+  font-family: 'Monaco', 'Consolas', monospace;
+}
+
+/* ==================== 提交信息 ==================== */
+
+.history-commit-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border-left: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.history-commit-message svg {
+  font-size: 11px;
+  color: rgba(0, 212, 255, 0.7);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.commit-message-text {
+  flex: 1;
+  word-break: break-all;
+}
+
+/* ==================== 作者和部署人区域 ==================== */
+
+.history-author-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* 提交者信息 - 科技感高亮 */
+.history-author-section .author-info-highlight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(0, 212, 255, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  flex: 1;
+  min-width: 140px;
+}
+
+.history-author-section .author-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(0, 212, 255, 0.1) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+.history-author-section .author-avatar svg {
+  font-size: 12px;
+  color: var(--primary-color, #00d4ff);
+}
+
+.history-author-section .author-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-author-section .author-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.history-author-section .author-name-highlight {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color, #00d4ff);
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+/* 部署人信息 */
+.deployer-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(82, 196, 26, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(82, 196, 26, 0.2);
+  flex: 1;
+  min-width: 140px;
+}
+
+.deployer-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(82, 196, 26, 0.3) 0%, rgba(82, 196, 26, 0.1) 100%);
+  border: 1px solid rgba(82, 196, 26, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(82, 196, 26, 0.2);
+}
+
+.deployer-avatar svg {
+  font-size: 12px;
+  color: #52c41a;
+}
+
+.deployer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.deployer-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.deployer-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #52c41a;
+  text-shadow: 0 0 8px rgba(82, 196, 26, 0.4);
+}
+
+/* ==================== 空状态 ==================== */
+
+.deployment-history-list .empty-tasks {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.deployment-history-list .empty-tasks svg {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+  color: rgba(0, 212, 255, 0.5);
+}
+
+/* ==================== 分页样式覆盖 ==================== */
+
+.deployment-history-list .ant-list-pagination {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.deployment-history-list .ant-pagination-item {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+.deployment-history-list .ant-pagination-item a {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.deployment-history-list .ant-pagination-item-active {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--primary-color, #00d4ff);
+}
+
+.deployment-history-list .ant-pagination-item-active a {
+  color: var(--primary-color, #00d4ff);
+}
+
+.deployment-history-list .ant-pagination-prev button,
+.deployment-history-list .ant-pagination-next button {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==================== 动画定义 ==================== */
+
+@keyframes headerGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* 继承 DeploymentTaskPopover.css 中的扫描线和角落装饰样式 */
+.deployment-history-list .scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary-color, #00d4ff), transparent);
+  opacity: 0.3;
+  animation: scanLine 4s linear infinite;
+  z-index: 1;
+}
+
+.deployment-history-list .tech-corners {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.deployment-history-list .tech-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.deployment-history-list .tech-corner-tl {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 4px;
+}
+
+.deployment-history-list .tech-corner-tr {
+  top: 6px;
+  right: 6px;
+  border-left: none;
+  border-bottom: none;
+  border-top-right-radius: 4px;
+}
+
+.deployment-history-list .tech-corner-bl {
+  bottom: 6px;
+  left: 6px;
+  border-right: none;
+  border-top: none;
+  border-bottom-left-radius: 4px;
+}
+
+.deployment-history-list .tech-corner-br {
+  bottom: 6px;
+  right: 6px;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 4px;
+}
+
+/* ==================== 弹窗滚动样式 ==================== */
+
+.deployment-history-modal .ant-modal-content {
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+.deployment-history-modal .ant-modal-body {
+  max-height: calc(85vh - 80px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}

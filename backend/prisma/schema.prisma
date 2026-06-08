@@ -1,0 +1,558 @@
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "binary"
+}
+
+
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model modules {
+  id          Int          @id @default(autoincrement())
+  system_id   Int
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  sort_order  Int          @default(0)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  systems     systems      @relation(fields: [system_id], references: [id], onDelete: Cascade)
+  scenarios   scenarios[]
+  test_cases  test_cases[]
+
+  @@index([system_id], map: "modules_system_id_fkey")
+}
+
+model scenarios {
+  id          Int          @id @default(autoincrement())
+  module_id   Int
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  content     String?      @db.Text
+  sort_order  Int          @default(0)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  modules     modules      @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  test_cases  test_cases[]
+
+  @@index([module_id], map: "scenarios_module_id_fkey")
+}
+
+model systems {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  created_by  Int?         // 创建者用户ID
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  modules     modules[]
+  test_cases  test_cases[]
+
+  @@index([created_by])
+}
+
+model test_cases {
+  id              Int               @id @default(autoincrement())
+  title           String            @db.VarChar(255)
+  precondition    String?           @db.Text
+  steps           String            @db.Text
+  expectedResults String            @db.Text
+  priority        String            @db.VarChar(10)
+  source          String            @db.VarChar(10)
+  systemId        Int?
+  moduleId        Int?
+  scenarioId      Int?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime
+  deleted_at      DateTime?
+  tags            Json?
+  status          test_cases_status @default(PENDING)
+  modules         modules?          @relation(fields: [moduleId], references: [id])
+  scenarios       scenarios?        @relation(fields: [scenarioId], references: [id])
+  systems         systems?          @relation(fields: [systemId], references: [id])
+
+  @@index([created_at])
+  @@index([moduleId])
+  @@index([priority])
+  @@index([scenarioId])
+  @@index([source])
+  @@index([status])
+  @@index([systemId])
+}
+
+enum test_cases_status {
+  PENDING
+  PASSED
+  FAILED
+  SKIPPED
+}
+
+// 消息推送配置模型
+model notification_recipients {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @db.VarChar(100)
+  send_key  String   @db.VarChar(255)
+  active    Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model notification_settings {
+  id        Int      @id @default(autoincrement())
+  enabled   Boolean  @default(true)
+  start_time String   @db.VarChar(5)  // 格式: HH:MM
+  end_time   String   @db.VarChar(5)  // 格式: HH:MM
+  interval   Int      @default(60)     // 推送间隔（分钟）
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  unique_record notification_settings_unique?
+}
+
+// 确保只有一条设置记录
+model notification_settings_unique {
+  id        Int      @id @default(1)
+  setting_id Int      @unique
+  settings  notification_settings @relation(fields: [setting_id], references: [id], onDelete: Cascade)
+
+  @@unique([id])
+}
+
+// 项目管理模型
+model projects {
+  id          String        @id
+  name        String        @db.VarChar(255)
+  created_by  Int?          // 创建者用户ID
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  directories directories[]
+  app_configs app_configs[]
+
+  @@map("projects")
+  @@index([created_by])
+}
+
+model directories {
+  uuid        String       @id @default(cuid())
+  id          String       @db.VarChar(255)
+  name        String       @db.VarChar(255)
+  project_id  String
+  parent_id   String
+  level       Int
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  project     projects     @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  app_configs app_configs[]
+  // 移除parent_id的外键约束，因为二级目录的parent_id是项目ID
+
+  @@map("directories")
+  @@index([project_id])
+  @@index([parent_id])
+  @@index([id])
+}
+
+// 系统配置模型
+model system_configs {
+  id          Int      @id @default(autoincrement())
+  config_key  String   @unique @db.VarChar(100)
+  config_value String   @db.Text
+  config_type String   @db.VarChar(50) // database, llm, system
+  description String?  @db.Text
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("system_configs")
+  @@index([config_type])
+}
+
+// 系统监控指标模型
+model system_metrics {
+  id          Int      @id @default(autoincrement())
+  metric_name String   @db.VarChar(100)
+  metric_value Decimal  @db.Decimal(10, 2)
+  metric_type String   @db.VarChar(50) // api, database, memory, cpu
+  timestamp   DateTime @default(now())
+  details     Json?
+  @@map("system_metrics")
+  @@index([metric_type])
+  @@index([timestamp])
+}
+
+// 插件信息模型
+model plugins {
+  id              Int      @id @default(autoincrement())
+  plugin_id       String   @unique @db.VarChar(100)
+  name            String   @db.VarChar(255)
+  description     String?  @db.Text
+  author          String?  @db.VarChar(100)
+  current_version String   @db.VarChar(50)
+  enabled         Boolean  @default(true)
+  config          Json?
+  installed_at    DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  versions        plugin_versions[]
+  dependencies    plugin_dependencies[]
+
+  @@map("plugins")
+  @@index([plugin_id])
+  @@index([enabled])
+}
+
+// 插件版本模型
+model plugin_versions {
+  id            Int      @id @default(autoincrement())
+  plugin_id     String   @db.VarChar(100)
+  version       String   @db.VarChar(50)
+  is_active     Boolean  @default(false)
+  installed_at  DateTime @default(now())
+  uninstalled_at DateTime?
+  metadata      Json?
+  plugin        plugins  @relation(fields: [plugin_id], references: [plugin_id], onDelete: Cascade)
+
+  @@map("plugin_versions")
+  @@index([plugin_id])
+  @@index([version])
+  @@index([is_active])
+}
+
+// 插件依赖模型
+model plugin_dependencies {
+  id                    Int      @id @default(autoincrement())
+  plugin_id             String   @db.VarChar(100)
+  dependency_plugin_id   String   @db.VarChar(100)
+  min_version           String?  @db.VarChar(50)
+  max_version           String?  @db.VarChar(50)
+  created_at            DateTime @default(now())
+  plugin                plugins  @relation(fields: [plugin_id], references: [plugin_id], onDelete: Cascade)
+
+  @@map("plugin_dependencies")
+  @@index([plugin_id])
+  @@index([dependency_plugin_id])
+}
+
+// 学习记录模型
+model learning_records {
+  id              Int      @id @default(autoincrement())
+  user_id         Int?
+  session_id      String?  @db.VarChar(100)
+  query           String?  @db.Text
+  intent          String?  @db.VarChar(100)
+  confidence      Decimal? @db.Decimal(5, 2)
+  is_correct      Boolean?
+  feedback        String?  @db.VarChar(20)
+  learning_type   String?  @db.VarChar(50)
+  learned_content Json?
+  applied         Boolean  @default(false)
+  applied_at      DateTime?
+  created_at      DateTime @default(now())
+
+  @@map("learning_records")
+  @@index([user_id])
+  @@index([session_id])
+  @@index([intent])
+  @@index([learning_type])
+  @@index([applied])
+}
+
+// 同义词模型
+model synonyms {
+  id            Int      @id @default(autoincrement())
+  word          String   @db.VarChar(100)
+  synonym       String   @db.VarChar(100)
+  intent        String?  @db.VarChar(100)
+  confidence    Decimal  @default(1.00) @db.Decimal(5, 2)
+  usage_count   Int      @default(0)
+  last_used_at  DateTime?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("synonyms")
+  @@index([word])
+  @@index([synonym])
+  @@index([intent])
+}
+
+// 意图模式模型
+model intent_patterns {
+  id             Int      @id @default(autoincrement())
+  intent         String   @db.VarChar(100)
+  pattern        String   @db.VarChar(500)
+  pattern_type   String?  @db.VarChar(50)
+  confidence     Decimal  @default(1.00) @db.Decimal(5, 2)
+  usage_count    Int      @default(0)
+  success_count  Int      @default(0)
+  last_used_at   DateTime?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("intent_patterns")
+  @@index([intent])
+  @@index([pattern_type])
+}
+
+// 学习效果评估模型
+model learning_evaluations {
+  id                     Int      @id @default(autoincrement())
+  evaluation_date        DateTime @default(now())
+  total_queries          Int      @default(0)
+  correct_predictions    Int      @default(0)
+  incorrect_predictions  Int      @default(0)
+  accuracy              Decimal? @db.Decimal(5, 2)
+  new_synonyms_count    Int      @default(0)
+  new_patterns_count    Int      @default(0)
+  applied_learning_count Int      @default(0)
+  details               Json?
+  created_at            DateTime @default(now())
+
+  @@map("learning_evaluations")
+  @@index([evaluation_date])
+}
+
+// 解析文档模型
+model parsed_documents {
+  id            String   @id @default(cuid())
+  filename      String   @db.VarChar(255)
+  original_name String   @db.VarChar(255)
+  file_size     Int
+  file_type     String   @db.VarChar(50)
+  title         String?  @db.VarChar(255)
+  total_pages   Int?
+  total_words   Int      @default(0)
+  status        String   @db.VarChar(20) @default("parsing")
+  error_message String?  @db.Text
+  file_path     String   @db.Text
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  expires_at    DateTime
+
+  chapters      document_chapters[]
+
+  @@map("parsed_documents")
+  @@index([status])
+  @@index([created_at])
+  @@index([expires_at])
+}
+
+model document_chapters {
+  id            String   @id @default(cuid())
+  document_id   String
+  parent_id     String?
+  level         Int
+  title         String   @db.VarChar(500)
+  content       String?  @db.LongText
+  word_count    Int      @default(0)
+  page_start    Int?
+  page_end      Int?
+  analysis      Json?
+  order_index   Int
+
+  document      parsed_documents  @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  parent        document_chapters? @relation("ChapterHierarchy", fields: [parent_id], references: [id])
+  children      document_chapters[] @relation("ChapterHierarchy")
+
+  @@map("document_chapters")
+  @@index([document_id])
+  @@index([parent_id])
+  @@index([order_index])
+}
+
+// 异步任务（导出/文档生成）
+model async_tasks {
+  id           String   @id @default(cuid())
+  task_type    String   @db.VarChar(50)   // export | document
+  status       String   @db.VarChar(20)   // pending | processing | completed | failed
+  progress     Int      @default(0)
+  format       String?  @db.VarChar(20)   // excel | csv | html | pdf
+  query        String?  @db.Text
+  intent       String?  @db.VarChar(100)
+  entities     Json?
+  params       Json?
+  result       Json?
+  file_name    String?  @db.VarChar(255)
+  file_path    String?  @db.Text
+  mime_type    String?  @db.VarChar(100)
+  error        String?  @db.Text
+  user_id      Int?
+  session_id   String?  @db.VarChar(100)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  completed_at DateTime?
+
+  @@map("async_tasks")
+  @@index([task_type])
+  @@index([status])
+  @@index([created_at])
+  @@index([session_id])
+  @@index([user_id])
+}
+
+// 应用配置模型
+model app_configs {
+  id              Int      @id @default(autoincrement())
+  app_name        String   @db.VarChar(100)
+  app_code        String   @db.VarChar(100)
+  description     String?  @db.Text
+  git_url         String   @db.Text
+  repository_name String   @db.VarChar(100)
+  project_path    String   @db.VarChar(200)
+  branches        String   @db.Text          // JSON数组存储
+  webhook_secret  String   @db.VarChar(255)
+  is_active       Boolean  @default(true)
+  project_id      String?  @db.VarChar(255)  // 关联项目ID
+  directory_id    String?  @db.VarChar(255)  // 关联系统/目录ID
+  jenkins_url     String?  @db.Text          // Jenkins构建地址
+  created_by      Int?     // 创建者用户ID
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  deployment_tasks deployment_tasks[]
+  project          projects?    @relation(fields: [project_id], references: [id])
+  directory        directories? @relation(fields: [directory_id], references: [uuid])
+
+  @@unique([app_code, created_by], name: "app_code_created_by_unique")
+  @@map("app_configs")
+  @@index([repository_name])
+  @@index([is_active])
+  @@index([project_id])
+  @@index([directory_id])
+  @@index([created_by])
+}
+
+// 部署任务状态枚举
+enum DeploymentStatus {
+  PENDING
+  DEPLOYING
+  COMPLETED
+  FAILED
+  IGNORED
+}
+
+// 部署任务模型
+model deployment_tasks {
+  id             Int              @id @default(autoincrement())
+  app_id         Int
+  app_name       String           @db.VarChar(100)
+  repository     String           @db.VarChar(100)
+  branch         String           @db.VarChar(100)
+  commit_id      String           @db.VarChar(40)
+  commit_message String?          @db.Text
+  commit_author  String?          @db.VarChar(100)
+  status         DeploymentStatus @default(PENDING)
+  created_at     DateTime         @default(now())
+  deployed_at    DateTime?
+  deployed_by    String?          @db.VarChar(100)
+
+  app_config app_configs @relation(fields: [app_id], references: [id])
+
+  @@map("deployment_tasks")
+  @@index([status, created_at])
+  @@index([app_id, created_at])
+  @@index([repository, branch])
+}
+
+// 用户模型
+model users {
+  id                Int         @id @default(autoincrement())
+  username          String      @unique @db.VarChar(50)
+  email             String?     @unique @db.VarChar(100)
+  password          String      @db.VarChar(255)
+  nickname          String?     @db.VarChar(50)
+  avatar            String?     @db.VarChar(255)
+  status            UserStatus  @default(ACTIVE)
+  last_login_at     DateTime?
+  
+  // Redmine用户关联字段
+  redmine_user_id   Int?        // Redmine users表中的id
+  redmine_lastname  String?     @db.VarChar(100)  // 用于显示关联的Redmine用户姓名
+  
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  user_roles        user_roles[]
+
+  @@map("users")
+  @@index([status])
+  @@index([created_at])
+  @@index([redmine_user_id])
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  LOCKED
+}
+
+// 角色模型
+model roles {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique @db.VarChar(50)
+  code          String         @unique @db.VarChar(50)
+  description   String?        @db.Text
+  status        RoleStatus     @default(ACTIVE)
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  user_roles    user_roles[]
+  role_permissions role_permissions[]
+
+  @@map("roles")
+  @@index([status])
+}
+
+enum RoleStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// 权限模型
+model permissions {
+  id              Int                @id @default(autoincrement())
+  name            String             @db.VarChar(50)
+  code            String             @unique @db.VarChar(100)
+  description     String?            @db.Text
+  module          String             @db.VarChar(50)
+  status          PermissionStatus   @default(ACTIVE)
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+  role_permissions role_permissions[]
+
+  @@map("permissions")
+  @@index([module])
+  @@index([status])
+}
+
+enum PermissionStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// 用户角色关联表
+model user_roles {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  role_id   Int
+  created_at DateTime @default(now())
+  user      users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  role      roles    @relation(fields: [role_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, role_id])
+  @@map("user_roles")
+  @@index([user_id])
+  @@index([role_id])
+}
+
+// 角色权限关联表
+model role_permissions {
+  id            Int         @id @default(autoincrement())
+  role_id       Int
+  permission_id Int
+  created_at    DateTime    @default(now())
+  role          roles       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  permission    permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+
+  @@unique([role_id, permission_id])
+  @@map("role_permissions")
+  @@index([role_id])
+  @@index([permission_id])
+}

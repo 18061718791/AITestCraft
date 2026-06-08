@@ -1,0 +1,51 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e68]:
+    - generic [ref=e69]:
+      - img "appstore" [ref=e74] [cursor=pointer]:
+        - img [ref=e75]
+      - generic [ref=e78] [cursor=pointer]:
+        - img "moon" [ref=e79]:
+          - img [ref=e80]
+        - img "sun" [ref=e82]:
+          - img [ref=e83]
+        - img "sun" [ref=e86]:
+          - img [ref=e87]
+      - generic [ref=e89] [cursor=pointer]:
+        - img "user" [ref=e92]:
+          - img [ref=e93]
+        - generic [ref=e95]: testuser
+    - generic [ref=e96]:
+      - generic [ref=e98]:
+        - generic [ref=e99]:
+          - heading "欢迎使用测试管理平台" [level=1] [ref=e100]
+          - generic [ref=e101]: 全面的测试管理解决方案，集成AI辅助功能，让测试工作更高效、更智能
+        - generic [ref=e103]:
+          - generic [ref=e106] [cursor=pointer]:
+            - img "check-square" [ref=e108]:
+              - img [ref=e109]
+            - heading "用例管理" [level=3] [ref=e112]
+            - generic [ref=e113]: 完整的测试用例生命周期管理，支持执行状态跟踪
+          - generic [ref=e116] [cursor=pointer]:
+            - img "bug" [ref=e118]:
+              - img [ref=e119]
+            - heading "缺陷管理" [level=3] [ref=e122]
+            - generic [ref=e123]: 跟踪和管理缺陷，支持状态更新和问题分析
+          - generic [ref=e126] [cursor=pointer]:
+            - img "appstore" [ref=e128]:
+              - img [ref=e129]
+            - heading "应用管理" [level=3] [ref=e131]
+            - generic [ref=e132]: 管理应用部署流程，查看待部署应用和部署历史
+          - generic [ref=e135] [cursor=pointer]:
+            - img "setting" [ref=e137]:
+              - img [ref=e138]
+            - heading "系统管理" [level=3] [ref=e140]
+            - generic [ref=e141]: 管理系统配置、数据库连接、大模型设置和系统监控
+      - generic [ref=e143]:
+        - img "check-square" [ref=e146] [cursor=pointer]:
+          - img [ref=e147]
+        - img "robot" [ref=e152] [cursor=pointer]:
+          - img [ref=e153]
+  - generic [ref=e156]:
+    - img "check-circle" [ref=e157]:
+      - img [ref=e158]
+    - generic [ref=e160]: 登录成功

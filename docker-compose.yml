@@ -1,0 +1,146 @@
+version: '3.8'
+
+# ============================================
+# AITestCraft Docker开发环境配置
+# 版本: 2.0 (支持多LLM Provider)
+# ============================================
+
+services:
+  # MySQL数据库服务
+  mysql:
+    image: mysql:8.0
+    container_name: aitestcraft-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: aitestcraft
+      MYSQL_USER: aitestcraft
+      MYSQL_PASSWORD: aitestcraft123
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # 挂载初始化SQL文件（首次启动时自动执行）
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - aitestcraft-network
+
+  # Redis缓存服务
+  redis:
+    image: redis:7-alpine
+    container_name: aitestcraft-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - aitestcraft-network
+
+  # 后端API服务
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: aitestcraft-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 9000
+      DATABASE_URL: mysql://aitestcraft:aitestcraft123@mysql:3306/aitestcraft
+      REDIS_URL: redis://redis:6379
+      
+      # LLM Provider配置
+      LLM_PROVIDER: ${LLM_PROVIDER:-deepseek}
+      
+      # DeepSeek配置
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      DEEPSEEK_API_URL: ${DEEPSEEK_API_URL:-https://api.deepseek.com/v1}
+      
+      # 火山引擎配置
+      VOLCANO_API_KEY: ${VOLCANO_API_KEY}
+      VOLCANO_BASE_URL: ${VOLCANO_BASE_URL:-https://ark.cn-beijing.volces.com/api/coding/v3}
+      
+      # LLM通用配置
+      LLM_MODEL: ${LLM_MODEL:-deepseek-chat}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.3}
+      LLM_TIMEOUT: ${LLM_TIMEOUT:-120000}
+      LLM_MAX_RETRIES: ${LLM_MAX_RETRIES:-3}
+      LLM_RETRY_DELAY: ${LLM_RETRY_DELAY:-2000}
+      LLM_BATCH_SIZE: ${LLM_BATCH_SIZE:-5}
+      
+      JWT_SECRET: ${JWT_SECRET}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      MAX_FILE_SIZE: ${MAX_FILE_SIZE:-10MB}
+      TODO_ASSIGNED_TO_ID: ${TODO_ASSIGNED_TO_ID:-130}
+      TODO_RESOLVED_STATUS_ID: ${TODO_RESOLVED_STATUS_ID:-5}
+    ports:
+      - "9000:9000"
+    volumes:
+      - uploads_data:/app/uploads
+      - logs_data:/app/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:9000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - aitestcraft-network
+
+  # 前端Web服务 - 使用Nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aitestcraft-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:9000}
+      VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:9000}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - aitestcraft-network
+
+# 数据卷定义
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  uploads_data:
+    driver: local
+  logs_data:
+    driver: local
+
+# 网络定义
+networks:
+  aitestcraft-network:
+    driver: bridge

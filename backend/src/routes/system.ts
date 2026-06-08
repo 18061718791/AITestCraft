@@ -1,0 +1,821 @@
+import { Router } from 'express';
+import { prisma } from '../utils/prisma';
+import { logger } from '../utils/logger';
+import { authMiddleware } from '../middleware/auth';
+import type { AuthRequest } from '../middleware/auth';
+
+const router = Router();
+
+// 辅助函数：检查是否是管理员
+const isAdmin = (req: AuthRequest): boolean => {
+  return req.user?.roles?.some((r: any) => r.code === 'admin') ?? false;
+};
+
+// 定义Prisma错误类型
+interface PrismaError extends Error {
+  code?: string;
+}
+
+// 获取所有系统（只返回当前用户创建的系统，管理员可查看所有）
+router.get('/systems', authMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.user?.userId;
+    const admin = isAdmin(req);
+
+    const systems = await prisma.systems.findMany({
+      where: admin ? {} : { created_by: userId ?? null },
+      orderBy: { created_at: 'asc' },
+    });
+    
+    res.json({
+      success: true,
+      data: systems,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error fetching systems:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取系统列表失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 获取完整树形结构（只返回当前用户创建的系统，管理员可查看所有）
+router.get('/systems/tree', authMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.user?.userId;
+    const admin = isAdmin(req);
+
+    const systems = await prisma.systems.findMany({
+      where: admin ? {} : { created_by: userId ?? null },
+      include: {
+        modules: {
+          include: {
+            scenarios: {
+              orderBy: { sort_order: 'asc' },
+            },
+          },
+          orderBy: { sort_order: 'asc' },
+        },
+      },
+      orderBy: { created_at: 'asc' },
+    });
+
+    // 转换为树形结构
+    const treeData = systems.map((system: any) => ({
+      key: `system-${system.id}`,
+      title: system.name,
+      description: system.description,
+      type: 'system',
+      id: system.id,
+      children: system.modules.map((module: any) => ({
+        key: `module-${module.id}`,
+        title: module.name,
+        description: module.description,
+        type: 'module',
+        id: module.id,
+        systemId: system.system_id,
+        children: module.scenarios.map((scenario: any) => ({
+          key: `scenario-${scenario.id}`,
+          title: scenario.name,
+          description: scenario.description,
+          content: scenario.content,
+          type: 'scenario',
+          id: scenario.id,
+          moduleId: scenario.module_id,
+        })),
+      })),
+    }));
+
+    res.json({
+      success: true,
+      data: treeData,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error fetching tree data:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取树形数据失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 获取单个系统详情
+router.get('/systems/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const systemId = parseInt(id);
+
+    if (isNaN(systemId)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的系统ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const system = await prisma.systems.findUnique({
+      where: { id: systemId },
+      include: {
+        modules: {
+          include: {
+            scenarios: true,
+          },
+          orderBy: { sort_order: 'asc' },
+        },
+      },
+    });
+
+    if (!system) {
+      res.status(404).json({
+        success: false,
+        error: '系统不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      data: system,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error fetching system:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取系统详情失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 创建新系统（自动关联当前用户）
+router.post('/systems', authMiddleware, async (req: AuthRequest, res) => {
+  try {
+    const { name, description } = req.body;
+    const userId = req.user?.userId;
+
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+      res.status(400).json({
+        success: false,
+        error: '系统名称不能为空',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name.length > 100) {
+      res.status(400).json({
+        success: false,
+        error: '系统名称不能超过100个字符',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const system = await prisma.systems.create({
+      data: {
+        name: name.trim(),
+        description: description?.trim() || null,
+        created_by: userId ?? null,
+        updated_at: new Date(),
+      },
+    });
+
+    logger.info(`Created new system: ${system.name} (ID: ${system.id}, CreatedBy: ${userId})`);
+
+    res.json({
+      success: true,
+      data: system,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error creating system:', error);
+    res.status(500).json({
+      success: false,
+      error: '创建系统失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 更新系统信息
+router.put('/systems/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const systemId = parseInt(id);
+    const { name, description } = req.body;
+
+    if (isNaN(systemId)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的系统ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name && (typeof name !== 'string' || name.trim() === '')) {
+      res.status(400).json({
+        success: false,
+        error: '系统名称不能为空',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name && name.length > 100) {
+      res.status(400).json({
+        success: false,
+        error: '系统名称不能超过100个字符',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const system = await prisma.systems.update({
+      where: { id: systemId },
+      data: {
+        name: name?.trim(),
+        description: description?.trim() || null,
+      },
+    });
+
+    logger.info(`Updated system: ${system.name} (ID: ${system.id})`);
+
+    res.json({
+      success: true,
+      data: system,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error updating system:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2025') {
+      res.status(404).json({
+        success: false,
+        error: '系统不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '更新系统失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 删除系统（带删除前检查）
+
+router.delete('/systems/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const systemId = parseInt(id);
+
+    if (isNaN(systemId)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的系统ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    // 检查系统是否可以删除
+    const moduleCount = await prisma.modules.count({
+      where: { system_id: systemId },
+    });
+
+    if (moduleCount > 0) {
+      res.status(409).json({
+        success: false,
+        message: `无法删除系统：该系统包含${moduleCount}个模块，请先删除所有模块后再尝试删除系统`,
+        data: {
+          childCount: moduleCount,
+          childType: 'modules',
+        },
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const system = await prisma.systems.delete({
+      where: { id: systemId },
+    });
+
+    logger.info(`Deleted system: ${system.name} (ID: ${system.id})`);
+
+    res.json({
+      success: true,
+      message: '系统删除成功',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error deleting system:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2025') {
+      res.status(404).json({
+        success: false,
+        error: '系统不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '删除系统失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 获取系统的所有模块
+router.get('/systems/:systemId/modules', async (req, res) => {
+  try {
+    const { systemId } = req.params;
+    const systemIdNum = parseInt(systemId);
+
+    if (isNaN(systemIdNum)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的系统ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const modules = await prisma.modules.findMany({
+      where: { system_id: systemIdNum },
+      include: {
+        scenarios: {
+          orderBy: { sort_order: 'asc' },
+        },
+      },
+      orderBy: { sort_order: 'asc' },
+    });
+
+    res.json({
+      success: true,
+      data: modules,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error fetching modules:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取模块列表失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 模块相关API
+
+// 创建新模块
+router.post('/systems/:systemId/modules', async (req, res) => {
+  try {
+    const { systemId } = req.params;
+    const { name, description, sortOrder = 0 } = req.body;
+
+    const systemIdNum = parseInt(systemId);
+    if (isNaN(systemIdNum)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的系统ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+      res.status(400).json({
+        success: false,
+        error: '模块名称不能为空',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name.length > 100) {
+      res.status(400).json({
+        success: false,
+        error: '模块名称不能超过100个字符',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const module = await prisma.modules.create({
+      data: {
+        name: name.trim(),
+        description: description?.trim() || null,
+        sort_order: sortOrder || 0,
+        system_id: systemIdNum,
+        updated_at: new Date(),
+      },
+    });
+
+    logger.info(`Created new module: ${module.name} (ID: ${module.id})`);
+
+    res.json({
+      success: true,
+      data: module,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error creating module:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2003') {
+      res.status(404).json({
+        success: false,
+        error: '系统不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '创建模块失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 更新模块信息
+router.put('/modules/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, sortOrder } = req.body;
+
+    const moduleId = parseInt(id);
+    if (isNaN(moduleId)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的模块ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name && (typeof name !== 'string' || name.trim() === '')) {
+      res.status(400).json({
+        success: false,
+        error: '模块名称不能为空',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name && name.length > 100) {
+      res.status(400).json({
+        success: false,
+        error: '模块名称不能超过100个字符',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const module = await prisma.modules.update({
+      where: { id: moduleId },
+      data: {
+        name: name?.trim(),
+        description: description?.trim() || null,
+        sort_order: sortOrder ?? undefined,
+      },
+    });
+
+    logger.info(`Updated module: ${module.name} (ID: ${module.id})`);
+
+    res.json({
+      success: true,
+      data: module,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error updating module:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2025') {
+      res.status(404).json({
+        success: false,
+        error: '模块不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '更新模块失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 删除模块（带删除前检查）
+router.delete('/modules/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const moduleId = parseInt(id);
+
+    if (isNaN(moduleId)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的模块ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    // 检查模块是否可以删除
+    const scenarioCount = await prisma.scenarios.count({
+      where: { module_id: moduleId },
+    });
+
+    if (scenarioCount > 0) {
+      res.status(409).json({
+        success: false,
+        message: '该模块下存在场景，无法删除',
+        data: {
+          childCount: scenarioCount,
+          childType: 'scenario',
+        },
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const module = await prisma.modules.delete({
+      where: { id: moduleId },
+    });
+
+    logger.info(`Deleted module: ${module.name} (ID: ${module.id})`);
+
+    res.json({
+      success: true,
+      message: '模块删除成功',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error deleting module:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2025') {
+      res.status(404).json({
+        success: false,
+        error: '模块不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '删除模块失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 场景相关API
+
+// 获取模块下的所有场景
+router.get('/modules/:moduleId/scenarios', async (req, res) => {
+  try {
+    const { moduleId } = req.params;
+    const moduleIdNum = parseInt(moduleId);
+
+    if (isNaN(moduleIdNum)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的模块ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const scenarios = await prisma.scenarios.findMany({
+      where: { module_id: moduleIdNum },
+      orderBy: { sort_order: 'asc' },
+    });
+
+    res.json({
+      success: true,
+      data: scenarios,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error fetching scenarios:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取场景列表失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 创建新场景
+router.post('/modules/:moduleId/scenarios', async (req, res) => {
+  try {
+    const { moduleId } = req.params;
+    const { name, description, content, sortOrder = 0 } = req.body;
+
+    const moduleIdNum = parseInt(moduleId);
+    if (isNaN(moduleIdNum)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的模块ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+      res.status(400).json({
+        success: false,
+        error: '场景名称不能为空',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name.length > 100) {
+      res.status(400).json({
+        success: false,
+        error: '场景名称不能超过100个字符',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const scenario = await prisma.scenarios.create({
+      data: {
+        name: name.trim(),
+        description: description?.trim() || null,
+        content: content?.trim() || null,
+        sort_order: sortOrder || 0,
+        module_id: moduleIdNum,
+        updated_at: new Date(),
+      },
+    });
+
+    logger.info(`Created new scenario: ${scenario.name} (ID: ${scenario.id})`);
+
+    res.json({
+      success: true,
+      data: scenario,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error creating scenario:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2003') {
+      res.status(404).json({
+        success: false,
+        error: '模块不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '创建场景失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 更新场景信息
+router.put('/scenarios/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, content, sortOrder } = req.body;
+
+    const scenarioId = parseInt(id);
+    if (isNaN(scenarioId)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的场景ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name && (typeof name !== 'string' || name.trim() === '')) {
+      res.status(400).json({
+        success: false,
+        error: '场景名称不能为空',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    if (name && name.length > 100) {
+      res.status(400).json({
+        success: false,
+        error: '场景名称不能超过100个字符',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const scenario = await prisma.scenarios.update({
+      where: { id: scenarioId },
+      data: {
+        name: name?.trim(),
+        description: description?.trim() || null,
+        content: content?.trim() || null,
+        sort_order: sortOrder ?? undefined,
+      },
+    });
+
+    logger.info(`Updated scenario: ${scenario.name} (ID: ${scenario.id})`);
+
+    res.json({
+      success: true,
+      data: scenario,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error updating scenario:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2025') {
+      res.status(404).json({
+        success: false,
+        error: '场景不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '更新场景失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+// 删除场景
+router.delete('/scenarios/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const scenarioId = parseInt(id);
+
+    if (isNaN(scenarioId)) {
+      res.status(400).json({
+        success: false,
+        error: '无效的场景ID',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const scenario = await prisma.scenarios.delete({
+      where: { id: scenarioId },
+    });
+
+    logger.info(`Deleted scenario: ${scenario.name} (ID: ${scenario.id})`);
+
+    res.json({
+      success: true,
+      message: '场景删除成功',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Error deleting scenario:', error);
+    const prismaError = error as PrismaError;
+    if (prismaError.code === 'P2025') {
+      res.status(404).json({
+        success: false,
+        error: '场景不存在',
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      error: '删除场景失败',
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+});
+
+export default router;

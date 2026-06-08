@@ -1,0 +1,154 @@
+- generic [ref=e161]:
+  - generic [ref=e163]:
+    - generic [ref=e167] [cursor=pointer]: 功能菜单
+    - generic:
+      - generic:
+        - heading "缺陷管理" [level=5]
+        - button "pushpin":
+          - generic:
+            - img "pushpin":
+              - img
+      - generic:
+        - menu:
+          - menuitem "bug 问题列表":
+            - img "bug":
+              - img
+            - generic: 问题列表
+          - menuitem "appstore 紧急问题跟踪":
+            - img "appstore":
+              - img
+            - generic: 紧急问题跟踪
+          - menuitem "bar-chart 数据分析":
+            - img "bar-chart":
+              - img
+            - generic: 数据分析
+          - menuitem "check-square 我的待办":
+            - img "check-square":
+              - img
+            - generic: 我的待办
+          - menuitem "robot 缺陷助手":
+            - img "robot":
+              - img
+            - generic: 缺陷助手
+  - main [ref=e168]:
+    - generic [ref=e171]:
+      - generic [ref=e173]:
+        - generic [ref=e174]:
+          - generic [ref=e175]: ◤
+          - generic [ref=e177]: ◥
+        - generic [ref=e178]:
+          - generic [ref=e179]: AITestCraft 自动化测试平台
+          - generic [ref=e180]: AUTOMATED TESTING PLATFORM
+      - generic [ref=e181]:
+        - generic [ref=e182] [cursor=pointer]:
+          - img "bell" [ref=e183]:
+            - img [ref=e184]
+          - generic [ref=e186]: 我的待办
+        - generic [ref=e187]:
+          - generic [ref=e188]:
+            - generic [ref=e189]: system
+            - generic [ref=e190]: 缺陷管理
+          - generic [ref=e192]:
+            - generic [ref=e193]: module
+            - generic [ref=e194]: 缺陷助手
+        - generic [ref=e195] [cursor=pointer]:
+          - img "user" [ref=e198]:
+            - img [ref=e199]
+          - generic [ref=e201]: admin
+    - generic [ref=e206]:
+      - generic [ref=e207]:
+        - button "plus 新建会话" [ref=e209] [cursor=pointer]:
+          - img "plus" [ref=e211]:
+            - img [ref=e212]
+          - generic [ref=e215]: 新建会话
+        - generic [ref=e217] [cursor=pointer]:
+          - generic [ref=e218]:
+            - generic [ref=e219]: 新会话
+            - generic [ref=e220]: 2026/5/18
+          - button "delete" [ref=e221]:
+            - img "delete" [ref=e223]:
+              - img [ref=e224]
+        - button "clear 清空会话" [ref=e227] [cursor=pointer]:
+          - img "clear" [ref=e229]:
+            - img [ref=e230]
+          - generic [ref=e232]: 清空会话
+      - generic [ref=e233]:
+        - generic [ref=e235]:
+          - img "robot" [ref=e238]:
+            - img [ref=e239]
+          - generic [ref=e242]: 您好！我是您的缺陷小助手，可以帮您查询问题列表、分析问题趋势和分布情况。请问有什么可以帮您的？
+        - generic [ref=e243]:
+          - text: 快捷查询：
+          - generic [ref=e244]:
+            - generic [ref=e246] [cursor=pointer]: 查看物联应用已解决的问题
+            - generic [ref=e248] [cursor=pointer]: 物联平台问题趋势分析
+            - generic [ref=e250] [cursor=pointer]: 问题分布分析
+            - generic [ref=e252] [cursor=pointer]: 生成问题分析报告
+            - generic [ref=e254] [cursor=pointer]: 查看智能物联项目已关闭问题的数量
+            - generic [ref=e256] [cursor=pointer]: 查看物联应用新建状态的问题数量
+        - generic [ref=e257]:
+          - textbox "请输入您想查询的内容，如：查看物联应用已解决的问题" [ref=e258]
+          - generic [ref=e259]:
+            - button "send 发送" [ref=e261] [cursor=pointer]:
+              - img "send" [ref=e263]:
+                - img [ref=e264]
+              - generic [ref=e266]: 发送
+            - button "reload 新会话" [ref=e268] [cursor=pointer]:
+              - img "reload" [ref=e270]:
+                - img [ref=e271]
+              - generic [ref=e273]: 新会话
+  - generic [ref=e275]:
+    - generic [ref=e279] [cursor=pointer]: 快速导航
+    - generic:
+      - generic:
+        - generic:
+          - heading "快速导航" [level=5]
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - img "appstore":
+                      - img
+          - button "pushpin":
+            - generic:
+              - img "pushpin":
+                - img
+      - generic:
+        - generic:
+          - generic:
+            - img "home":
+              - img
+          - generic: 首页
+        - generic:
+          - generic:
+            - img "unordered-list":
+              - img
+          - generic: 用例管理
+        - generic:
+          - generic:
+            - img "bug":
+              - img
+          - generic: 缺陷管理
+        - generic:
+          - generic:
+            - img "appstore":
+              - img
+          - generic: 应用管理
+        - generic:
+          - generic:
+            - img "setting":
+              - img
+          - generic: 系统管理
+      - generic:
+        - generic:
+          - generic:
+            - img "moon":
+              - img
+            - img "sun":
+              - img
+            - generic:
+              - img "sun":
+                - img
+  - generic [ref=e283] [cursor=pointer]: 任务窗口(1)

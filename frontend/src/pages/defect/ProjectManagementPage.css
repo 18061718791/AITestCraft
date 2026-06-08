@@ -1,0 +1,84 @@
+/* 项目管理页面弹窗样式 - 浮动弹窗 */
+.project-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.project-modal-floating {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.5);
+  min-width: 400px;
+  pointer-events: auto;
+}
+
+.project-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #334155;
+}
+
+.project-modal-title {
+  color: #f1f5f9;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.project-modal-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.project-modal-close:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.project-modal-body {
+  padding: 24px;
+}
+
+.project-modal-body .ant-form-item-label > label {
+  color: #f1f5f9;
+}
+
+.project-modal-body .ant-input {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.project-modal-body .ant-input::placeholder {
+  color: #64748b;
+}
+
+.project-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid #334155;
+}

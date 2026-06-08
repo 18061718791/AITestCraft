@@ -1,0 +1,145 @@
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../src/generated/prisma"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model modules {
+  id          Int          @id @default(autoincrement())
+  system_id   Int
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  sort_order  Int          @default(0)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  systems     systems      @relation(fields: [system_id], references: [id], onDelete: Cascade)
+  scenarios   scenarios[]
+  test_cases  test_cases[]
+
+  @@index([system_id], map: "modules_system_id_fkey")
+}
+
+model scenarios {
+  id          Int          @id @default(autoincrement())
+  module_id   Int
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  content     String?      @db.Text
+  sort_order  Int          @default(0)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  modules     modules      @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  test_cases  test_cases[]
+
+  @@index([module_id], map: "scenarios_module_id_fkey")
+}
+
+model systems {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(100)
+  description String?      @db.Text
+  created_at  DateTime     @default(now())
+  updated_at  DateTime
+  modules     modules[]
+  test_cases  test_cases[]
+}
+
+model test_cases {
+  id              Int               @id @default(autoincrement())
+  title           String            @db.VarChar(255)
+  precondition    String?           @db.Text
+  steps           String            @db.Text
+  expectedResults String            @db.Text
+  priority        String            @db.VarChar(10)
+  source          String            @db.VarChar(10)
+  systemId        Int?
+  moduleId        Int?
+  scenarioId      Int?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime
+  deleted_at      DateTime?
+  tags            Json?
+  status          test_cases_status @default(PENDING)
+  modules         modules?          @relation(fields: [moduleId], references: [id])
+  scenarios       scenarios?        @relation(fields: [scenarioId], references: [id])
+  systems         systems?          @relation(fields: [systemId], references: [id])
+
+  @@index([created_at])
+  @@index([moduleId])
+  @@index([priority])
+  @@index([scenarioId])
+  @@index([source])
+  @@index([status])
+  @@index([systemId])
+}
+
+enum test_cases_status {
+  PENDING
+  PASSED
+  FAILED
+  SKIPPED
+}
+
+// 消息推送配置模型
+model notification_recipients {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @db.VarChar(100)
+  send_key  String   @db.VarChar(255)
+  active    Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model notification_settings {
+  id        Int      @id @default(autoincrement())
+  enabled   Boolean  @default(true)
+  start_time String   @db.VarChar(5)  // 格式: HH:MM
+  end_time   String   @db.VarChar(5)  // 格式: HH:MM
+  interval   Int      @default(60)     // 推送间隔（分钟）
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  unique_record notification_settings_unique?
+}
+
+// 确保只有一条设置记录
+model notification_settings_unique {
+  id        Int      @id @default(1)
+  setting_id Int      @unique
+  settings  notification_settings @relation(fields: [setting_id], references: [id], onDelete: Cascade)
+
+  @@unique([id])
+}
+
+// 项目管理模型
+model projects {
+  id          String        @id
+  name        String        @db.VarChar(255)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  directories directories[]
+
+  @@map("projects")
+}
+
+model directories {
+  uuid        String?      @default(cuid())
+  id          String       @id @db.VarChar(255)
+  name        String       @db.VarChar(255)
+  project_id  String
+  parent_id   String
+  level       Int
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  project     projects     @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  // 移除parent_id的外键约束，因为二级目录的parent_id是项目ID
+
+  @@map("directories")
+  @@index([project_id])
+  @@index([parent_id])
+}

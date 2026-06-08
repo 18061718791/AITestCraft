@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select 组件调试</title>
+    <style>
+        /* 模拟暗色主题 */
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #f1f5f9;
+        }
+        
+        .debug-section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+        }
+        
+        /* 强制显示所有元素的边框，帮助调试 */
+        .debug-section * {
+            outline: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        /* 高亮可能有问题的元素 */
+        .ant-select-selection-item {
+            background-color: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+        
+        .ant-select-selection-search-input {
+            background-color: transparent !important;
+            opacity: 0 !important;
+        }
+        
+        .ant-select-selector {
+            background-color: #1e293b !important;
+            border-color: #475569 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select 组件调试页面</h1>
+        
+        <div class="debug-section">
+            <h2>问题列表 - 选择项目</h2>
+            <div class="ant-select ant-select-single ant-select-show-arrow" style="width: 200px;">
+                <div class="ant-select-selector">
+                    <span class="ant-select-selection-search">
+                        <input type="search" autocomplete="off" class="ant-select-selection-search-input" role="combobox" aria-expanded="false" aria-haspopup="listbox" readonly="" unselectable="on" value="" style="opacity: 0;">
+                    </span>
+                    <span class="ant-select-selection-item" title="智能物联">智能物联</span>
+                </div>
+                <span class="ant-select-arrow" style="user-select: none;" unselectable="on" aria-hidden="true">
+                    <span role="img" aria-label="down" class="anticon anticon-down ant-select-suffix">
+                        <svg viewBox="64 64 896 896" focusable="false" data-icon="down" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                            <path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.7 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path>
+                        </svg>
+                    </span>
+                </span>
+            </div>
+        </div>
+        
+        <div class="debug-section">
+            <h2>元素结构说明</h2>
+            <pre style="background-color: #0f172a; padding: 10px; border-radius: 4px; overflow-x: auto;">
+.ant-select (容器)
+  ├── .ant-select-selector (选择器)
+  │     ├── .ant-select-selection-search (搜索框容器)
+  │     │     └── .ant-select-selection-search-input (搜索输入框, opacity: 0)
+  │     └── .ant-select-selection-item (选中项, 显示文字 "智能物联")
+  └── .ant-select-arrow (下拉箭头)
+            </pre>
+        </div>
+        
+        <div class="debug-section">
+            <h2>可能的问题</h2>
+            <ul>
+                <li><code>.ant-select-selection-item</code> 可能有默认背景色</li>
+                <li><code>.ant-select-selector</code> 可能有默认背景色</li>
+                <li><code>.ant-select-selection-search</code> 可能有默认背景色</li>
+                <li>全局的 <code>background-color: inherit</code> 可能影响了某些元素</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

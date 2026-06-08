@@ -1,0 +1,481 @@
+/**
+ * 我的待办提醒功能 - 提醒弹窗样式
+ * 优化为右下角弹出，支持暗色主题
+ */
+
+/* 弹窗容器 - 固定在右下角 */
+.todo-reminder-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* 从底部向上滑入动画 */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 向下滑出动画 */
+.todo-reminder-toast.closing {
+  animation: slideDown 0.3s ease-in forwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+/* 提醒卡片 - 参照 TodoStatsBadge 风格 */
+.reminder-card {
+  width: 300px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.reminder-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.reminder-card .ant-card-body {
+  padding: 16px;
+}
+
+/* 提醒内容 */
+.reminder-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 头部 */
+.reminder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bell-icon {
+  font-size: 18px;
+  color: #00d4ff;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #262626;
+}
+
+.close-btn {
+  padding: 4px;
+  width: auto;
+  height: auto;
+  color: #8c8c8c;
+}
+
+.close-btn:hover {
+  color: #595959;
+  background-color: #f5f5f5;
+}
+
+/* 主体 */
+.reminder-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.message {
+  font-size: 14px;
+  color: #595959;
+  line-height: 1.5;
+}
+
+.count {
+  color: #ff4d4f;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.hint {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+/* 底部 */
+.reminder-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.view-btn {
+  font-size: 12px;
+}
+
+/* ==================== Popover 样式 - 参照 TodoStatsBadge ==================== */
+
+/* Popover 样式 - 浅色主题 */
+.todo-reminder-popover.light .ant-popover-inner {
+  min-width: 260px;
+  max-width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Popover 样式 - 深色主题（科技蓝黑色调） */
+.todo-reminder-popover.dark .ant-popover-inner {
+  min-width: 260px;
+  max-width: 320px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.15), 0 0 30px rgba(0, 212, 255, 0.1);
+}
+
+.todo-reminder-popover .ant-popover-inner-content {
+  padding: 0;
+}
+
+/* ==================== 统计内容样式 - 参照 TodoStatsBadge ==================== */
+
+/* 统计内容 - 浅色 */
+.todo-reminder-detail-content.light {
+  padding: 10px;
+  background: #ffffff;
+}
+
+/* 统计内容 - 深色 */
+.todo-reminder-detail-content.dark {
+  padding: 10px;
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* 头部 - 浅色 */
+.detail-header.light {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+/* 头部 - 深色 */
+.detail-header.dark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* 标题 - 浅色 */
+.detail-title.light {
+  font-weight: 600;
+  font-size: 14px;
+  color: #262626;
+}
+
+/* 标题 - 深色 */
+.detail-title.dark {
+  font-weight: 600;
+  font-size: 14px;
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* 统计列表 */
+.detail-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ==================== 项目卡片样式 - 参照 TodoStatsBadge ==================== */
+
+/* 项目卡片 - 浅色 */
+.detail-project-card.light {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* 项目卡片 - 深色 */
+.detail-project-card.dark {
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.05);
+}
+
+/* 项目卡片头部 - 浅色 */
+.detail-project-header.light {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: #d9f7be;
+  border-bottom: 1px dashed #b7eb8f;
+}
+
+/* 项目卡片头部 - 深色 */
+.detail-project-header.dark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(0, 212, 255, 0.12);
+  border-bottom: 1px dashed rgba(0, 212, 255, 0.4);
+}
+
+/* 可点击样式 */
+.clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clickable:hover {
+  opacity: 0.9;
+}
+
+/* 项目卡片标题悬浮效果 - 浅色 */
+.detail-project-header.light.clickable:hover .detail-project-title {
+  color: #1890ff;
+}
+
+/* 项目卡片标题悬浮效果 - 深色 */
+.detail-project-header.dark.clickable:hover .detail-project-title {
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* 项目卡片标题 - 浅色 */
+.detail-project-title.light {
+  font-weight: 600;
+  font-size: 13px;
+  color: #262626;
+}
+
+/* 项目卡片标题 - 深色 */
+.detail-project-title.dark {
+  font-weight: 600;
+  font-size: 13px;
+  color: #e8e8e8;
+}
+
+/* 项目卡片数量 - 浅色 */
+.detail-project-count.light {
+  color: #ff4d4f;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(255, 77, 79, 0.1);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* 项目卡片数量 - 深色 */
+.detail-project-count.dark {
+  color: #ff4d4f;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(255, 77, 79, 0.15);
+  border: 1px solid rgba(255, 77, 79, 0.3);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+  box-shadow: 0 0 4px rgba(255, 77, 79, 0.2);
+}
+
+/* 项目卡片内容体 - 浅色 */
+.detail-project-body.light {
+  padding: 8px 12px;
+}
+
+/* 项目卡片内容体 - 深色 */
+.detail-project-body.dark {
+  padding: 8px 12px;
+}
+
+/* ==================== 子系统行样式 - 参照 TodoStatsBadge ==================== */
+
+/* 子系统行 - 浅色 */
+.detail-system-row.light {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e8e8e8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.detail-system-row.light:last-child {
+  border-bottom: none;
+}
+
+.detail-system-row.light:hover {
+  background: rgba(24, 144, 255, 0.05);
+  margin: 0 -12px;
+  padding: 6px 12px;
+}
+
+.detail-system-row.light:hover .detail-system-name {
+  color: #1890ff;
+}
+
+/* 子系统行 - 深色 */
+.detail-system-row.dark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(0, 212, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.detail-system-row.dark:last-child {
+  border-bottom: none;
+}
+
+.detail-system-row.dark:hover {
+  background: rgba(0, 212, 255, 0.08);
+  margin: 0 -12px;
+  padding: 6px 12px;
+}
+
+.detail-system-row.dark:hover .detail-system-name {
+  color: #00d4ff;
+  text-shadow: 0 0 6px rgba(0, 212, 255, 0.4);
+}
+
+/* 子系统名称 - 浅色 */
+.detail-system-name.light {
+  color: #595959;
+  font-weight: 500;
+  font-size: 12px;
+  flex: 1;
+}
+
+/* 子系统名称 - 深色 */
+.detail-system-name.dark {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  font-size: 12px;
+  flex: 1;
+}
+
+/* 子系统数量 - 浅色 */
+.detail-system-count.light {
+  color: #00d4ff;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(0, 212, 255, 0.1);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* 子系统数量 - 深色 */
+.detail-system-count.dark {
+  color: #00d4ff;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: auto;
+  padding: 2px 8px;
+  background: rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  min-width: 30px;
+  text-align: center;
+  box-shadow: 0 0 4px rgba(0, 212, 255, 0.2);
+}
+
+/* 滚动条样式 */
+.todo-reminder-popover .ant-popover-inner::-webkit-scrollbar {
+  width: 6px;
+}
+
+.todo-reminder-popover .ant-popover-inner::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 3px;
+}
+
+.todo-reminder-popover .ant-popover-inner::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+.todo-reminder-popover.dark .ant-popover-inner::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 212, 255, 0.3);
+  border-radius: 3px;
+}
+
+.todo-reminder-popover.dark .ant-popover-inner::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* ==================== 暗色主题适配 - 弹窗主体 ==================== */
+
+/* 暗色主题 - 弹窗卡片 */
+.todo-reminder-toast.dark .reminder-card {
+  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.15), 0 0 30px rgba(0, 212, 255, 0.1);
+}
+
+.todo-reminder-toast.dark .title {
+  color: #e8e8e8;
+}
+
+.todo-reminder-toast.dark .message {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.todo-reminder-toast.dark .hint {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.todo-reminder-toast.dark .close-btn {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.todo-reminder-toast.dark .close-btn:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(0, 212, 255, 0.1);
+}

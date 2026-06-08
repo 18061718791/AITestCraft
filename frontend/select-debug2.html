@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select 组件深度调试</title>
+    <style>
+        /* 模拟暗色主题 */
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1, h2 {
+            color: #f1f5f9;
+        }
+        
+        .debug-section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+        }
+        
+        /* 高亮所有可能有背景色的元素 */
+        .debug-section [class*="ant-select"] {
+            outline: 2px solid rgba(255, 0, 0, 0.5);
+        }
+        
+        /* 模拟 Ant Design Select 的完整结构 */
+        .ant-select {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            font-variant: tabular-nums;
+            line-height: 1.5715;
+            list-style: none;
+            font-feature-settings: 'tnum';
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .ant-select-selector {
+            position: relative;
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+            width: 200px;
+            height: 32px;
+            padding: 0 11px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ant-select-selection-search {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            bottom: 0;
+            left: 11px;
+            display: flex;
+            align-items: center;
+            /* 这可能是灰色背景的来源 */
+            background-color: transparent;
+        }
+        
+        .ant-select-selection-search-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .ant-select-selection-item {
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding-right: 18px;
+            /* 选中项的背景色 */
+            background-color: #334155;
+            border-radius: 4px;
+            padding: 2px 8px;
+        }
+        
+        .ant-select-arrow {
+            position: absolute;
+            top: 50%;
+            right: 11px;
+            width: 12px;
+            height: 12px;
+            margin-top: -6px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            line-height: 1;
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        /* 测试不同的背景色设置 */
+        .test-case-1 .ant-select-selector {
+            background-color: #1e293b;
+        }
+        
+        .test-case-2 .ant-select-selector {
+            background-color: transparent;
+        }
+        
+        .test-case-3 .ant-select-selection-item {
+            background-color: transparent;
+        }
+        
+        .test-case-4 .ant-select-selection-search {
+            background-color: #334155;
+        }
+        
+        /* 可能的罪魁祸首：全局继承 */
+        .simulate-global-style * {
+            background-color: inherit;
+        }
+        
+        .simulate-global-style .ant-select-selector {
+            background-color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select 组件深度调试</h1>
+        
+        <div class="debug-section">
+            <h2>标准结构（当前实现）</h2>
+            <div class="ant-select ant-select-single ant-select-show-arrow">
+                <div class="ant-select-selector">
+                    <span class="ant-select-selection-search">
+                        <input type="search" autocomplete="off" class="ant-select-selection-search-input" role="combobox" aria-expanded="false" aria-haspopup="listbox" readonly="" unselectable="on" value="" style="opacity: 0;">
+                    </span>
+                    <span class="ant-select-selection-item" title="智能物联">智能物联</span>
+                </div>
+                <span class="ant-select-arrow">▼</span>
+            </div>
+        </div>
+        
+        <div class="debug-section test-case-1">
+            <h2>测试用例 1：selector 有背景色</h2>
+            <div class="ant-select ant-select-single ant-select-show-arrow">
+                <div class="ant-select-selector">
+                    <span class="ant-select-selection-search">
+                        <input type="search" class="ant-select-selection-search-input" style="opacity: 0;">
+                    </span>
+                    <span class="ant-select-selection-item">智能物联</span>
+                </div>
+                <span class="ant-select-arrow">▼</span>
+            </div>
+        </div>
+        
+        <div class="debug-section test-case-2">
+            <h2>测试用例 2：selector 透明背景</h2>
+            <div class="ant-select ant-select-single ant-select-show-arrow">
+                <div class="ant-select-selector">
+                    <span class="ant-select-selection-search">
+                        <input type="search" class="ant-select-selection-search-input" style="opacity: 0;">
+                    </span>
+                    <span class="ant-select-selection-item">智能物联</span>
+                </div>
+                <span class="ant-select-arrow">▼</span>
+            </div>
+        </div>
+        
+        <div class="debug-section test-case-3">
+            <h2>测试用例 3：selection-item 透明背景</h2>
+            <div class="ant-select ant-select-single ant-select-show-arrow">
+                <div class="ant-select-selector">
+                    <span class="ant-select-selection-search">
+                        <input type="search" class="ant-select-selection-search-input" style="opacity: 0;">
+                    </span>
+                    <span class="ant-select-selection-item">智能物联</span>
+                </div>
+                <span class="ant-select-arrow">▼</span>
+            </div>
+        </div>
+        
+        <div class="debug-section test-case-4">
+            <h2>测试用例 4：selection-search 有背景色（可能的罪魁祸首）</h2>
+            <div class="ant-select ant-select-single ant-select-show-arrow">
+                <div class="ant-select-selector">
+                    <span class="ant-select-selection-search">
+                        <input type="search" class="ant-select-selection-search-input" style="opacity: 0;">
+                    </span>
+                    <span class="ant-select-selection-item">智能物联</span>
+                </div>
+                <span class="ant-select-arrow">▼</span>
+            </div>
+        </div>
+        
+        <div class="debug-section simulate-global-style">
+            <h2>测试用例 5：模拟全局 inherit 样式</h2>
+            <div class="ant-select ant-select-single ant-select-show-arrow">
+                <div class="ant-select-selector">
+                    <span class="ant-select-selection-search">
+                        <input type="search" class="ant-select-selection-search-input" style="opacity: 0;">
+                    </span>
+                    <span class="ant-select-selection-item">智能物联</span>
+                </div>
+                <span class="ant-select-arrow">▼</span>
+            </div>
+            <p style="color: #ff6b6b; margin-top: 10px;">注意：这个测试用例模拟了全局的 `* { background-color: inherit; }` 样式</p>
+        </div>
+        
+        <div class="debug-section">
+            <h2>问题分析</h2>
+            <p>如果 .ant-select-selection-item 没有 background-color，灰色背景可能来自：</p>
+            <ul>
+                <li>1. <code>.ant-select-selector</code> 的默认背景色</li>
+                <li>2. <code>.ant-select-selection-search</code> 的默认背景色</li>
+                <li>3. 父元素的背景色通过 inherit 继承</li>
+                <li>4. Ant Design 的默认样式</li>
+                <li>5. 浏览器默认样式</li>
+            </ul>
+        </div>
+        
+        <div class="debug-section">
+            <h2>解决方案</h2>
+            <p>需要在 CSS 中明确设置以下元素的背景色：</p>
+            <pre style="background-color: #0f172a; padding: 10px; border-radius: 4px; overflow-x: auto;">
+.dark .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+.dark .ant-select-selection-item {
+  background-color: #334155 !important;
+}
+
+.dark .ant-select-selection-search {
+  background-color: transparent !important;
+}
+            </pre>
+        </div>
+    </div>
+</body>
+</html>

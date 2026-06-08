@@ -1,0 +1,3359 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root {
+  height: 100vh;
+}
+
+/* 自定义滚动条样式 - 亮色模式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 深色模式滚动条 */
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* 菜单栏折叠优化样式 */
+.ant-layout-sider {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.ant-layout-sider-collapsed .ant-menu-inline-collapsed {
+  transition: all 0.3s ease-in-out;
+}
+
+.ant-menu-inline-collapsed .ant-menu-item {
+  padding-left: 0 !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 80px !important;
+  margin: 0 auto !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-item-icon {
+  margin-right: 0 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+.ant-menu-inline-collapsed .ant-menu-title-content {
+  display: none !important;
+}
+
+/* 折叠状态下的标题优化 */
+.ant-layout-sider-collapsed .ant-typography {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .ant-layout-sider {
+    position: fixed !important;
+    height: 100vh;
+    z-index: 1000;
+  }
+  
+  .ant-layout-sider-collapsed {
+    transform: translateX(-100%);
+  }
+}
+
+/* 脉冲动画 - 用于状态指示器 */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 8px #52c41a;
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 16px #52c41a, 0 0 24px rgba(82, 196, 26, 0.5);
+  }
+}
+
+/* 扫描线动画 */
+@keyframes scanLine {
+  0% {
+    transform: translateY(-50%) scaleY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-50%) scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50%) scaleY(0);
+    opacity: 0;
+  }
+}
+
+/* 背景扫描动画 */
+@keyframes scanBg {
+  0% {
+    left: '-100%';
+  }
+  100% {
+    left: '100%';
+  }
+}
+
+/* 数据流动画 */
+@keyframes dataFlow {
+  0%, 100% {
+    width: '0%';
+    opacity: 0.3;
+  }
+  50% {
+    width: '100%';
+    opacity: 0.8;
+  }
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==================== 应用配置弹窗样式 - 强制去除灰色背景 ==================== */
+
+/* 强制去除Modal header的所有背景 */
+.app-config-modal .ant-modal-header,
+.app-config-modal .ant-modal-title,
+.webhook-secret-modal .ant-modal-header,
+.webhook-secret-modal .ant-modal-title,
+.deployment-history-modal .ant-modal-header,
+.deployment-history-modal .ant-modal-title,
+.project-mgmt-modal .ant-modal-header,
+.project-mgmt-modal .ant-modal-title,
+.test-case-modal .ant-modal-header,
+.test-case-modal .ant-modal-title {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* 深色主题下的应用配置弹窗 */
+.dark .app-config-modal .ant-modal-header,
+.dark .app-config-modal .ant-modal-title,
+.dark .webhook-secret-modal .ant-modal-header,
+.dark .webhook-secret-modal .ant-modal-title,
+.dark .deployment-history-modal .ant-modal-header,
+.dark .deployment-history-modal .ant-modal-title,
+.dark .project-mgmt-modal .ant-modal-header,
+.dark .project-mgmt-modal .ant-modal-title,
+.dark .project-create-modal .ant-modal-header,
+.dark .project-create-modal .ant-modal-title,
+.dark .project-edit-modal .ant-modal-header,
+.dark .project-edit-modal .ant-modal-title,
+.dark .test-case-modal .ant-modal-header,
+.dark .test-case-modal .ant-modal-title {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-bottom: none !important;
+}
+
+/* 覆盖所有可能的header样式 */
+.app-config-modal .ant-modal-content .ant-modal-header,
+.webhook-secret-modal .ant-modal-content .ant-modal-header,
+.deployment-history-modal .ant-modal-content .ant-modal-header,
+.project-mgmt-modal .ant-modal-content .ant-modal-header,
+.project-create-modal .ant-modal-content .ant-modal-header,
+.project-edit-modal .ant-modal-content .ant-modal-header,
+.test-case-modal .ant-modal-content .ant-modal-header {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* ==================== Switch组件圆角优化 ==================== */
+
+/* 全局Switch组件圆角 */
+.ant-switch {
+  border-radius: 100px !important;
+  min-width: 44px !important;
+  height: 22px !important;
+}
+
+/* Switch内部轨道 */
+.ant-switch-inner {
+  border-radius: 100px !important;
+}
+
+/* Switch滑块 */
+.ant-switch-handle {
+  border-radius: 50% !important;
+  width: 18px !important;
+  height: 18px !important;
+  top: 2px !important;
+  left: 2px !important;
+}
+
+/* Switch开启状态滑块位置 */
+.ant-switch-checked .ant-switch-handle {
+  left: calc(100% - 20px) !important;
+}
+
+/* 深色主题下的Switch */
+.dark .ant-switch {
+  background-color: #334155 !important;
+  border-radius: 100px !important;
+}
+
+.dark .ant-switch-checked {
+  background-color: #00d4ff !important;
+}
+
+.dark .ant-switch-handle {
+  background-color: #fff !important;
+  border-radius: 50% !important;
+}
+
+/* 确保Switch没有棱角 */
+.dark .ant-switch,
+.dark .ant-switch-inner,
+.dark .ant-switch-handle,
+.ant-switch,
+.ant-switch-inner,
+.ant-switch-handle {
+  border-radius: 100px !important;
+}
+
+/* ==================== Modal弹窗样式优化 ==================== */
+
+/* 修复Modal content下方多余空间 */
+.ant-modal-content {
+  overflow: hidden !important;
+}
+
+/* Modal毛玻璃效果 - 亮色系 */
+.ant-modal-content {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 深色主题下的毛玻璃效果 */
+.dark .ant-modal-content {
+  background: rgba(30, 41, 59, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 修复Modal body下方padding - 不要强制24px */
+.ant-modal-body {
+  padding-bottom: 0 !important;
+}
+
+/* 亮色系Modal文字颜色 */
+.ant-modal-title {
+  color: #1f2937 !important;
+}
+
+.ant-modal-title h1,
+.ant-modal-title h2,
+.ant-modal-title h3,
+.ant-modal-title h4,
+.ant-modal-title h5,
+.ant-modal-title h6,
+.ant-modal-title div {
+  color: inherit !important;
+}
+
+/* 亮色系下标题主文字 */
+.ant-modal-title div[style*="font-size: 18px"] {
+  color: #1f2937 !important;
+  text-shadow: none !important;
+}
+
+/* 亮色系下标题副文字 */
+.ant-modal-title div[style*="font-size: 10px"] {
+  color: #6b7280 !important;
+}
+
+/* 深色主题保持原有颜色 */
+.dark .ant-modal-title {
+  color: #fff !important;
+}
+
+.dark .ant-modal-title div[style*="font-size: 18px"] {
+  color: #fff !important;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 40px rgba(0, 212, 255, 0.3) !important;
+}
+
+.dark .ant-modal-title div[style*="font-size: 10px"] {
+  color: #00d4ff !important;
+}
+
+/* 深色主题下的Modal优化 */
+.dark .ant-modal-content {
+  overflow: hidden !important;
+  background-color: var(--bg-container, #1e293b) !important;
+}
+
+.dark .ant-modal-body {
+  padding-bottom: 0 !important;
+}
+
+/* 修复Modal根元素 */
+.ant-modal {
+  padding-bottom: 0 !important;
+}
+
+/* 修复Modal圆角 - 亮色系 */
+.ant-modal-content {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* 修复Modal header圆角 - 亮色系 */
+.ant-modal-header {
+  border-radius: 12px 12px 0 0 !important;
+  background-color: transparent !important;
+}
+
+/* 修复Modal body背景 - 亮色系 */
+.ant-modal-body {
+  background-color: transparent !important;
+}
+
+/* 修复Modal footer - 亮色系 */
+.ant-modal-footer {
+  background-color: transparent !important;
+  border-radius: 0 0 12px 12px !important;
+}
+
+/* 深色主题下的Modal圆角 */
+.dark .ant-modal-content {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background-color: var(--bg-container, #1e293b) !important;
+}
+
+.dark .ant-modal-header {
+  border-radius: 12px 12px 0 0 !important;
+  background-color: transparent !important;
+}
+
+.dark .ant-modal-body {
+  background-color: var(--bg-container, #1e293b) !important;
+}
+
+.dark .ant-modal-footer {
+  background-color: var(--bg-container, #1e293b) !important;
+  border-radius: 0 0 12px 12px !important;
+}
+
+/* Modal居中显示 - 只影响Modal本身，不影响遮罩层 */
+.ant-modal {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  position: absolute !important;
+}
+
+/* 修复Modal遮罩层 - 亮色系朦胧效果 */
+.ant-modal-mask {
+  background: rgba(0, 0, 0, 0.2) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* 深色主题下的遮罩层 */
+.dark .ant-modal-mask {
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* 确保遮罩层在Modal关闭时正确隐藏 */
+.ant-modal-mask-hidden {
+  display: none !important;
+}
+
+/* 修复Modal wrap层 - 确保遮罩层正常工作 */
+.ant-modal-wrap {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: auto !important;
+  outline: 0 !important;
+  background-color: transparent !important;
+}
+
+/* 深色主题下的Modal wrap */
+.dark .ant-modal-wrap {
+  background-color: transparent !important;
+}
+
+/* 修复Modal动画 */
+.ant-modal.zoom-appear,
+.ant-modal.zoom-enter {
+  animation-duration: 0.3s;
+}
+
+.ant-modal.zoom-leave {
+  animation-duration: 0.2s;
+}
+
+/* Switch聚焦状态 */
+.ant-switch:focus {
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 页面切换动画 */
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes page-exit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.98);
+  }
+}
+
+/* 路由切换动画 */
+.route-enter {
+  animation: page-enter 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.route-exit {
+  animation: page-exit 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 页面内容区域动画 */
+.page-content {
+  animation: page-enter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 主题切换过渡动画 */
+* {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
+
+/* 禁用某些元素的主题过渡 */
+.ant-modal-mask,
+.ant-drawer-mask,
+.ant-tooltip,
+.ant-dropdown-menu,
+.ant-select-dropdown {
+  transition: none !important;
+}
+
+/* 全局背景色修复 - 确保没有白底 */
+.ant-layout {
+  background: var(--bg-layout, #f0f2f5);
+}
+
+.ant-layout-sider {
+  background: var(--bg-container, #fff);
+}
+
+.ant-layout-header {
+  background: var(--bg-container, #fff);
+}
+
+.ant-layout-content {
+  background: var(--bg-container, #fff);
+}
+
+/* 深色模式全局覆盖 */
+.dark {
+  background-color: #0f172a;
+}
+
+.dark body {
+  background-color: #0f172a;
+}
+
+.dark #root {
+  background-color: #0f172a;
+}
+
+/* 修复所有可能的白色背景 - 排除表单组件以避免边框被遮挡 */
+.dark *:not(.ant-select):not(.ant-select-selector):not(.ant-input):not(.ant-picker):not(.ant-input-affix-wrapper):not(.ant-input-number):not(.ant-input-number-input):not(.ant-select-selection-item):not(.ant-select-selection-placeholder):not(.ant-select-dropdown):not(.ant-select-item):not(.ant-select-item-option):not(.ant-select-item-option-content):not(.ant-select-selection-overflow):not(.ant-select-selection-overflow-item):not(.ant-select-clear):not(.ant-select-selection-search):not(.ant-select-selection-search-input) {
+  background-color: inherit;
+}
+
+/* 重新设置需要的背景色 */
+.dark .ant-layout {
+  background-color: #0f172a;
+}
+
+.dark .ant-layout-sider {
+  background-color: #1e293b;
+}
+
+.dark .ant-layout-header {
+  background-color: #1e293b;
+}
+
+.dark .ant-layout-content {
+  background-color: #1e293b;
+}
+
+.dark .ant-menu {
+  background-color: #1e293b;
+}
+
+/* 修复表格背景 */
+.dark .ant-table {
+  background-color: #1e293b !important;
+}
+
+.dark .ant-table-container {
+  background-color: #1e293b !important;
+}
+
+/* 修复表格内容区域背景 */
+.dark .ant-table-content {
+  background-color: #1e293b !important;
+}
+
+.dark .ant-table-body {
+  background-color: #1e293b !important;
+}
+
+.dark .ant-table-cell {
+  background-color: #1e293b !important;
+}
+
+/* 修复表格表头背景 */
+.dark .ant-table-thead > tr > th {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+}
+
+/* 修复表格行背景 */
+.dark .ant-table-tbody > tr > td {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+
+/* 修复表格行悬停背景 */
+.dark .ant-table-tbody > tr:hover > td {
+  background-color: #334155 !important;
+}
+
+/* 修复表格选中行样式 - 只保留边框高亮 */
+.dark .ant-table-row-selected > td {
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-table-row-selected:hover > td {
+  background-color: rgba(0, 212, 255, 0.1) !important;
+}
+
+/* 修复卡片背景 */
+.dark .ant-card {
+  background-color: #1e293b;
+}
+
+.dark .ant-card-body {
+  background-color: #1e293b;
+}
+
+/* 修复模态框背景 */
+.dark .ant-modal-content {
+  background-color: #1e293b;
+}
+
+.dark .ant-modal-header {
+  background-color: #1e293b;
+}
+
+.dark .ant-modal-body {
+  background-color: #1e293b;
+}
+
+/* 修复下拉菜单背景 */
+.dark .ant-dropdown-menu {
+  background-color: #1e293b;
+}
+
+/* 修复下拉菜单选中项样式 */
+.dark .ant-dropdown-menu-item-selected {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+.dark .ant-dropdown-menu-item-selected > a {
+  color: #0f172a !important;
+}
+
+.dark .ant-dropdown-menu-item-selected .anticon {
+  color: #0f172a !important;
+}
+
+/* 修复下拉菜单悬停项样式 */
+.dark .ant-dropdown-menu-item:hover {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复选择器背景 */
+.dark .ant-select-dropdown {
+  background-color: #1e293b;
+}
+
+/* 修复选择器选中项样式 - 使用深色背景 */
+.dark .ant-select-item-option-selected {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+  font-weight: 500;
+}
+
+.dark .ant-select-item-option-selected .ant-select-item-option-state {
+  color: #0f172a !important;
+}
+
+/* 修复选择器悬停项样式 */
+.dark .ant-select-item-option-active {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复日期选择器背景 */
+.dark .ant-picker-dropdown {
+  background-color: #1e293b;
+}
+
+.dark .ant-picker-panel {
+  background-color: #1e293b;
+}
+
+/* 修复日期选择器选中项样式 */
+.dark .ant-picker-cell-selected .ant-picker-cell-inner {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+.dark .ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-picker-cell:hover .ant-picker-cell-inner {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复时间选择器选中项 */
+.dark .ant-picker-time-panel-column > li.ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+/* ==================== 修复表格筛选下拉框样式 ==================== */
+
+/* 表格筛选下拉框背景 */
+.dark .ant-table-filter-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 表格筛选下拉框内容区域 */
+.dark .ant-table-filter-dropdown .ant-dropdown-menu {
+  background-color: #1e293b !important;
+}
+
+/* 表格筛选下拉框菜单项 */
+.dark .ant-table-filter-dropdown .ant-dropdown-menu-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-table-filter-dropdown .ant-dropdown-menu-item:hover {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 表格筛选下拉框选中项 */
+.dark .ant-table-filter-dropdown .ant-dropdown-menu-item-selected {
+  background-color: transparent !important;
+  color: #00d4ff !important;
+  border: 1px solid #00d4ff;
+  border-radius: 4px;
+}
+
+/* 表格筛选下拉框底部按钮区域 */
+.dark .ant-table-filter-dropdown .ant-table-filter-dropdown-btns {
+  background-color: #1e293b !important;
+  border-top: 1px solid #334155 !important;
+}
+
+/* 表格筛选图标 */
+.dark .ant-table-filter-trigger {
+  color: #94a3b8 !important;
+  background-color: transparent !important;
+}
+
+.dark .ant-table-filter-trigger:hover {
+  color: #00d4ff !important;
+  background-color: rgba(0, 212, 255, 0.1) !important;
+}
+
+.dark .ant-table-filter-trigger.active {
+  color: #00d4ff !important;
+}
+
+/* ==================== 修复 Tooltip 样式 ==================== */
+
+/* Tooltip 内容区域 */
+.dark .ant-tooltip-inner {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Tooltip 箭头 */
+.dark .ant-tooltip-arrow-content {
+  background-color: #1e293b !important;
+}
+
+/* 表格列头 Tooltip */
+.dark .ant-table-column-sorter-tooltip {
+  background-color: #1e293b !important;
+}
+
+/* 修复表格排序按钮 */
+.dark .ant-table-column-sorter {
+  color: #94a3b8 !important;
+}
+
+.dark .ant-table-column-sorter-up.active,
+.dark .ant-table-column-sorter-down.active {
+  color: #00d4ff !important;
+}
+
+/* ==================== 修复 Popover 样式 ==================== */
+
+.dark .ant-popover-inner {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+.dark .ant-popover-arrow-content {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+.dark .ant-popover-title {
+  color: #f1f5f9 !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+.dark .ant-popover-inner-content {
+  color: #f1f5f9 !important;
+}
+
+/* 修复表单背景 */
+.dark .ant-form {
+  background-color: transparent;
+}
+
+.dark .ant-form-item {
+  background-color: transparent;
+}
+
+/* 修复列表背景 */
+.dark .ant-list {
+  background-color: #1e293b;
+}
+
+.dark .ant-list-item {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+/* 修复列表项选中样式 - 只保留边框高亮 */
+.dark .ant-list-item-selected {
+  border: 1px solid #00d4ff !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+/* 修复描述列表背景 */
+.dark .ant-descriptions {
+  background-color: transparent;
+}
+
+.dark .ant-descriptions-item {
+  background-color: transparent;
+}
+
+.dark .ant-descriptions-item-label {
+  background-color: #334155;
+}
+
+.dark .ant-descriptions-item-content {
+  background-color: #1e293b;
+}
+
+/* 修复统计卡片背景 */
+.dark .ant-statistic {
+  background-color: transparent;
+}
+
+.dark .ant-statistic-content {
+  background-color: transparent;
+}
+
+/* 修复时间轴背景 */
+.dark .ant-timeline {
+  background-color: transparent;
+}
+
+.dark .ant-timeline-item {
+  background-color: transparent;
+}
+
+/* 修复标签页背景 */
+.dark .ant-tabs {
+  background-color: transparent;
+}
+
+.dark .ant-tabs-nav {
+  background-color: transparent;
+}
+
+.dark .ant-tabs-content {
+  background-color: transparent;
+}
+
+/* 修复折叠面板背景 */
+.dark .ant-collapse {
+  background-color: #1e293b;
+}
+
+.dark .ant-collapse-header {
+  background-color: #1e293b;
+}
+
+.dark .ant-collapse-content {
+  background-color: #1e293b;
+}
+
+/* ==================== 修复树形控件样式 - 只保留边框高亮 ==================== */
+
+/* 树形控件背景 */
+.dark .ant-tree {
+  background-color: #1e293b;
+}
+
+.dark .ant-tree-treenode {
+  background-color: transparent;
+}
+
+/* 树形控件选中节点 - 只保留边框高亮，去除背景色 */
+/* 针对 .ant-tree-node-selected 类（直接作用在 .ant-tree-node-content-wrapper 上） */
+.dark .ant-tree-node-selected {
+  background-color: transparent !important;
+  border: 1px solid #00d4ff !important;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2) !important;
+  color: #00d4ff !important;
+}
+
+.dark .ant-tree-node-selected .ant-tree-title {
+  color: #00d4ff !important;
+}
+
+/* 树形控件选中节点 - 针对 .ant-tree-treenode-selected 类（作用在 .ant-tree-treenode 上） */
+.dark .ant-tree-treenode-selected {
+  background-color: transparent !important;
+}
+
+.dark .ant-tree-treenode-selected .ant-tree-node-content-wrapper {
+  background-color: transparent !important;
+  color: #00d4ff !important;
+  border-radius: 4px;
+  border: 1px solid #00d4ff !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 去除树形控件选中时的任何外框效果 */
+.dark .ant-tree-treenode-selected::before,
+.dark .ant-tree-treenode-selected::after {
+  display: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 树形控件节点悬停 - 只保留边框高亮 */
+.dark .ant-tree-treenode:hover .ant-tree-node-content-wrapper {
+  background-color: transparent !important;
+  color: #00d4ff !important;
+  border: 1px solid #00d4ff !important;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 树形控件 switcher 图标样式 - 暗色主题 */
+.dark .ant-tree-switcher {
+  background-color: transparent !important;
+  color: #94a3b8 !important;
+}
+
+.dark .ant-tree-switcher:hover {
+  color: #00d4ff !important;
+}
+
+/* 树形控件展开/聚拢图标 */
+.dark .ant-tree-switcher .ant-tree-switcher-icon,
+.dark .ant-tree-switcher .ant-select-tree-switcher-icon {
+  color: #94a3b8 !important;
+}
+
+.dark .ant-tree-switcher:hover .ant-tree-switcher-icon,
+.dark .ant-tree-switcher:hover .ant-select-tree-switcher-icon {
+  color: #00d4ff !important;
+}
+
+/* 去除树形控件缩进线元素的圆角矩形边框 */
+.dark .ant-tree-indent-unit {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+}
+
+.dark .ant-tree-indent-unit::before,
+.dark .ant-tree-indent-unit::after {
+  display: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 修复上传组件背景 */
+.dark .ant-upload {
+  background-color: transparent;
+}
+
+.dark .ant-upload-drag {
+  background-color: #334155;
+  border-color: #475569;
+}
+
+/* 修复步骤条背景 */
+.dark .ant-steps {
+  background-color: transparent;
+}
+
+.dark .ant-steps-item {
+  background-color: transparent;
+}
+
+/* 修复分页器背景 */
+.dark .ant-pagination {
+  background-color: transparent;
+}
+
+/* 选中页码项 - 深色背景 */
+.dark .ant-pagination-item-active {
+  background-color: #1e293b !important;
+  border-color: #00d4ff !important;
+}
+
+/* 选中页码文字 - 青色 */
+.dark .ant-pagination-item-active a {
+  color: #00d4ff !important;
+  font-weight: 500;
+}
+
+.dark .ant-pagination-item:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-pagination-item:hover a {
+  color: #00d4ff !important;
+}
+
+.dark .ant-pagination-prev:hover .ant-pagination-item-link,
+.dark .ant-pagination-next:hover .ant-pagination-item-link {
+  border-color: #00d4ff !important;
+  color: #00d4ff !important;
+}
+
+/* 修复徽章背景 */
+.dark .ant-badge {
+  background-color: transparent;
+}
+
+/* 修复头像背景 */
+.dark .ant-avatar {
+  background-color: #334155;
+}
+
+/* 修复结果组件背景 */
+.dark .ant-result {
+  background-color: transparent;
+}
+
+/* 修复空状态背景 */
+.dark .ant-empty {
+  background-color: transparent;
+}
+
+/* 修复骨架屏背景 */
+.dark .ant-skeleton {
+  background-color: transparent;
+}
+
+.dark .ant-skeleton-avatar,
+.dark .ant-skeleton-title,
+.dark .ant-skeleton-paragraph > li {
+  background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+}
+
+/* 修复抽屉背景 */
+.dark .ant-drawer-content {
+  background-color: #1e293b;
+}
+
+.dark .ant-drawer-header {
+  background-color: #1e293b;
+}
+
+.dark .ant-drawer-body {
+  background-color: #1e293b;
+}
+
+/* 修复通知背景 */
+.dark .ant-notification-notice {
+  background-color: #1e293b;
+}
+
+/* 修复消息背景 */
+.dark .ant-message-notice-content {
+  background-color: #1e293b;
+  color: #f1f5f9;
+}
+
+/* 修复消息提示文字颜色 */
+.dark .ant-message-success,
+.dark .ant-message-error,
+.dark .ant-message-warning,
+.dark .ant-message-info,
+.dark .ant-message-loading {
+  color: #f1f5f9 !important;
+}
+
+/* 修复消息图标颜色 */
+.dark .ant-message-success .anticon,
+.dark .ant-message-error .anticon,
+.dark .ant-message-warning .anticon,
+.dark .ant-message-info .anticon,
+.dark .ant-message-loading .anticon {
+  color: inherit;
+}
+
+/* 移除消息提示的黑色背景条 */
+.dark .ant-message {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 修复消息提示容器 */
+.dark .ant-message-notice {
+  background: transparent !important;
+}
+
+/* 修复消息提示内容 - 添加发光边框效果 */
+.dark .ant-message-notice-content {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* 修复弹出确认框背景 */
+.dark .ant-popover {
+  background-color: #1e293b;
+}
+
+.dark .ant-popover-content {
+  background-color: #1e293b;
+}
+
+.dark .ant-popover-inner {
+  background-color: #1e293b;
+}
+
+.dark .ant-popover-inner-content {
+  background-color: #1e293b;
+}
+
+.dark .ant-popover-arrow-content {
+  background-color: #1e293b;
+}
+
+/* 修复气泡卡片背景 */
+.dark .ant-popconfirm {
+  background-color: #1e293b;
+}
+
+.dark .ant-popconfirm-inner-content {
+  background-color: #1e293b;
+}
+
+/* 修复图片预览背景 */
+.dark .ant-image-preview-mask {
+  background-color: rgba(15, 23, 42, 0.9);
+}
+
+/* 修复二维码背景 */
+.dark .ant-qrcode {
+  background-color: #1e293b;
+}
+
+/* 修复水印背景 */
+.dark .ant-watermark {
+  background-color: transparent;
+}
+
+/* 修复浮动按钮背景 */
+.dark .ant-float-btn {
+  background-color: #334155;
+}
+
+.dark .ant-float-btn-body {
+  background-color: #334155;
+}
+
+/* 修复回到顶部按钮背景 */
+.dark .ant-back-top {
+  background-color: #334155;
+}
+
+/* 修复锚点背景 */
+.dark .ant-anchor {
+  background-color: transparent;
+}
+
+.dark .ant-anchor-link {
+  background-color: transparent;
+}
+
+/* 修复目录背景 */
+.dark .ant-anchor-wrapper {
+  background-color: transparent;
+}
+
+/* 修复文字复制按钮背景 */
+.dark .ant-typography-copy {
+  background-color: transparent;
+}
+
+.dark .ant-typography-copy:hover {
+  background-color: #334155;
+}
+
+/* 修复可编辑文字背景 */
+.dark .ant-typography-edit {
+  background-color: transparent;
+}
+
+.dark .ant-typography-edit:hover {
+  background-color: #334155;
+}
+
+/* 修复分割线颜色 */
+.dark .ant-divider {
+  border-color: #334155;
+}
+
+.dark .ant-divider-horizontal {
+  border-color: #334155;
+}
+
+.dark .ant-divider-vertical {
+  border-color: #334155;
+}
+
+/* 修复间距占位符背景 */
+.dark .ant-space {
+  background-color: transparent;
+}
+
+.dark .ant-space-item {
+  background-color: transparent;
+}
+
+/* 修复栅格背景 */
+.dark .ant-row {
+  background-color: transparent;
+}
+
+.dark .ant-col {
+  background-color: transparent;
+}
+
+/* 修复布局背景 */
+.dark .ant-layout {
+  background-color: #0f172a;
+}
+
+.dark .ant-layout-has-sider {
+  background-color: #0f172a;
+}
+
+/* 修复页面加载动画 */
+.dark .ant-spin {
+  background-color: transparent;
+}
+
+.dark .ant-spin-container {
+  background-color: transparent;
+}
+
+.dark .ant-spin-nested-loading {
+  background-color: transparent;
+}
+
+.dark .ant-spin-dot {
+  background-color: transparent;
+}
+
+.dark .ant-spin-dot-item {
+  background-color: #00d4ff;
+}
+
+/* 修复进度条背景 */
+.dark .ant-progress {
+  background-color: transparent;
+}
+
+.dark .ant-progress-bg {
+  background-color: #00d4ff;
+}
+
+.dark .ant-progress-inner {
+  background-color: #334155;
+}
+
+/* 修复滑块背景 */
+.dark .ant-slider {
+  background-color: transparent;
+}
+
+.dark .ant-slider-rail {
+  background-color: #334155;
+}
+
+.dark .ant-slider-track {
+  background-color: #00d4ff;
+}
+
+.dark .ant-slider-handle {
+  background-color: #00d4ff;
+  border-color: #00d4ff;
+}
+
+/* 修复评分背景 */
+.dark .ant-rate {
+  background-color: transparent;
+}
+
+.dark .ant-rate-star {
+  background-color: transparent;
+}
+
+/* 修复穿梭框背景 */
+.dark .ant-transfer {
+  background-color: transparent;
+}
+
+.dark .ant-transfer-list {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+.dark .ant-transfer-list-header {
+  background-color: #334155;
+}
+
+.dark .ant-transfer-list-body {
+  background-color: #1e293b;
+}
+
+/* 修复穿梭框选中项样式 */
+.dark .ant-transfer-list-content-item-checked {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+.dark .ant-transfer-list-content-item:hover {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复颜色选择器背景 */
+.dark .ant-color-picker {
+  background-color: #1e293b;
+}
+
+.dark .ant-color-picker-trigger {
+  background-color: #334155;
+}
+
+/* 修复 tour 引导背景 */
+.dark .ant-tour {
+  background-color: #1e293b;
+}
+
+.dark .ant-tour-content {
+  background-color: #1e293b;
+}
+
+.dark .ant-tour-inner {
+  background-color: #1e293b;
+}
+
+.dark .ant-tour-arrow-content {
+  background-color: #1e293b;
+}
+
+.dark .ant-tour-mask {
+  background-color: rgba(15, 23, 42, 0.8);
+}
+
+/* 修复虚线边框颜色 */
+.dark .ant-dashed {
+  border-color: #334155;
+}
+
+/* 修复虚线按钮边框 */
+.dark .ant-btn-dashed {
+  border-color: #475569;
+}
+
+.dark .ant-btn-dashed:hover {
+  border-color: #00d4ff;
+}
+
+/* 修复链接按钮颜色 */
+.dark .ant-btn-link {
+  color: #00d4ff;
+}
+
+.dark .ant-btn-link:hover {
+  color: #33ddff;
+}
+
+/* 修复文字按钮颜色 */
+.dark .ant-btn-text {
+  color: #f1f5f9;
+}
+
+.dark .ant-btn-text:hover {
+  background-color: #334155;
+  color: #00d4ff;
+}
+
+/* 修复幽灵按钮 */
+.dark .ant-btn-background-ghost {
+  border-color: #00d4ff;
+  color: #00d4ff;
+}
+
+.dark .ant-btn-background-ghost:hover {
+  background-color: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+}
+
+/* 修复危险按钮 */
+.dark .ant-btn-dangerous {
+  background-color: #ff3366;
+  border-color: #ff3366;
+}
+
+.dark .ant-btn-dangerous:hover {
+  background-color: #ff5c85;
+  border-color: #ff5c85;
+}
+
+.dark .ant-btn-dangerous.ant-btn-text {
+  color: #ff3366;
+  background-color: transparent;
+}
+
+.dark .ant-btn-dangerous.ant-btn-text:hover {
+  background-color: rgba(255, 51, 102, 0.1);
+}
+
+/* 修复警告按钮 */
+.dark .ant-btn-warning {
+  background-color: #ffcc00;
+  border-color: #ffcc00;
+  color: #0f172a;
+}
+
+.dark .ant-btn-warning:hover {
+  background-color: #ffd633;
+  border-color: #ffd633;
+}
+
+/* 修复成功按钮 */
+.dark .ant-btn-success {
+  background-color: #00ff88;
+  border-color: #00ff88;
+  color: #0f172a;
+}
+
+.dark .ant-btn-success:hover {
+  background-color: #33ff9f;
+  border-color: #33ff9f;
+}
+
+/* ==================== 菜单高亮样式 - 只保留圆角边框 ==================== */
+
+/* 深色模式下菜单选中项 - 仅边框高亮 */
+.dark .ant-menu-item-selected {
+  background-color: transparent !important;
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  color: #00d4ff !important;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.dark .ant-menu-light .ant-menu-item-selected {
+  background-color: transparent !important;
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  color: #00d4ff !important;
+}
+
+.dark .ant-menu-dark .ant-menu-item-selected {
+  background-color: transparent !important;
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  color: #00d4ff !important;
+}
+
+/* 子菜单选中项 */
+.dark .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #00d4ff !important;
+}
+
+/* 菜单项悬停效果 - 只保留边框，去除内部矩形高亮 */
+.dark .ant-menu-item:hover {
+  color: #00d4ff !important;
+  background-color: transparent !important;
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  border-radius: 8px;
+}
+
+/* 确保菜单项有合适的间距 */
+.dark .ant-menu-inline .ant-menu-item {
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+/* 修复折叠菜单的选中样式 */
+.dark .ant-menu-inline-collapsed .ant-menu-item-selected {
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  background-color: transparent !important;
+}
+
+/* ==================== 弹窗背景模糊效果 ==================== */
+
+/* 模态框遮罩层 - 使用透明背景实现玻璃拟态效果 */
+.dark .ant-modal-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 确认框遮罩层 */
+.dark .ant-modal-confirm-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 抽屉遮罩层 */
+.dark .ant-drawer-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 修复 Modal.confirm 的遮罩层 - 使用更高优先级 */
+.dark .ant-modal-wrap .ant-modal-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 修复所有模态框遮罩层 */
+.dark div[class*="ant-modal-mask"] {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 针对 Modal.confirm 的特殊处理 */
+.dark .ant-modal-confirm .ant-modal-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 使用属性选择器覆盖内联样式 */
+.dark [style*="background-color: rgba(0, 0, 0"].ant-modal-mask,
+.dark [style*="background-color: rgba(15, 23, 42"].ant-modal-mask,
+.dark [style*="background-color: rgb(0, 0, 0"].ant-modal-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 覆盖所有可能的遮罩层背景 */
+.dark .ant-modal-mask,
+.dark .ant-modal-confirm-mask,
+html body .dark .ant-modal-mask,
+html body .dark .ant-modal-confirm-mask,
+html body .dark div.ant-modal-mask,
+html body.dark .ant-modal-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 强制覆盖所有遮罩层样式 */
+.ant-modal-mask,
+.ant-modal-confirm-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+.dark .ant-modal-mask,
+.dark .ant-modal-confirm-mask {
+  background-color: transparent !important;
+  background: transparent !important;
+  backdrop-filter: blur(3px) brightness(0.7) !important;
+  -webkit-backdrop-filter: blur(3px) brightness(0.7) !important;
+}
+
+/* 修复 Modal.confirm 弹窗内容样式 */
+.dark .ant-modal-confirm-body {
+  color: #f1f5f9;
+}
+
+.dark .ant-modal-confirm-title {
+  color: #f1f5f9;
+}
+
+.dark .ant-modal-confirm-content {
+  color: #94a3b8;
+}
+
+/* 修复确认框中的输入框样式 */
+.dark .ant-modal-confirm-body .ant-input,
+.dark .ant-modal-confirm-body .ant-input-affix-wrapper {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-modal-confirm-body .ant-input:hover,
+.dark .ant-modal-confirm-body .ant-input-affix-wrapper:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-modal-confirm-body .ant-input:focus,
+.dark .ant-modal-confirm-body .ant-input-affix-wrapper-focused {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复确认框中的 Select 样式 */
+.dark .ant-modal-confirm-body .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-modal-confirm-body .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-modal-confirm-body .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复确认框中的 Form 标签颜色 */
+.dark .ant-modal-confirm-body .ant-form-item-label > label {
+  color: #f1f5f9;
+}
+
+/* 修复确认框中的 placeholder 颜色 */
+.dark .ant-modal-confirm-body .ant-input::placeholder {
+  color: #64748b;
+}
+
+/* ==================== 修复页面特定白底问题 ==================== */
+
+/* 用例管理页面 */
+.dark .test-case-layout {
+  background-color: #0f172a !important;
+}
+
+.dark .test-case-sider {
+  background-color: #1e293b !important;
+}
+
+.dark .test-case-content {
+  background-color: #1e293b !important;
+}
+
+/* 修复所有Card组件 */
+.dark .ant-card-bordered {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+/* 修复筛选栏背景 */
+.dark .filter-bar,
+.dark .filter-section,
+.dark [class*="filter"],
+.dark [class*="Filter"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复Tab栏背景 */
+.dark .ant-tabs-nav {
+  background-color: transparent !important;
+}
+
+.dark .ant-tabs-tab-btn {
+  color: #94a3b8;
+}
+
+.dark .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #00d4ff !important;
+}
+
+/* 修复图表容器背景 */
+.dark .chart-container,
+.dark [class*="chart"],
+.dark [class*="Chart"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复列表项选中背景 - 只保留边框高亮 */
+.dark .ant-list-item-selected,
+.dark .ant-list-item-active {
+  border: 1px solid #00d4ff;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+/* 修复会话卡片 */
+.dark .session-card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+
+.dark .session-card.active {
+  border: 1px solid #00d4ff;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+/* 修复消息列表项 */
+.dark .message-item {
+  background-color: #1e293b;
+}
+
+/* 修复分析页面 */
+.dark .analysis-container,
+.dark [class*="analysis"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复待办页面 */
+.dark .todo-container,
+.dark [class*="todo"],
+.dark [class*="Todo"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复通知配置页面 */
+.dark .notification-container,
+.dark [class*="notification"],
+.dark [class*="Notification"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复项目管理页面 */
+.dark .project-container,
+.dark [class*="project"],
+.dark [class*="Project"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复缺陷助手页面 */
+.dark .assistant-container,
+.dark [class*="assistant"],
+.dark [class*="Assistant"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复内联样式导致的白底 - 使用更高优先级 */
+.dark [style*="background: rgb(255, 255, 255)"],
+.dark [style*="background: #fff"],
+.dark [style*="background: #ffffff"],
+.dark [style*="background-color: rgb(255, 255, 255)"],
+.dark [style*="background-color: #fff"],
+.dark [style*="background-color: #ffffff"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复f5f5f5背景 */
+.dark [style*="background: #f5f5f5"],
+.dark [style*="background-color: #f5f5f5"] {
+  background-color: #0f172a !important;
+}
+
+/* 修复fafafa背景 */
+.dark [style*="background: #fafafa"],
+.dark [style*="background-color: #fafafa"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复f0f5ff背景 */
+.dark [style*="background: #f0f5ff"],
+.dark [style*="background-color: #f0f5ff"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复f9f9f9背景 */
+.dark [style*="background: #f9f9f9"],
+.dark [style*="background-color: #f9f9f9"] {
+  background-color: #1e293b !important;
+}
+
+/* ==================== 图表文字颜色修复 ==================== */
+
+/* 修复Chart.js图表文字颜色 */
+.dark canvas {
+  filter: none;
+}
+
+/* 确保图表标签颜色正确 */
+.dark .chartjs-render-monitor {
+  color: #f1f5f9 !important;
+}
+
+/* 修复recharts图表 */
+.dark .recharts-wrapper {
+  color: #f1f5f9;
+}
+
+.dark .recharts-text {
+  fill: #f1f5f9 !important;
+}
+
+.dark .recharts-label {
+  fill: #f1f5f9 !important;
+}
+
+.dark .recharts-cartesian-axis-tick-value {
+  fill: #94a3b8 !important;
+}
+
+.dark .recharts-legend-item-text {
+  fill: #f1f5f9 !important;
+}
+
+.dark .recharts-tooltip-wrapper {
+  color: #f1f5f9;
+}
+
+/* 修复antv图表 */
+.dark .g2-tooltip {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+}
+
+/* ==================== 模态框内容样式优化 ==================== */
+
+/* 模态框内容区域 */
+.dark .ant-modal-body {
+  background-color: #1e293b;
+}
+
+/* 模态框页脚 */
+.dark .ant-modal-footer {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+/* 确认框内容 */
+.dark .ant-modal-confirm-body {
+  background-color: #1e293b;
+}
+
+.dark .ant-modal-confirm-content {
+  color: #f1f5f9;
+}
+
+/* 确认框页脚 */
+.dark .ant-modal-confirm-btns {
+  background-color: #1e293b;
+}
+
+/* 修复模态框标题颜色 */
+.dark .ant-modal-title {
+  color: #f1f5f9 !important;
+}
+
+/* 修复模态框中的输入框样式 */
+.dark .ant-modal-body .ant-input,
+.dark .ant-modal-body .ant-input-affix-wrapper {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-modal-body .ant-input:hover,
+.dark .ant-modal-body .ant-input-affix-wrapper:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-modal-body .ant-input:focus,
+.dark .ant-modal-body .ant-input-affix-wrapper-focused {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复模态框中的 Select 样式 */
+.dark .ant-modal-body .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-modal-body .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-modal-body .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复模态框中的 Form 标签颜色 */
+.dark .ant-modal-body .ant-form-item-label > label {
+  color: #f1f5f9;
+}
+
+/* 修复模态框中的 placeholder 颜色 */
+.dark .ant-modal-body .ant-input::placeholder {
+  color: #64748b;
+}
+
+/* 修复模态框中的 DatePicker 样式 */
+.dark .ant-modal-body .ant-picker {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复模态框中的 TextArea 样式 */
+.dark .ant-modal-body .ant-input-textarea {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-modal-body textarea.ant-input {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+/* ==================== 动态隐藏栏样式 ==================== */
+
+/* 左侧隐藏栏 */
+.left-collapse-bar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 0;
+  z-index: 1000;
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.left-collapse-bar.expanded {
+  width: 220px;
+}
+
+/* 右侧隐藏栏 */
+.right-collapse-bar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 0;
+  z-index: 1000;
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.right-collapse-bar.expanded {
+  width: 180px;
+}
+
+/* 触发区域 */
+.left-trigger-zone,
+.right-trigger-zone {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  z-index: 999;
+}
+
+.left-trigger-zone {
+  left: 0;
+}
+
+.right-trigger-zone {
+  right: 0;
+}
+
+/* 功能卡片悬停动画 */
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+/* 首页动画 */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 深色模式下的隐藏栏菜单样式优化 */
+.dark .left-collapse-bar .ant-menu {
+  background: transparent;
+}
+
+.dark .left-collapse-bar .ant-menu-item {
+  color: #f1f5f9;
+}
+
+/* 深色模式下左侧隐藏栏菜单悬停 - 只保留边框高亮 */
+.dark .left-collapse-bar .ant-menu-item:hover {
+  color: #00d4ff !important;
+  background-color: transparent !important;
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+/* 深色模式下左侧隐藏栏菜单选中 - 只保留边框高亮 */
+.dark .left-collapse-bar .ant-menu-item-selected {
+  color: #00d4ff !important;
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+/* 浅色模式下的隐藏栏菜单样式 - 只保留边框高亮 */
+.left-collapse-bar .ant-menu-item-selected {
+  color: #1890ff !important;
+  border: 1px solid #1890ff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(24, 144, 255, 0.2);
+}
+
+/* ==================== 修复表单组件边框样式 ==================== */
+
+/* 修复 Select 组件边框 */
+.dark .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-selector:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-select-focused .ant-select-selector {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 Input 组件边框 */
+.dark .ant-input {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-input:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-input:focus {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 Input Affix Wrapper 边框 */
+.dark .ant-input-affix-wrapper {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+.dark .ant-input-affix-wrapper:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-input-affix-wrapper-focused {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 DatePicker 组件边框 */
+.dark .ant-picker {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-picker:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-picker-focused {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 InputNumber 组件边框 */
+.dark .ant-input-number {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-input-number:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-input-number-focused {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+.dark .ant-input-number-input {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 选择项背景 - 单选模式透明，多选模式保留背景 */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+}
+
+.dark .ant-select-selection-placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ==================== 修复下拉框灰色矩形背景问题 ==================== */
+
+/* 修复 Select 下拉框背景 - 移除灰色矩形 */
+.dark .ant-select-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 修复 Select 下拉框菜单 */
+.dark .ant-select-dropdown .ant-select-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 下拉框悬停项 */
+.dark .ant-select-dropdown .ant-select-item:hover,
+.dark .ant-select-dropdown .ant-select-item-option-active {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 下拉框选中项 */
+.dark .ant-select-dropdown .ant-select-item-option-selected {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+  font-weight: 500;
+}
+
+/* 修复 Select 下拉框选中项的勾选图标 */
+.dark .ant-select-dropdown .ant-select-item-option-selected .ant-select-item-option-state {
+  color: #0f172a !important;
+}
+
+/* 修复多选 Select 的标签背景 */
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  border: 1px solid #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复多选 Select 的标签删除按钮 */
+.dark .ant-select-multiple .ant-select-selection-item-remove {
+  color: #94a3b8 !important;
+}
+
+.dark .ant-select-multiple .ant-select-selection-item-remove:hover {
+  color: #ff3366 !important;
+}
+
+/* ==================== 修复筛选条件边框展示不全问题 ==================== */
+
+/* 修复筛选栏 Card 的 overflow 问题 */
+.dark .filter-section,
+.dark [class*="filter"],
+.dark [class*="Filter"] {
+  overflow: visible !important;
+}
+
+/* 修复筛选栏中的 Select 组件 */
+.dark .filter-section .ant-select,
+.dark [class*="filter"] .ant-select,
+.dark [class*="Filter"] .ant-select {
+  overflow: visible !important;
+}
+
+/* 修复筛选栏中的 Select 选择器 */
+.dark .filter-section .ant-select-selector,
+.dark [class*="filter"] .ant-select-selector,
+.dark [class*="Filter"] .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+  overflow: visible !important;
+}
+
+/* 修复筛选栏 Card 组件 */
+.dark .filter-section.ant-card,
+.dark [class*="filter"].ant-card,
+.dark [class*="Filter"].ant-card {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  overflow: visible !important;
+}
+
+.dark .filter-section.ant-card .ant-card-body,
+.dark [class*="filter"].ant-card .ant-card-body,
+.dark [class*="Filter"].ant-card .ant-card-body {
+  background-color: #1e293b !important;
+  overflow: visible !important;
+}
+
+/* 修复 Row 和 Col 在筛选栏中的 overflow */
+.dark .filter-section .ant-row,
+.dark [class*="filter"] .ant-row,
+.dark [class*="Filter"] .ant-row {
+  overflow: visible !important;
+}
+
+.dark .filter-section .ant-col,
+.dark [class*="filter"] .ant-col,
+.dark [class*="Filter"] .ant-col {
+  overflow: visible !important;
+}
+
+/* 修复 Space 组件在筛选栏中的 overflow */
+.dark .filter-section .ant-space,
+.dark [class*="filter"] .ant-space,
+.dark [class*="Filter"] .ant-space {
+  overflow: visible !important;
+}
+
+/* 修复 Input 在筛选栏中的样式 */
+.dark .filter-section .ant-input,
+.dark [class*="filter"] .ant-input,
+.dark [class*="Filter"] .ant-input {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .filter-section .ant-input:hover,
+.dark [class*="filter"] .ant-input:hover,
+.dark [class*="Filter"] .ant-input:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .filter-section .ant-input:focus,
+.dark [class*="filter"] .ant-input:focus,
+.dark [class*="Filter"] .ant-input:focus {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 Input Affix Wrapper 在筛选栏中的样式 */
+.dark .filter-section .ant-input-affix-wrapper,
+.dark [class*="filter"] .ant-input-affix-wrapper,
+.dark [class*="Filter"] .ant-input-affix-wrapper {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+.dark .filter-section .ant-input-affix-wrapper:hover,
+.dark [class*="filter"] .ant-input-affix-wrapper:hover,
+.dark [class*="Filter"] .ant-input-affix-wrapper:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .filter-section .ant-input-affix-wrapper-focused,
+.dark [class*="filter"] .ant-input-affix-wrapper-focused,
+.dark [class*="Filter"] .ant-input-affix-wrapper-focused {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 DatePicker 在筛选栏中的样式 */
+.dark .filter-section .ant-picker,
+.dark [class*="filter"] .ant-picker,
+.dark [class*="Filter"] .ant-picker {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .filter-section .ant-picker:hover,
+.dark [class*="filter"] .ant-picker:hover,
+.dark [class*="Filter"] .ant-picker:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .filter-section .ant-picker-focused,
+.dark [class*="filter"] .ant-picker-focused,
+.dark [class*="Filter"] .ant-picker-focused {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 Button 在筛选栏中的样式 */
+.dark .filter-section .ant-btn,
+.dark [class*="filter"] .ant-btn,
+.dark [class*="Filter"] .ant-btn {
+  overflow: visible !important;
+}
+
+/* 确保下拉框不会被其他元素遮挡 */
+.dark .ant-select-dropdown {
+  z-index: 1050 !important;
+}
+
+/* 修复下拉框在固定定位容器中的显示 */
+.dark .ant-layout-sider .ant-select-dropdown,
+.dark .ant-layout-header .ant-select-dropdown,
+.dark .ant-layout-content .ant-select-dropdown {
+  z-index: 1050 !important;
+}
+
+/* 修复 Cascader 下拉框 */
+.dark .ant-cascader-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .ant-cascader-menu {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+.dark .ant-cascader-menu-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-cascader-menu-item:hover {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-cascader-menu-item-active {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+/* 修复 TreeSelect 下拉框 */
+.dark .ant-tree-select-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .ant-tree-select-dropdown .ant-select-tree {
+  background-color: transparent !important;
+}
+
+.dark .ant-tree-select-dropdown .ant-select-tree-treenode {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-tree-select-dropdown .ant-select-tree-treenode:hover {
+  background-color: #334155 !important;
+}
+
+.dark .ant-tree-select-dropdown .ant-select-tree-node-selected {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+/* 修复 AutoComplete 下拉框 */
+.dark .ant-autocomplete-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .ant-autocomplete-dropdown .ant-select-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-autocomplete-dropdown .ant-select-item:hover {
+  background-color: #334155 !important;
+}
+
+.dark .ant-autocomplete-dropdown .ant-select-item-option-selected {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+/* 修复禁用状态下的表单组件 */
+.dark .ant-select-disabled .ant-select-selector {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #64748b !important;
+}
+
+.dark .ant-input-disabled {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #64748b !important;
+}
+
+.dark .ant-picker-disabled {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #64748b !important;
+}
+
+/* ==================== 额外修复：确保所有 Select 组件内部元素背景正确 ==================== */
+
+/* 修复 Select 组件的所有内部容器 */
+.dark .ant-select * {
+  background-color: transparent;
+}
+
+/* 修复 Select 选择器 - 这是下拉框的触发区域 */
+.dark .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-selector:hover {
+  border-color: #00d4ff !important;
+}
+
+.dark .ant-select-focused .ant-select-selector {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* 修复 Select 选择器的输入框 */
+.dark .ant-select-selection-search-input {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 选择器的搜索框容器 */
+.dark .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 修复 Select 选择器的选中项容器 - 单选模式下透明背景 */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+  border: none !important;
+}
+
+/* 修复 ant-select-selection-search-input 的灰色背景 */
+.dark .ant-select .ant-select-selection-search-input {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复单选 Select 的内部结构 */
+.dark .ant-select-single .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+.dark .ant-select-single .ant-select-selector .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+.dark .ant-select-single .ant-select-selector .ant-select-selection-search-input {
+  background-color: transparent !important;
+  opacity: 0 !important;
+}
+
+.dark .ant-select-single .ant-select-selector .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 选择器的占位符 */
+.dark .ant-select-selection-placeholder {
+  color: #94a3b8 !important;
+  background-color: transparent !important;
+}
+
+/* 修复 Select 选择器的选中项容器 - 单选模式透明 */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 多选时的标签容器 */
+.dark .ant-select-selection-overflow {
+  background-color: transparent !important;
+}
+
+.dark .ant-select-selection-overflow-item {
+  background-color: transparent !important;
+}
+
+/* 修复 Select 清除按钮 */
+.dark .ant-select-clear {
+  background-color: transparent !important;
+  color: #94a3b8 !important;
+}
+
+.dark .ant-select-clear:hover {
+  color: #ff3366 !important;
+}
+
+/* 修复 Select 下拉箭头 */
+.dark .ant-select-arrow {
+  color: #94a3b8 !important;
+  background-color: transparent !important;
+}
+
+/* 修复 Select 下拉框的所有内部元素 */
+.dark .ant-select-dropdown * {
+  background-color: transparent;
+}
+
+/* 修复 Select 下拉框容器 */
+.dark .ant-select-dropdown {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 修复 Select 下拉框的虚拟列表容器 */
+.dark .ant-select-dropdown .rc-virtual-list {
+  background-color: transparent !important;
+}
+
+.dark .ant-select-dropdown .rc-virtual-list-holder {
+  background-color: transparent !important;
+}
+
+.dark .ant-select-dropdown .rc-virtual-list-holder-inner {
+  background-color: transparent !important;
+}
+
+/* 修复 Select 下拉框的空状态 */
+.dark .ant-select-dropdown .ant-select-item-empty {
+  background-color: transparent !important;
+  color: #94a3b8 !important;
+}
+
+/* 修复 Select 下拉框的分组标题 */
+.dark .ant-select-dropdown .ant-select-item-group {
+  background-color: transparent !important;
+  color: #94a3b8 !important;
+  font-weight: 500;
+}
+
+/* 修复 Select 下拉框的选项 */
+.dark .ant-select-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-item:hover {
+  background-color: #334155 !important;
+}
+
+/* 修复 Select 下拉框选项的内容 */
+.dark .ant-select-item-option-content {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/* 修复 Select 下拉框选中项 */
+.dark .ant-select-item-option-selected {
+  background-color: #00d4ff !important;
+  color: #0f172a !important;
+}
+
+.dark .ant-select-item-option-selected .ant-select-item-option-content {
+  color: #0f172a !important;
+}
+
+/* 修复 Select 下拉框悬停项 */
+.dark .ant-select-item-option-active {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 下拉框禁用项 */
+.dark .ant-select-item-option-disabled {
+  color: #64748b !important;
+  background-color: transparent !important;
+}
+
+/* 修复 Select 下拉框勾选图标 */
+.dark .ant-select-item-option-state {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+.dark .ant-select-item-option-selected .ant-select-item-option-state {
+  color: #0f172a !important;
+}
+
+/* 修复多选 Select 的标签 */
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  border: 1px solid #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复多选 Select 标签的删除图标 */
+.dark .ant-select-multiple .ant-select-selection-item-remove {
+  background-color: transparent !important;
+  color: #94a3b8 !important;
+}
+
+.dark .ant-select-multiple .ant-select-selection-item-remove:hover {
+  color: #ff3366 !important;
+}
+
+/* 修复 Select 的加载状态 */
+.dark .ant-select-loading .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复 Select 的禁用状态 */
+.dark .ant-select-disabled .ant-select-selector {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #64748b !important;
+}
+
+/* 修复 Select 下拉框的搜索框（带搜索功能的 Select） */
+.dark .ant-select-dropdown .ant-select-item-option-state-icon {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/* 修复 Form 中的 Select 组件 */
+.dark .ant-form-item .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复 Card 中的 Select 组件 */
+.dark .ant-card .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复 Modal 中的 Select 组件 */
+.dark .ant-modal .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复 Space 中的 Select 组件 */
+.dark .ant-space .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复特定页面中的 Select 组件背景 */
+
+/* 用例助手页面的 Select */
+.dark .requirement-input .ant-select-selector,
+.dark [class*="requirement"] .ant-select-selector,
+.dark [class*="Requirement"] .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 问题列表页面的 Select */
+.dark .defect-table .ant-select-selector,
+.dark [class*="defect"] .ant-select-selector,
+.dark [class*="Defect"] .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 数据分析页面的 Select */
+.dark .analysis-page .ant-select-selector,
+.dark [class*="analysis"] .ant-select-selector,
+.dark [class*="Analysis"] .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 我的待办页面的 Select */
+.dark .todo-page .ant-select-selector,
+.dark [class*="todo"] .ant-select-selector,
+.dark [class*="Todo"] .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 项目管理页面的 Select */
+.dark .project-management .ant-select-selector,
+.dark [class*="project"] .ant-select-selector,
+.dark [class*="Project"] .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 确保下拉框层级最高 */
+.dark .ant-select-dropdown {
+  z-index: 9999 !important;
+}
+
+/* 修复下拉框在 Modal 中的显示 */
+.dark .ant-modal-wrap .ant-select-dropdown {
+  z-index: 10000 !important;
+}
+
+/* 修复下拉框在 Drawer 中的显示 */
+.dark .ant-drawer-body .ant-select-dropdown {
+  z-index: 10000 !important;
+}
+
+/* 修复下拉框在 Popover 中的显示 */
+.dark .ant-popover-inner-content .ant-select-dropdown {
+  z-index: 10000 !important;
+}
+
+/* 修复 Select 组件的动画效果 */
+.dark .ant-select-dropdown-slide-up-enter,
+.dark .ant-select-dropdown-slide-up-appear {
+  background-color: #1e293b !important;
+}
+
+.dark .ant-select-dropdown-slide-up-leave {
+  background-color: #1e293b !important;
+}
+
+/* ==================== 修复特定页面下拉框灰色背景问题 ==================== */
+
+/* 问题列表页面 - 选择项目下拉框 */
+.dark .defect-table .ant-select-selector,
+.dark [class*="defect-table"] .ant-select-selector,
+.dark [class*="DefectTable"] .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 问题列表页面 - 项目选择栏 */
+.dark .defect-table > div:first-child .ant-select-selector,
+.dark [class*="defect-table"] > div:first-child .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 数据分析页面 - 趋势分析和系统分布下拉框 */
+.dark .trend-chart .ant-select-selector,
+.dark [class*="trend-chart"] .ant-select-selector,
+.dark [class*="TrendChart"] .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+.dark .pie-chart .ant-select-selector,
+.dark [class*="pie-chart"] .ant-select-selector,
+.dark [class*="PieChart"] .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 修复 Card 内部的 Select 组件 - 针对数据分析页面 */
+.dark .ant-card .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 修复 Card body 内部的 Select 组件 */
+.dark .ant-card-body .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 修复内联样式背景为透明的 Card 中的 Select */
+.dark .ant-card[style*="background: transparent"] .ant-select-selector,
+.dark .ant-card[style*="background-color: transparent"] .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 修复数据分析页面特定结构中的 Select */
+.dark [style*="background: transparent"] .ant-select-selector,
+.dark [style*="background-color: transparent"] .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 修复所有在 div 中的 Select 组件 */
+.dark div > .ant-select .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复带有 flex 布局容器中的 Select */
+.dark div[style*="display: flex"] .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复问题列表页面特定结构 */
+.dark div[style*="backgroundColor: var(--bg-container"] .ant-select-selector,
+.dark div[style*="background-color: var(--bg-container"] .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 修复所有可能继承灰色背景的 Select 选择器 */
+.dark .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复 Select 选择器的输入框背景 */
+.dark .ant-select-selection-search-input {
+  background-color: transparent !important;
+}
+
+/* 修复 Select 选择器的选中项背景 - 单选模式透明 */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+}
+
+/* ==================== 修复 ant-select-selection-item 灰色背景问题 ==================== */
+
+/* 基础修复 - 单选 selection-item 透明背景 */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 问题列表页面 - 单选模式 */
+.dark .ant-select-single .ant-select-selection-item,
+.dark .defect-table .ant-select-single .ant-select-selection-item,
+.dark [class*="defect-table"] .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 数据分析页面 - 趋势分析 - 单选模式 */
+.dark .trend-chart .ant-select-single .ant-select-selection-item,
+.dark [class*="trend-chart"] .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 数据分析页面 - 饼图 - 单选模式 */
+.dark .pie-chart .ant-select-single .ant-select-selection-item,
+.dark [class*="pie-chart"] .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* Card 内部的 selection-item - 单选模式 */
+.dark .ant-card .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 内联样式透明背景的容器中的 selection-item - 单选模式 */
+.dark [style*="background: transparent"] .ant-select-single .ant-select-selection-item,
+.dark [style*="background-color: transparent"] .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 强制修复所有单选 selection-item */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 多选 Select 的 selection-item - 保留背景色 */
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  border: 1px solid #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复数据分析页面 - 趋势分析卡片中的 Select */
+.dark div:has(> h4:contains("趋势分析")) .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 修复数据分析页面 - 系统分布卡片中的 Select */
+.dark div:has(> h4:contains("系统分布")) .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 强制修复所有 Select 选择器的背景色 */
+.dark [class*="ant-select"] [class*="ant-select-selector"] {
+  background-color: #1e293b !important;
+}
+
+/* 修复 Select 组件的所有可能状态 */
+.dark .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 修复 Select 组件的 hover 状态 */
+.dark .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: #00d4ff !important;
+}
+
+/* 修复 Select 组件的 focus 状态 */
+.dark .ant-select-focused:not(.ant-select-disabled) .ant-select-selector {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2) !important;
+}
+
+/* ==================== 修复 ant-select-selection-search 灰色背景问题 ==================== */
+
+/* 基础修复 - 所有 selection-search */
+.dark .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 问题列表页面 */
+.dark .defect-table .ant-select-selection-search,
+.dark [class*="defect-table"] .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 数据分析页面 - 趋势分析 */
+.dark .trend-chart .ant-select-selection-search,
+.dark [class*="trend-chart"] .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 数据分析页面 - 饼图 */
+.dark .pie-chart .ant-select-selection-search,
+.dark [class*="pie-chart"] .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* Card 内部的 selection-search */
+.dark .ant-card .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 内联样式透明背景的容器中的 selection-search */
+.dark [style*="background: transparent"] .ant-select-selection-search,
+.dark [style*="background-color: transparent"] .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 强制修复所有 selection-search */
+.dark [class*="ant-select"] [class*="ant-select-selection-search"] {
+  background-color: transparent !important;
+}
+
+/* 单选 Select 的 selection-search */
+.dark .ant-select-single .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 多选 Select 的 selection-search */
+.dark .ant-select-multiple .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+/* 修复 selection-search 的所有子元素 */
+.dark .ant-select-selection-search * {
+  background-color: transparent !important;
+}
+
+/* 修复 selection-search-input 的所有状态 */
+.dark .ant-select-selection-search-input {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-selection-search-input:focus {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-selection-search-input:hover {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* 修复 Select 组件的所有内部元素 - 确保没有灰色背景 */
+/* 注意：这个规则会设置所有子元素为透明背景，但下面的例外规则会覆盖它 */
+.dark .ant-select * {
+  background-color: transparent;
+}
+
+/* 例外：Select 选择器本身需要有背景色 - 使用更高优先级 */
+.dark .ant-select .ant-select-selector {
+  background-color: #1e293b !important;
+}
+
+/* 例外：Select 选中项 - 单选模式透明背景，多选模式保留背景色 */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+}
+
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+}
+
+/* 例外：Select 下拉框需要有背景色 */
+.dark .ant-select-dropdown {
+  background-color: #1e293b !important;
+}
+
+/* ==================== 强制修复：确保所有 Select 相关元素都有正确的背景色 ==================== */
+
+/* 最高优先级：强制所有 Select 选择器使用深色背景 */
+.dark .ant-select-selector,
+.dark .ant-select-single .ant-select-selector,
+.dark .ant-select-multiple .ant-select-selector {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+/* 最高优先级：强制所有 Select 选中项使用正确的背景色 - 单选透明，多选保留背景 */
+.dark .ant-select-single .ant-select-selection-item {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-select-multiple .ant-select-selection-item {
+  background-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+/* 最高优先级：强制所有 Select 搜索框使用透明背景 */
+.dark .ant-select-selection-search,
+.dark .ant-select-single .ant-select-selection-search,
+.dark .ant-select-multiple .ant-select-selection-search {
+  background-color: transparent !important;
+}
+
+.dark .ant-select-selection-search-input,
+.dark .ant-select-single .ant-select-selection-search-input,
+.dark .ant-select-multiple .ant-select-selection-search-input {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* ==================== 修复应用管理页面表格行悬停灰色背景问题 ==================== */
+
+/* 修复表格行悬停时的灰色背景 - 应用管理页面 */
+.app-history-row:hover td,
+.app-config-row:hover td {
+  background-color: transparent !important;
+}
+
+/* 修复所有表格行的悬停背景 */
+.ant-table-tbody > tr:hover > td {
+  background-color: var(--hover-bg, #f5f5f5) !important;
+}
+
+/* 针对应用管理页面的特定修复 */
+.app-history-row.ant-table-row:hover,
+.app-config-row.ant-table-row:hover {
+  background-color: transparent !important;
+}
+
+.app-history-row > td:hover,
+.app-config-row > td:hover {
+  background-color: transparent !important;
+}
+
+/* 修复深色主题下的表格行悬停 */
+.dark .app-history-row:hover td,
+.dark .app-config-row:hover td {
+  background-color: transparent !important;
+}
+
+/* ==================== 修复 Tooltip 背景与主题匹配 ==================== */
+
+/* 亮色主题 - Tooltip 使用白色背景 */
+.ant-tooltip-inner {
+  background-color: #fff !important;
+  color: #333 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.ant-tooltip-arrow-content {
+  background-color: #fff !important;
+}
+
+/* 深色主题 - Tooltip 使用与主题匹配的深色背景 #1e293b */
+.dark .ant-tooltip-inner {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .ant-tooltip-arrow-content {
+  background-color: #1e293b !important;
+}
+
+/* ==================== 修复 Popover 背景与主题匹配 ==================== */
+
+/* 亮色主题 - Popover 使用白色背景 */
+.ant-popover-inner {
+  background-color: #fff !important;
+  border-radius: 12px !important;
+}
+
+.ant-popover-inner-content {
+  background-color: #fff !important;
+  color: #333 !important;
+}
+
+.ant-popover-arrow-content {
+  background-color: #fff !important;
+}
+
+/* 修复 Popover 箭头外层容器的背景 - 亮色主题 */
+.ant-popover-arrow,
+[class*="popover"] .ant-popover-arrow,
+[class*="Popover"] .ant-popover-arrow {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* 深色主题 - Popover 使用与主题匹配的深色背景 #1e293b */
+.dark .ant-popover-inner,
+.dark [class*="popover"] .ant-popover-inner,
+.dark [class*="Popover"] .ant-popover-inner {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .ant-popover-inner-content,
+.dark [class*="popover"] .ant-popover-inner-content,
+.dark [class*="Popover"] .ant-popover-inner-content {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .ant-popover-arrow-content,
+.dark [class*="popover"] .ant-popover-arrow-content,
+.dark [class*="Popover"] .ant-popover-arrow-content {
+  background-color: #1e293b !important;
+}
+
+.dark .ant-popover-title,
+.dark [class*="popover"] .ant-popover-title,
+.dark [class*="Popover"] .ant-popover-title {
+  color: #f1f5f9 !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+/* 修复 Popover 内容区域的圆角 */
+.dark .ant-popover-content,
+.dark [class*="popover"] .ant-popover-content,
+.dark [class*="Popover"] .ant-popover-content {
+  border-radius: 12px !important;
+}
+
+.dark .ant-popover,
+.dark [class*="popover"],
+.dark [class*="Popover"] {
+  border-radius: 12px !important;
+}
+
+/* 修复 Popover 箭头外层容器的背景 - 深色主题 */
+.dark .ant-popover-arrow,
+.dark [class*="popover"] .ant-popover-arrow,
+.dark [class*="Popover"] .ant-popover-arrow {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* 确保箭头内容显示正确 - 深色主题 */
+.dark .ant-popover-arrow-content,
+.dark [class*="popover"] .ant-popover-arrow-content,
+.dark [class*="Popover"] .ant-popover-arrow-content {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+/* ==================== 修复待部署应用 Popover 内容样式 ==================== */
+
+/* 亮色主题下的 Popover 内容 */
+.pending-deploy-popover-content {
+  color: #333;
+}
+
+.pending-deploy-popover-content .task-meta-info {
+  color: #666;
+}
+
+/* 深色主题下的 Popover 内容 */
+.dark .pending-deploy-popover-content {
+  color: #f1f5f9;
+}
+
+.dark .pending-deploy-popover-content .task-meta-info {
+  color: #94a3b8;
+}
+
+.dark .pending-deploy-popover-content .ant-list-item {
+  border-bottom: 1px solid #334155;
+}
+
+.dark .pending-deploy-popover-content .ant-typography-secondary {
+  color: #94a3b8 !important;
+}
+
+/* 极客亮主题 - Tooltip 使用与主题匹配的背景 */
+html[data-theme="geek-light"] .ant-tooltip-inner,
+html[data-theme="geek-light"] [class*="tooltip"] .ant-tooltip-inner,
+html[data-theme="geek-light"] [class*="Tooltip"] .ant-tooltip-inner {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border: 1px solid #94a3b8 !important;
+}
+
+html[data-theme="geek-light"] .ant-tooltip-arrow-content,
+html[data-theme="geek-light"] [class*="tooltip"] .ant-tooltip-arrow-content,
+html[data-theme="geek-light"] [class*="Tooltip"] .ant-tooltip-arrow-content {
+  background-color: #e2e8f0 !important;
+}
+
+/* 极客亮主题 - Popover 使用与主题匹配的背景 */
+html[data-theme="geek-light"] .ant-popover-inner,
+html[data-theme="geek-light"] [class*="popover"] .ant-popover-inner,
+html[data-theme="geek-light"] [class*="Popover"] .ant-popover-inner {
+  background-color: #e2e8f0 !important;
+  border: 1px solid #94a3b8 !important;
+  border-radius: 12px !important;
+}
+
+html[data-theme="geek-light"] .ant-popover-inner-content,
+html[data-theme="geek-light"] [class*="popover"] .ant-popover-inner-content,
+html[data-theme="geek-light"] [class*="Popover"] .ant-popover-inner-content {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme="geek-light"] .ant-popover-arrow-content,
+html[data-theme="geek-light"] [class*="popover"] .ant-popover-arrow-content,
+html[data-theme="geek-light"] [class*="Popover"] .ant-popover-arrow-content {
+  background-color: #e2e8f0 !important;
+  border: 1px solid #94a3b8 !important;
+}
+
+/* 极客亮主题 - 修复 Popover 箭头外层容器 */
+html[data-theme="geek-light"] .ant-popover-arrow,
+html[data-theme="geek-light"] [class*="popover"] .ant-popover-arrow,
+html[data-theme="geek-light"] [class*="Popover"] .ant-popover-arrow {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+html[data-theme="geek-light"] .ant-popover-title,
+html[data-theme="geek-light"] [class*="popover"] .ant-popover-title,
+html[data-theme="geek-light"] [class*="Popover"] .ant-popover-title {
+  color: #0f172a !important;
+  border-bottom: 1px solid #94a3b8 !important;
+}
+
+/* ==================== 修复 Tooltip 箭头背景 ==================== */
+
+/* 亮色主题 - Tooltip 箭头 */
+.ant-tooltip-arrow,
+[class*="tooltip"] .ant-tooltip-arrow,
+[class*="Tooltip"] .ant-tooltip-arrow {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.ant-tooltip-arrow-content,
+[class*="tooltip"] .ant-tooltip-arrow-content,
+[class*="Tooltip"] .ant-tooltip-arrow-content {
+  background-color: #fff !important;
+}
+
+/* 深色主题 - Tooltip 箭头 */
+.dark .ant-tooltip-arrow,
+.dark [class*="tooltip"] .ant-tooltip-arrow,
+.dark [class*="Tooltip"] .ant-tooltip-arrow {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.dark .ant-tooltip-arrow-content,
+.dark [class*="tooltip"] .ant-tooltip-arrow-content,
+.dark [class*="Tooltip"] .ant-tooltip-arrow-content {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+/* 极客亮主题 - Tooltip 箭头 */
+html[data-theme="geek-light"] .ant-tooltip-arrow,
+html[data-theme="geek-light"] [class*="tooltip"] .ant-tooltip-arrow,
+html[data-theme="geek-light"] [class*="Tooltip"] .ant-tooltip-arrow {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+html[data-theme="geek-light"] .ant-tooltip-arrow-content,
+html[data-theme="geek-light"] [class*="tooltip"] .ant-tooltip-arrow-content,
+html[data-theme="geek-light"] [class*="Tooltip"] .ant-tooltip-arrow-content {
+  background-color: #e2e8f0 !important;
+  border: 1px solid #94a3b8 !important;
+}

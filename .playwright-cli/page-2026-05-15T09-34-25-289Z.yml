@@ -1,0 +1,254 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e164]:
+    - generic [ref=e166]:
+      - generic [ref=e170] [cursor=pointer]: 功能菜单
+      - generic:
+        - generic:
+          - heading "系统管理" [level=5]
+          - button "pushpin":
+            - generic:
+              - img "pushpin":
+                - img
+        - generic:
+          - menu:
+            - menuitem "project 项目管理":
+              - img "project":
+                - img
+              - generic: 项目管理
+            - menuitem "notification 消息推送配置":
+              - img "notification":
+                - img
+              - generic: 消息推送配置
+            - menuitem "bell 我的待办提醒":
+              - img "bell":
+                - img
+              - generic: 我的待办提醒
+            - menuitem "database 数据库配置":
+              - img "database":
+                - img
+              - generic: 数据库配置
+            - menuitem "open-a-i 大模型配置":
+              - img "open-a-i":
+                - img
+              - generic: 大模型配置
+            - menuitem "dashboard 系统监控":
+              - img "dashboard":
+                - img
+              - generic: 系统监控
+            - menuitem "api 插件管理":
+              - img "api":
+                - img
+              - generic: 插件管理
+            - menuitem "appstore 快捷键配置":
+              - img "appstore":
+                - img
+              - generic: 快捷键配置
+            - menuitem "appstore 用户管理":
+              - img "appstore":
+                - img
+              - generic: 用户管理
+            - menuitem "appstore 角色管理":
+              - img "appstore":
+                - img
+              - generic: 角色管理
+    - main [ref=e171]:
+      - generic [ref=e174]:
+        - generic [ref=e176]:
+          - generic [ref=e177]:
+            - generic [ref=e178]: ◤
+            - generic [ref=e180]: ◥
+          - generic [ref=e181]:
+            - generic [ref=e182]: AITestCraft 自动化测试平台
+            - generic [ref=e183]: AUTOMATED TESTING PLATFORM
+        - generic [ref=e184]:
+          - generic [ref=e185] [cursor=pointer]:
+            - img "bell" [ref=e186]:
+              - img [ref=e187]
+            - generic [ref=e189]: 我的待办
+          - generic [ref=e190]:
+            - generic [ref=e191]:
+              - generic [ref=e192]: system
+              - generic [ref=e193]: 系统管理
+            - generic [ref=e195]:
+              - generic [ref=e196]: module
+              - generic [ref=e197]: 系统监控
+          - generic [ref=e198] [cursor=pointer]:
+            - img "user" [ref=e201]:
+              - img [ref=e202]
+            - generic [ref=e204]: admin
+      - generic [ref=e209]:
+        - generic [ref=e210]:
+          - generic [ref=e213]: 系统监控
+          - generic [ref=e215]:
+            - generic [ref=e216]: 查看系统运行状态和性能指标
+            - button "清理过期数据" [ref=e218] [cursor=pointer]:
+              - generic [ref=e219]: 清理过期数据
+        - generic [ref=e220]:
+          - generic [ref=e224]:
+            - generic [ref=e225]: 总请求数
+            - generic [ref=e226]:
+              - generic [ref=e227]: "0"
+              - generic [ref=e228]: 次
+          - generic [ref=e232]:
+            - generic [ref=e233]: 平均响应时间
+            - generic [ref=e234]:
+              - generic [ref=e235]: "0.00"
+              - generic [ref=e236]: ms
+          - generic [ref=e240]:
+            - generic [ref=e241]: 最大响应时间
+            - generic [ref=e242]:
+              - generic [ref=e243]: "0.00"
+              - generic [ref=e244]: ms
+          - generic [ref=e248]:
+            - generic [ref=e249]: 最小响应时间
+            - generic [ref=e250]:
+              - generic [ref=e251]: "0.00"
+              - generic [ref=e252]: ms
+        - generic [ref=e253]:
+          - generic [ref=e256]: 时间范围
+          - generic [ref=e258]:
+            - button "24小时" [ref=e260] [cursor=pointer]:
+              - generic [ref=e261]: 24小时
+            - button "7天" [ref=e263] [cursor=pointer]:
+              - generic [ref=e264]: 7天
+            - button "30天" [ref=e266] [cursor=pointer]:
+              - generic [ref=e267]: 30天
+        - generic [ref=e268]:
+          - generic [ref=e270]:
+            - generic [ref=e273]: API响应时间 (96 个数据点)
+            - generic [ref=e276]:
+              - list [ref=e278]:
+                - listitem [ref=e279]:
+                  - img "响应时间(ms) legend icon" [ref=e280]
+                  - text: 响应时间(ms)
+              - application [ref=e282]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]:
+                    - generic [ref=e300]: 17:40
+                    - generic [ref=e302]: 18:51
+                    - generic [ref=e304]: 20:05
+                    - generic [ref=e306]: 21:17
+                    - generic [ref=e308]: 22:29
+                    - generic [ref=e310]: 23:41
+                    - generic [ref=e312]: 00:53
+                    - generic [ref=e314]: 02:05
+                    - generic [ref=e316]: 03:17
+                    - generic [ref=e318]: 04:29
+                    - generic [ref=e320]: 05:41
+                    - generic [ref=e322]: 06:53
+                    - generic [ref=e324]: 08:05
+                    - generic [ref=e326]: 09:19
+                    - generic [ref=e328]: 10:31
+                    - generic [ref=e330]: 17:29
+                  - generic [ref=e331]:
+                    - generic [ref=e333]: "0"
+                    - generic [ref=e335]: "40"
+                    - generic [ref=e337]: "80"
+                    - generic [ref=e339]: "120"
+                    - generic [ref=e341]: "160"
+          - generic [ref=e343]:
+            - generic [ref=e346]: 数据库性能 (0 个数据点)
+            - generic [ref=e348]:
+              - img "暂无数据" [ref=e350]
+              - generic [ref=e362]: 暂无数据库性能数据（只记录超过100ms的慢查询）
+          - generic [ref=e364]:
+            - generic [ref=e367]: 内存使用 (24 个数据点)
+            - generic [ref=e370]:
+              - list [ref=e372]:
+                - listitem [ref=e373]:
+                  - img "内存使用(MB) legend icon" [ref=e374]
+                  - text: 内存使用(MB)
+              - application [ref=e376]:
+                - generic [ref=e391]:
+                  - generic [ref=e392]:
+                    - generic [ref=e394]: 11:30
+                    - generic [ref=e396]: 13:46
+                    - generic [ref=e398]: 14:39
+                    - generic [ref=e400]: 15:12
+                    - generic [ref=e402]: 15:28
+                    - generic [ref=e404]: 17:03
+                  - generic [ref=e405]:
+                    - generic [ref=e407]: "0"
+                    - generic [ref=e409]: "40"
+                    - generic [ref=e411]: "80"
+                    - generic [ref=e413]: "120"
+                    - generic [ref=e415]: "160"
+          - generic [ref=e417]:
+            - generic [ref=e420]: CPU使用 (68 个数据点)
+            - generic [ref=e423]:
+              - list [ref=e425]:
+                - listitem [ref=e426]:
+                  - img "CPU使用率(%) legend icon" [ref=e427]
+                  - text: CPU使用率(%)
+              - application [ref=e429]:
+                - generic [ref=e444]:
+                  - generic [ref=e445]:
+                    - generic [ref=e447]: 17:45
+                    - generic [ref=e449]: 20:40
+                    - generic [ref=e451]: 23:40
+                    - generic [ref=e453]: 02:40
+                    - generic [ref=e455]: 05:40
+                    - generic [ref=e457]: 08:40
+                    - generic [ref=e459]: 17:19
+                  - generic [ref=e460]:
+                    - generic [ref=e462]: "0"
+                    - generic [ref=e464]: "40"
+                    - generic [ref=e466]: "80"
+                    - generic [ref=e468]: "120"
+                    - generic [ref=e470]: "160"
+    - generic [ref=e472]:
+      - generic [ref=e476] [cursor=pointer]: 快速导航
+      - generic:
+        - generic:
+          - generic:
+            - heading "快速导航" [level=5]
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - img "appstore":
+                        - img
+            - button "pushpin":
+              - generic:
+                - img "pushpin":
+                  - img
+        - generic:
+          - generic:
+            - generic:
+              - img "home":
+                - img
+            - generic: 首页
+          - generic:
+            - generic:
+              - img "unordered-list":
+                - img
+            - generic: 用例管理
+          - generic:
+            - generic:
+              - img "bug":
+                - img
+            - generic: 缺陷管理
+          - generic:
+            - generic:
+              - img "appstore":
+                - img
+            - generic: 应用管理
+          - generic:
+            - generic:
+              - img "setting":
+                - img
+            - generic: 系统管理
+        - generic:
+          - generic:
+            - generic:
+              - img "moon":
+                - img
+              - img "sun":
+                - img
+              - generic:
+                - img "sun":
+                  - img
+    - generic [ref=e480] [cursor=pointer]: 任务窗口(1)
+  - generic [ref=e481]: 12:38
